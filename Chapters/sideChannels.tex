@@ -1,6 +1,7 @@
 \chapter{Side-channel attacks}
 
-	\begin{figure}
+	I \emph{side-channel attacks} sono metodi di criptanalisi che sfruttano le side-channels informations insieme ad altre tecniche di analisi per recuperare la chiave utilizzata da un \disps\cite{standaert2010introduction}.\begin{figure}
+		
 		\begin{center}
 			\includegraphics[scale=.6]{sideChannelLeakage}
 			\caption{Esempio di side-channel attack}
@@ -8,4 +9,69 @@
 		\end{center}
 	\end{figure}
 	
-	In figura [\ref{fig:attack}] si può vedere una configurazione tipo di side-channel attack. Da una parte c'è il dispositivo che implementa la funzione crittografica e accanto c'è lo strumento utilizzato per rilevare le grandezze fisiche prodotte dal dispositivo attaccato. La cosa fondamentale è che questo tipo di attacchi non vanno a colpire direttamente la funzione crittografica ma sfruttano le informazioni dell'ambiente intorno al dispositivo.
+	Nella \cref{fig:attack} si può vedere una configurazione tipo di side-channel attack. Da una parte c'è il dispositivo che implementa la funzione crittografica e accanto c'è lo strumento utilizzato per rilevare le grandezze fisiche prodotte dal dispositivo attaccato. La cosa fondamentale è che questo tipo di attacchi non vanno a colpire direttamente la funzione crittografica ma sfruttano le informazioni fisiche dell'ambiente intorno al dispositivo.
+	
+	L'analisi di questi metodi ha acquisito notevole interesse dato che questo tipo di attacchi possono essere montati velocemente e molto spesso non richiedono hardware particolare e costoso. Con pochi euro si possono ad esempio acquistare in comuni negozi di bricolage o elettronica apparecchi in grado di analizzare il consumo elettrico di un dispositivo. Con tali apparecchi è possibile montare in pochi secondi un attacco di tipo \emph{Simple Power Analysis}\cite{mangard2002simple} che verrà spiegato più avanti. 
+	
+	Il governo degli USA, nel suo "Orange book"\cite{latham1986department} indica dei requisiti di sicurezza per i sistemi operativi. Questo documento introduce i primi standard per l'\emph{information leakage}. Purtroppo la letteratura specializzata è però molto variegata e disomogenea quindi, come prima cosa, cerchiamo di trovare un modo per classificare i vari tipi di attacchi in maniera tale da avere una visione più sistemistica del settore.
+	
+	\section{Background}
+	
+		In questa sezione verranno stabiliti dei parametri per classificare i vari tipi di attacchi side-channel.
+	
+		\subsection{Tipi di canali}
+	
+			Nel lavoro di \emph{Ge, Yarom, Cock e Heiser}\cite{ge2016survey} vengono fornite alcune definizioni che utilizzeremo nel prosieguo di questa tesi. La prima distinzione che è necessario fare è quella tra side-channel e \emph{covert-channel}. Con i primi ci si riferisce ai canali che lasciano \emph{accidentalmente} filtrare informazioni sensibili (ad esempio una chiave crittografica) in una comunicazione tra due partecipanti fidati. I secondi sono quelli creati e sfruttati dall'attaccante ad esempio tramite l'utilizzo di Trojan e che \emph{deliberatamente} lasciano filtrare le informazioni. In questo lavoro verranno trattati solamente i primi.
+			
+			L'altra differenza fondamentale per quello che riguarda i canali è quella tra canali di tipo \emph{storage} e canali di tipo \emph{timing}. I canali di tipo storage vengono sfruttati per ottenere qualcosa di direttamente visibile nel sistema (valore dei registri, valore di ritorno di una system call, ecc.). Quelli di tipo timing vengono sfruttati andando ad osservare variazioni del tempo di esecuzione di un programma (o di parti di esso).
+			
+		\subsection{Tipi di attacco}
+		
+			\emph{Standaert} nel suo lavoro \cite{standaert2010introduction} utilizza altre due dimensioni interessanti per classificare questi attacchi; l'\emph{invasività} e l'\emph{attività}. 
+			
+			Si definisce invasivo un attacco che richiede un disassemblamento del dispositivo attaccato per avere accesso diretto ai suoi componenti interni (wiretapping o sensori collegati direttamente all'hardware). Un attacco non invasivo, al contrario, sfrutta solamente le informazioni disponibili esternamente (quasi sempre involontarie) come il tempo d'esecuzione o l'energia consumata.
+			
+			Si definisce attivo un attacco che cerca di interferire con il corretto funzionamento del dispositivo (fault-injection) mentre un attacco passivo si limita ad osservare il comportamento del dispositivo durante il suo lavoro senza disturbarlo. 
+			
+		\subsection{Grandezza fisica osservata}
+		
+			Una caratteristica principale di questi attacchi è sicuramente la grandezza fisica che viene osservata per montare l'attacco. Teoricamente, qualunque grandezza fisica misurabile può essere sfruttata ma alcune si prestano maggiormente rispetto ad altre. 
+			
+			Il tempo e il consumo energetico sono le più sfruttate ma non sono di certo le uniche. \emph{Genkin, Shamir e Tromer} nel loro lavoro \cite{genkin2014rsa} vanno ad ascoltare i rumori prodotti dal processore. \emph{Ferrigno e Hlavac}\cite{ferrigno2008aes} osservano la luce (qualche fotone) emessa dai transistor nel passaggio di stato da 0 a 1. \emph{Martinasek, Zeman e Trasy} sfruttano i campi elettromagnetici creati dai chip. \emph{Giraud}\cite{giraud2004dfa} sfrutta la tecnica della fault-injection e analizza i risultati delle computazioni.
+			
+			Questo elenco assolutamente non esaustivo delle tecniche utilizzate può far capire quanto variegato ed eterogeneo (nonché in continua evoluzione) sia questo settore.
+			
+			Tutti questi attacchi (e anche altri) verranno approfonditi più avanti.
+			
+		\subsection{Hardware attaccato}
+		
+			Gli attacchi possono essere suddivisi anche in base alla componente hardware che viene attaccata. Anche in questo caso ci sono componenti più attaccati di altri (cache e processori) ma non mancano esempi di attacchi a monitor\cite{van1985electromagnetic}, tastiere\cite{asonov2004keyboard} o stampanti\cite{backes2010acoustic}.
+			
+		\subsection{Algoritmo attaccato}
+		
+			Un'ultima classificazione può essere effettuata andando a discriminare gli attacchi secondo l'algoritmo crittografico attaccato. In questo caso i due maggiori algoritmi attaccati sono senza dubbio AES ed RSA.
+			
+			\begin{table}[]
+				\centering
+				\caption{Classificazione dei principali attacchi analizzati}
+				\label{tab:attacchi}
+				\begin{tabular}{c|c|c|c|c|c}
+					Articolo 					& Grandezza                    & Hardware   & Algoritmo & Invasivo & Attivo \\ \hline
+					\cite{genkin2014rsa}		& Suono                        & CPU        & RSA       & No       & No     \\ \hline
+					\cite{ferrigno2008aes}		& Luce                         & Transistor & AES       & Sì       & No     \\ \hline
+					\cite{kocher2018spectre}	& Tempo                        & Cache      & RSA       & No       & No     \\ \hline
+					\cite{mangard2002simple}	& Consumo elettrico            & Smartcard  & AES       & No       & No     \\ \hline
+					\cite{martinasek2012simple}	& Campo elettromagnetico       & Chip       & AES       & No       & No     \\ \hline
+					\cite{giraud2004dfa}		& Risultato della computazione & Smartcard  & AES       & Sì       & Sì    
+				\end{tabular}
+			\end{table}
+		
+			Nella \cref{tab:attacchi} si è provato a classificare con i criteri sopra definiti i 6 attacchi che verranno approfonditi in questo lavoro.
+			
+	\section{Attacchi basati sul suono}
+	\section{Attacchi basati sulla luce}
+	\section{Attacchi basati sul tempo}
+	\section{Attacchi basati sul consumo elettrico}
+	\section{Attacchi basati sul campo elettromagnetico}
+	\section{Attacchi basati sui risultati delle computazioni}
+		
