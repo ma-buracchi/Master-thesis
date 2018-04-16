@@ -10,8 +10,8 @@
 % - based on Classic Thesis Style Copyright (C) 2008 
 %   Andr\'e Miede http://www.miede.de   
 %--------------------------------------------------------------
-\documentclass[twoside,openright,titlepage,fleqn,
-	headinclude,12pt,a4paper,BCOR5mm,footinclude]{scrbook}
+\documentclass[openright,twoside,titlepage,fleqn,
+	headinclude,12pt,a4paper,BCOR5mm,footinclude,makeidx]{scrbook}
 %--------------------------------------------------------------
 \newcommand{\myItalianTitle}{Titolo italiano\xspace}
 \newcommand{\myEnglishTitle}{Titolo inglese\xspace}
@@ -54,7 +54,7 @@
 % listsseparated subfig nochapters beramono eulermath parts 
 % minionpro pdfspacing
 \usepackage[eulerchapternumbers,linedheaders,subfig,beramono,eulermath,
-parts]{classicthesis}
+parts,dottedtoc]{classicthesis}
 %--------------------------------------------------------------
 \newlength{\abcd} % for ab..z string length calculation
 % how all the floats will be aligned
@@ -90,6 +90,8 @@ parts]{classicthesis}
   	tabsize=3
 }
 \usepackage[italian,noabbrev]{cleveref}
+\usepackage{imakeidx}
+\makeindex[intoc]
 %--------------------------------------------------------------
 \begin{document}
 \frenchspacing
@@ -135,5 +137,7 @@ parts]{classicthesis}
 \bibliography{bib/bibliografia}
 \bibliographystyle{unsrt}
 %--------------------------------------------------------------
+\include{Chapters/acro}
+\printindex
 \end{document}
 %--------------------------------------------------------------
