@@ -127,7 +127,10 @@
 		Un ulteriore problema è dovuto proprio a questa ultima osservazione insieme alla necessità di sincronizzare Optica con il codice che sta eseguendo il dispositivo. Una soluzione come la randomizzazione delle operazioni utilizzata nei processori moderni rende questo attacco molto più difficile da realizzare.
 			
 	\section{Attacchi basati sul consumo elettrico}\index{Power analysis attacks}
-	\lipsum[1-5]
+		Questo tipo di attacchi si basa sull'analisi del consumo energetico di un \disps mentre esegue una encryption o una decryption. Gli attacchi "classici" di questo tipo sono la \ac{SPA}\index{Simple Power Analysis} e la \ac{DPA}\index{Differential Power Analysis} entrambe introdotte da \emph{Kocher} in\cite{kocher2011introduction}.
+		
+		\subsection*{Simple Power Analysis}
+		Nella \ac{SPA} l'attaccante osserva il consumo energetico istantaneo del dispositivo. Questo consumo è direttamente collegato alle istruzioni eseguite dal microprocessore.
 	\subsection{Possibili contromisure}	
 	\lipsum[1-5]
 	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
@@ -139,8 +142,6 @@
 	\subsection{Possibili contromisure}	
 	\lipsum[1-5]
 	\section{Attacchi fault-based}\index{Fault-based attacks}
-	\lipsum[1-5]
-	\subsection{Possibili contromisure}	
 	\lipsum[1-5]
 	\subsection{Possibili contromisure}	
 	\lipsum[1-5]
