@@ -71,54 +71,61 @@
 			Passiamo adesso ad una breve panoramica sui maggiori attacchi per ogni tipo di grandezza fisica attaccata. Si ricorda che gli attacchi basati sul tempo, categoria nella quale ricadono la maggior parte degli attacchi eseguiti contro le cache, verranno approfonditi nel prossimo capitolo.
 			
 	\section{Attacchi basati sul suono}\index{Acoustic attacks}
-	L'analisi di suoni prodotti da dispositivi meccanici, specialmente in campo militare, risalgono a molto indietro quando si riusciva a distinguere un aereo o una nave a seconda del rumore che produceva.
+		L'analisi di suoni prodotti da dispositivi meccanici, specialmente in campo militare, risalgono a molto indietro quando si riusciva a distinguere un aereo o una nave a seconda del rumore che produceva.
 	
-	Anche i dispositivi elettronici, in generale, emettono un grande numero di rumori diversi. Se ad esempio pensiamo ad un computer portatile, alcune informazioni banali che possiamo ricavare dai suoni emessi sono ad esempio l'attività dell'Hard Disk che ci suggerisce un utilizzo della memoria oppure l'accendersi di una ventola che ci suggerisce un intenso utilizzo della CPU. Questo tipo di informazioni sono però troppo generiche specialmente in un dispositivo general purpose che esegue molti processi diversi parallelamente.
+		Anche i dispositivi elettronici, in generale, emettono un grande numero di rumori diversi. Se ad esempio pensiamo ad un computer portatile, alcune informazioni banali che possiamo ricavare dai suoni emessi sono ad esempio l'attività dell'Hard Disk che ci suggerisce un utilizzo della memoria oppure l'accendersi di una ventola che ci suggerisce un intenso utilizzo della CPU. Questo tipo di informazioni sono però troppo generiche specialmente in un dispositivo general purpose che esegue molti processi diversi parallelamente.
 	
-	Per approfondire il livello di informazione ricevuto le strade più percorse sono due. Aumentare la sensibilità dell'ascoltatore cercando di trovare differenze tra rumori che sembrano uguali o ascoltare rumori più particolari.
+		Per approfondire il livello di informazione ricevuto le strade più percorse sono due. Aumentare la sensibilità dell'ascoltatore cercando di trovare differenze tra rumori che sembrano uguali o ascoltare rumori più particolari.
 	
-	\subsection{Differenziazione dei rumori}	
-		Uno degli esempi più importanti di questo tipo di attacco è quello eseguito sulle stampanti a matrice di aghi nel 2010\cite{backes2010acoustic}. Il fatto che questo tipo di stampanti sia ormai sparito dall'utilizzo del privato cittadino non deve far pensare ad un attacco anacronistico. Questa scelta è infatti dovuta al fatto che in quell'anno circa il $60\%$ dei medici in Germania e il $30\%$ delle banche utilizzavano ancora quel tipo di stampanti. Alcuni stati europei richiedono per legge l'utilizzo di stampanti a matrici di aghi per la prescrizione di particolari medicine\cite{bernatzky2011schmerzbehandlung}.
-		
-		\begin{figure}
-			\begin{center}
-				\includegraphics[scale=.5]{printMatrix}
-				\caption{Modalità di stampa di una stampante ad aghi}
-				\label{fig:matrixHead}
-			\end{center}
-		\end{figure}
-		
-		Come si vede in \cref{fig:matrixHead}, una stampante ad aghi scompone ogni lettera in colonne di punti ed utilizza gli aghi necessari per incidere la traccia corretta sulla carta. Lo studio dimostra come sia possibile addestrare una rete neurale per riconoscere il rumore emesso ad ogni singolo passo che cambia in base a quanti e quali aghi vengono utilizzati. Tale rete neurale riconosce il $72\%$ delle parole stampate senza alcuna ulteriore assunzione ed arriva al $95\%$ se si assume una conoscenza del contesto.
-		
-		L'idea di base è la stessa utilizzata anche in \cite{asonov2004keyboard} nel 2004 per riconoscere i rumori prodotti dai tasti premuti su di una tastiera.
-	
-	\subsection{Cogliere rumori impercettibili}	
-		In questa seconda categoria uno dei principali rappresentati è sicuramente l'attacco\cite{genkin2014rsa} del 2014 portato contro il circuito di regolazione del voltaggio dei computer. Tale circuito è composto da bobine e condensatori che vibrano nel tentativo di fornire un voltaggio costante alla CPU.
-		
-		Eseguire ad esempio RSA con chiavi differenti provoca pattern di esecuzione di operazioni della CPU diversi che portano all'utilizzo di quantità di energia elettrica differente. Il regolatore di voltaggio reagisce di conseguenza causando fluttuazioni di elettricità che provocano vibrazioni meccaniche nei componenti elettronici e queste vibrazioni vengono trasmesse attraverso l'aria come onde sonore. Il riconoscimento di questi pattern differenti permette agli autori di recuperare la chiave RSA utilizzata.
-		
-		La particolarità interessante di questo attacco è che non richiede un'attrezzature complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di 4 metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a 30 cm dallo stesso computer.
-		
-	\subsection{Possibili contromisure}	
-		Le possibili contromisure a questo tipi di attacchi sono molteplici e sono sia fisiche che algoritmiche.
-		
-		\subsubsection*{Insonorizzazione}			
-			La prima ovvia soluzione potrebbe essere quella di insonorizzare il dispositivo ad esempio ponendolo dentro a contenitori studiati appositamente. Il problema di questa soluzione è la difficoltà di ottenere un ricircolo d'aria per il raffreddamento. Le aperture per le ventole di raffreddamento sono infatti la fonte di emanazione di questi rumori e non possono essere rimosse facilmente. 
+		\subsection{Differenziazione dei rumori}	
+			Uno degli esempi più importanti di questo tipo di attacco è quello eseguito sulle stampanti a matrice di aghi nel 2010\cite{backes2010acoustic}. Il fatto che questo tipo di stampanti sia ormai sparito dall'utilizzo del privato cittadino non deve far pensare ad un attacco anacronistico. Questa scelta è infatti dovuta al fatto che in quell'anno circa il $60\%$ dei medici in Germania e il $30\%$ delle banche utilizzavano ancora quel tipo di stampanti. Alcuni stati europei richiedono per legge l'utilizzo di stampanti a matrici di aghi per la prescrizione di particolari medicine\cite{bernatzky2011schmerzbehandlung}.
 			
-			Una soluzione potrebbe essere un contenitore insonorizzato e sigillato dotato di un circuito di raffreddamento a liquido. Questo ovviamente porta ad un notevole innalzamento dei costi del dispositivo.
+			\begin{figure}
+				\begin{center}
+					\includegraphics[scale=.5]{printMatrix}
+					\caption{Modalità di stampa di una stampante ad aghi}
+					\label{fig:matrixHead}
+				\end{center}
+			\end{figure}
 			
-		\subsubsection*{Ambiente rumoroso}		
-			Un'altra semplice idea è quella di posizionare il dispositivo in un ambiente rumoroso (all'aperto o in stanze rumorose). Neanche questa soluzione sembra però funzionare perché i rumori "normali" sono concentrate su frequenze più basse rispetto a quelli di interesse e possono essere facilmente filtrati.
+			Come si vede in \cref{fig:matrixHead}, una stampante ad aghi scompone ogni lettera in colonne di punti ed utilizza gli aghi necessari per incidere la traccia corretta sulla carta. Lo studio dimostra come sia possibile addestrare una rete neurale per riconoscere il rumore emesso ad ogni singolo passo che cambia in base a quanti e quali aghi vengono utilizzati. Tale rete neurale riconosce il $72\%$ delle parole stampate senza alcuna ulteriore assunzione ed arriva al $95\%$ se si assume una conoscenza del contesto.
 			
-		\subsubsection*{Randomizzazione}		
-			La soluzione migliore è algoritmica e prevede una randomizzazione dell'input. Se parliamo di RSA ad esempio possiamo pensare di non decifrare direttamente il ciphertext ma di modificarlo sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. 
+			L'idea di base è la stessa utilizzata anche in \cite{asonov2004keyboard} nel 2004 per riconoscere i rumori prodotti dai tasti premuti su di una tastiera.
+		
+		\subsection{Cogliere rumori impercettibili}	
+			In questa seconda categoria uno dei principali rappresentati è sicuramente l'attacco\cite{genkin2014rsa} del 2014 portato contro il circuito di regolazione del voltaggio dei computer. Tale circuito è composto da bobine e condensatori che vibrano nel tentativo di fornire un voltaggio costante alla CPU.
 			
-			Similmente si può aggiungere un valore casuale al modulo rendendolo ogni volta diverso.
+			Eseguire ad esempio RSA con chiavi differenti provoca pattern di esecuzione di operazioni della CPU diversi che portano all'utilizzo di quantità di energia elettrica differente. Il regolatore di voltaggio reagisce di conseguenza causando fluttuazioni di elettricità che provocano vibrazioni meccaniche nei componenti elettronici e queste vibrazioni vengono trasmesse attraverso l'aria come onde sonore. Il riconoscimento di questi pattern differenti permette agli autori di recuperare la chiave RSA utilizzata.
+			
+			La particolarità interessante di questo attacco è che non richiede un'attrezzature complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di 4 metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a 30 cm dallo stesso computer.
+			
+		\subsection{Possibili contromisure}	
+			Le possibili contromisure a questo tipi di attacchi sono molteplici e sono sia fisiche che algoritmiche.
+			
+			\subsubsection*{Insonorizzazione}			
+				La prima ovvia soluzione potrebbe essere quella di insonorizzare il dispositivo ad esempio ponendolo dentro a contenitori studiati appositamente. Il problema di questa soluzione è la difficoltà di ottenere un ricircolo d'aria per il raffreddamento. Le aperture per le ventole di raffreddamento sono infatti la fonte di emanazione di questi rumori e non possono essere rimosse facilmente. 
+				
+				Una soluzione potrebbe essere un contenitore insonorizzato e sigillato dotato di un circuito di raffreddamento a liquido. Questo ovviamente porta ad un notevole innalzamento dei costi del dispositivo.
+				
+			\subsubsection*{Ambiente rumoroso}		
+				Un'altra semplice idea è quella di posizionare il dispositivo in un ambiente rumoroso (all'aperto o in stanze rumorose). Neanche questa soluzione sembra però funzionare perché i rumori "normali" sono concentrate su frequenze più basse rispetto a quelli di interesse e possono essere facilmente filtrati.
+				
+			\subsubsection*{Randomizzazione}		
+				La soluzione migliore è algoritmica e prevede una randomizzazione dell'input. Se parliamo di RSA ad esempio possiamo pensare di non decifrare direttamente il ciphertext ma di modificarlo sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. 
+				
+				Similmente si può aggiungere un valore casuale al modulo rendendolo ogni volta diverso.
 			
 	\section{Attacchi basati sulla luce}\index{Optical attacks}
+		Le emissioni ottiche sono un'altra possibile fonte di dispersione di informazioni. Alcune informazioni banali possono ad esempio essere ricavate dalla semplice osservazione dei \acs{LED} presenti su ogni dispositivo che informano sullo stato del dispositivo stesso. Capire ad esempio se un dispositivo è acceso o spento, se sta recuperando informazioni in memoria, se sta utilizzando la connessione Wi-Fi o informazioni simili sono tutte facilmente osservabili ma, nella maggior parte dei casi, poco utili.
 		
-	\subsection{Possibili contromisure}	
-	\lipsum[1-5]
+		Per ottenere informazioni più significative occorre dotarsi di strumenti di rilevazione più avanzati e utilizzare metodi più "invasivi".
+		
+		\emph{Ferrigno} nel suo lavoro\cite{ferrigno2008aes} si basa sulla seguente idea; ogni volta che un transistor presente su un circuito integrato cambia il proprio stato (passa da $0$ a $1$ ad esempio) emette qualche fotone. Grazie all'utilizzo di \emph{Optica}, un dispositivo presente nei laboratori del \ac{CNES} il cui costo è dell'ordine del milione di euro, si riesce a rilevare questi fotoni e a capire il passaggio di stato del singolo transistor tramite la tecnica chiamata \ac{PICA}\cite{tsang2000picosecond},.
+		
+		I principali problemi che presenta questo attacco sono il costo dello strumento di rilevazione e l'invasività (bisogna infatti esporre completamente il circuito integrato) ma riesce a captare qualunque informazione si voglia a patto di conoscere il programma che sta girando in quel momento.
+		
+		Un ulteriore problema è dovuto proprio a questa ultima osservazione insieme alla necessità di sincronizzare Optica con il codice che sta eseguendo il dispositivo. Una soluzione come la randomizzazione delle operazioni utilizzata nei processori moderni rende questo attacco molto più difficile da realizzare.
+			
 	\section{Attacchi basati sul consumo elettrico}\index{Power analysis attacks}
 	\lipsum[1-5]
 	\subsection{Possibili contromisure}	
