@@ -100,7 +100,7 @@
 			La particolarità interessante di questo attacco è che non richiede un'attrezzature complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di 4 metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a 30 cm dallo stesso computer.
 			
 	\section{Attacchi basati sulla luce}\index{Optical attacks}
-		Le emissioni ottiche sono un'altra possibile fonte di dispersione di informazioni. Alcune informazioni banali possono ad esempio essere ricavate dalla semplice osservazione dei \acs{LED} presenti su ogni dispositivo che informano sullo stato del dispositivo stesso. Capire ad esempio se un dispositivo è acceso o spento, se sta recuperando informazioni in memoria, se sta utilizzando la connessione Wi-Fi o informazioni simili sono tutte facilmente osservabili ma, nella maggior parte dei casi, poco utili.
+		Le emissioni ottiche sono un'altra possibile fonte di dispersione di informazioni. Alcune, banali, possono ad esempio essere ricavate dalla semplice osservazione dei \acs{LED} presenti su ogni dispositivo che informano sullo stato del dispositivo stesso. Si può capire ad esempio se un dispositivo è acceso o spento, se sta eseguendo computazioni o è inattivo, se sta recuperando informazioni in memoria o se sta utilizzando la connessione Wi-Fi. Simili informazioni sono tutte facilmente osservabili ma, nella maggior parte dei casi, poco utili.
 		
 		Per ottenere informazioni più significative occorre dotarsi di strumenti di rilevazione più avanzati e utilizzare metodi più "invasivi".
 		
@@ -113,7 +113,7 @@
 	\section{Attacchi basati sul consumo elettrico}\index{Power analysis attacks}
 		Questo tipo di attacchi si basa sull'analisi del consumo energetico di un \disps mentre esegue una encryption o una decryption. Gli attacchi "classici" di questo tipo sono la \ac{SPA} e la \ac{DPA} entrambe introdotte da \emph{Kocher}\cite{kocher2011introduction}.
 		
-		\subsection*{Simple Power Analysis}\index{Simple Power Analysis}
+		\subsection{Simple Power Analysis}\index{Simple Power Analysis}
 		Nella \ac{SPA} l'attaccante osserva il consumo energetico istantaneo del dispositivo. Questo consumo è direttamente dipendente dalle istruzioni eseguite dal microprocessore. Funzioni complesse come il \ac{DES} o RSA possono essere identificate grazie alla grande differenza di operazioni svolte dal processore nelle varie parti che compongono questi algoritmi. 
 		
 		Visto che la \ac{SPA} riesce a rivelare la sequenza di istruzioni eseguita, può essere usata per attaccare implementazioni di funzioni crittografiche che richiedono l'esecuzione di precisi path di operazioni a seconda dei dati forniti in input. Le permutazioni di \ac{DES} come le moltiplicazioni o le esponenziazioni di RSA sono vittime tipiche di questi attacchi.
@@ -126,9 +126,9 @@
 			\end{center}
 		\end{figure}
 	
-		Le operazioni che RSA esegue ad ogni passo di encryption/decryption possono essere tre (square,reduce e multiply) dipendono dalla chiave. Viene scandita bit a bit la chiave e, se l'i-esimo bit è un $1$ RSA esegue la sequenza square-reduce-multiply-reduce, altrimenti esegue solamente la sequenza square-reduce. \'{E} possibile riconoscere questi pattern dall'analisi del consumo energetico come si può vedere in \cref{fig:RSAPower}. 
+		Le operazioni che RSA esegue ad ogni passo di encryption/decryption possono essere tre (square,reduce e multiply) dipendono dalla chiave. Viene scandita bit a bit la chiave e, se l'i-esimo bit è un $1$, RSA esegue la sequenza square-reduce-multiply-reduce, altrimenti esegue solamente la sequenza square-reduce. \'{E} possibile riconoscere questi pattern dall'analisi del consumo energetico come si può vedere in \cref{fig:RSAPower}. 
 		
-		\subsection*{Differential Power Analysis}\index{Differential Power Analysis}
+		\subsection{Differential Power Analysis}\index{Differential Power Analysis}
 			La \ac{DPA} è un attacco più sofisticato della \ac{SPA} perché aggiunge all'analisi istantanea del consumo anche un'analisi statistica. Per questo motivo è più potente e più difficile da prevenire (ma è anche più costoso in termini di tempo).
 			
 			Generalmente un attacco \ac{DPA} si divide in una fase di raccolta dei dati e in una fase di analisi statistica degli stessi. L'utilizzo di tecniche statistiche elaborate, da una parte "filtra" i dati da possibili sorgenti di rumori e dall'altra può permettere di estrarre informazioni maggiori rispetto alla semplice esecuzione delle singole operazioni. 
