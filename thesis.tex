@@ -1,11 +1,6 @@
 %--------------------------------------------------------------
 % thesis.tex 
 %--------------------------------------------------------------
-% Corso di Laurea in Informatica 
-% http://if.dsi.unifi.it/
-% @Facolt\`a di Scienze Matematiche, Fisiche e Naturali
-% @Universit\`a degli Studi di Firenze
-%--------------------------------------------------------------
 % - template for the main file of Informatica@Unifi Thesis 
 % - based on Classic Thesis Style Copyright (C) 2008 
 %   Andr\'e Miede http://www.miede.de   
@@ -25,6 +20,11 @@
 \usepackage{appendix}
 \usepackage{siunitx}
 \usepackage{lipsum}
+\usepackage{dia-classicthesis-ldpkg}
+\usepackage[eulerchapternumbers,linedheaders,subfig,beramono,eulermath,
+parts,dottedtoc]{classicthesis}
+\usepackage[italian,noabbrev]{cleveref}
+\usepackage{imakeidx}
 %---------------------------------------------------------------
 \newcommand{\myItalianTitle}{Titolo italiano\xspace}
 \newcommand{\myEnglishTitle}{Titolo inglese\xspace}
@@ -36,28 +36,15 @@
 \newcommand{\myUni}{\protect{Università degli Studi di Firenze}\xspace}
 \newcommand{\myLocation}{Firenze\xspace}
 \newcommand{\myTime}{Anno Accademico 2017-2018\xspace}
-\newcommand{\myVersion}{Version 0.1\xspace}
 \newcommand{\mycopyright}{\includegraphics[width=1.5cm]{logo/cc.png} 
 	\href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 		Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)  }\xspace}
-%--------------------------------------------------------------
-
 \newcommand{\disps}{dispositivo crittografico }
 \newcommand{\dispp}{dispositivi crittografici }
-
-%--------------------------------------------------------------
-\usepackage{dia-classicthesis-ldpkg}
-%--------------------------------------------------------------
-% Options for classicthesis.sty:
-% tocaligned eulerchapternumbers drafting linedheaders 
-% listsseparated subfig nochapters beramono eulermath parts 
-% minionpro pdfspacing
-\usepackage[eulerchapternumbers,linedheaders,subfig,beramono,eulermath,
-parts,dottedtoc]{classicthesis}
+\newcommand{\myfloatalign}{\centering} 
 %--------------------------------------------------------------
 \newlength{\abcd} % for ab..z string length calculation
 % how all the floats will be aligned
-\newcommand{\myfloatalign}{\centering} 
 \setlength{\extrarowheight}{3pt} % increase table row height
 \captionsetup{format=hang,font=small}
 %--------------------------------------------------------------
@@ -88,8 +75,6 @@ parts,dottedtoc]{classicthesis}
   	breakatwhitespace=true,
   	tabsize=3
 }
-\usepackage[italian,noabbrev]{cleveref}
-\usepackage{imakeidx}
 \makeindex[intoc]
 %--------------------------------------------------------------
 \begin{document}
@@ -106,13 +91,6 @@ parts,dottedtoc]{classicthesis}
 % Mainmatter
 %--------------------------------------------------------------
 \pagenumbering{arabic}
-% use \cleardoublepage here to avoid problems with pdfbookmark
-%\include{intro} % use \myChapter command instead of \chapter
-%\cleardoublepage\myPart{Part I}
-%\include{chapter01}
-%\cleardoublepage\myPart{Part II}
-%\include{chapter02}
-%\include{chapter03}
 \tableofcontents
 \listoffigures
 \listoftables
