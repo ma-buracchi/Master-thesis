@@ -41,7 +41,7 @@
 			Gli attacchi possono essere suddivisi anche in base alla componente hardware che viene attaccata. Anche in questo caso ci sono componenti più attaccati (ed attaccabili) di altri (cache e processori) ma non mancano esempi di attacchi a monitor\cite{van1985electromagn}, tastiere\cite{asonov2004keyboard} o stampanti\cite{backes2010acoustic}.
 			
 		\subsection*{Algoritmo attaccato}		
-			Un'ultima classificazione può essere effettuata andando a discriminare gli attacchi secondo l'algoritmo crittografico attaccato. In questo caso i due maggiori algoritmi attaccati sono senza dubbio AES\cite{standard2001announcing} ed RSA\cite{rivest1978method} nelle loro implementazioni più comuni. Altri algoritmi attaccati sono El-Gamal\cite{elgamal1985public} e le curve ellittiche\cite{koblitz1987elliptic,miller1985use}.
+			Un'ultima classificazione può essere effettuata andando a discriminare gli attacchi secondo l'algoritmo crittografico attaccato. In questo caso i due maggiori algoritmi attaccati sono senza dubbio \ac{AES}\cite{standard2001announcing} ed RSA\cite{rivest1978method} nelle loro implementazioni più comuni. Altri algoritmi attaccati sono El-Gamal\cite{elgamal1985public} e le curve ellittiche\cite{koblitz1987elliptic,miller1985use}.
 			\begin{table}[]
 				\scriptsize
 				\centering
@@ -99,22 +99,6 @@
 			
 			La particolarità interessante di questo attacco è che non richiede un'attrezzature complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di 4 metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a 30 cm dallo stesso computer.
 			
-		\subsection{Possibili contromisure}	
-			Le possibili contromisure a questo tipi di attacchi sono molteplici e sono sia fisiche che algoritmiche.
-			
-			\subsubsection*{Insonorizzazione}			
-				La prima ovvia soluzione potrebbe essere quella di insonorizzare il dispositivo ad esempio ponendolo dentro a contenitori studiati appositamente. Il problema di questa soluzione è la difficoltà di ottenere un ricircolo d'aria per il raffreddamento. Le aperture per le ventole di raffreddamento sono infatti la fonte di emanazione di questi rumori e non possono essere rimosse facilmente. 
-				
-				Una soluzione potrebbe essere un contenitore insonorizzato e sigillato dotato di un circuito di raffreddamento a liquido. Questo ovviamente porta ad un notevole innalzamento dei costi del dispositivo.
-				
-			\subsubsection*{Ambiente rumoroso}		
-				Un'altra semplice idea è quella di posizionare il dispositivo in un ambiente rumoroso (all'aperto o in stanze rumorose). Neanche questa soluzione sembra però funzionare perché i rumori "normali" sono concentrate su frequenze più basse rispetto a quelli di interesse e possono essere facilmente filtrati.
-				
-			\subsubsection*{Randomizzazione}		
-				La soluzione migliore è algoritmica e prevede una randomizzazione dell'input. Se parliamo di RSA ad esempio possiamo pensare di non decifrare direttamente il ciphertext ma di modificarlo sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. 
-				
-				Similmente si può aggiungere un valore casuale al modulo rendendolo ogni volta diverso.
-			
 	\section{Attacchi basati sulla luce}\index{Optical attacks}
 		Le emissioni ottiche sono un'altra possibile fonte di dispersione di informazioni. Alcune informazioni banali possono ad esempio essere ricavate dalla semplice osservazione dei \acs{LED} presenti su ogni dispositivo che informano sullo stato del dispositivo stesso. Capire ad esempio se un dispositivo è acceso o spento, se sta recuperando informazioni in memoria, se sta utilizzando la connessione Wi-Fi o informazioni simili sono tutte facilmente osservabili ma, nella maggior parte dei casi, poco utili.
 		
@@ -127,21 +111,52 @@
 		Un ulteriore problema è dovuto proprio a questa ultima osservazione insieme alla necessità di sincronizzare Optica con il codice che sta eseguendo il dispositivo. Una soluzione come la randomizzazione delle operazioni utilizzata nei processori moderni rende questo attacco molto più difficile da realizzare.
 			
 	\section{Attacchi basati sul consumo elettrico}\index{Power analysis attacks}
-		Questo tipo di attacchi si basa sull'analisi del consumo energetico di un \disps mentre esegue una encryption o una decryption. Gli attacchi "classici" di questo tipo sono la \ac{SPA}\index{Simple Power Analysis} e la \ac{DPA}\index{Differential Power Analysis} entrambe introdotte da \emph{Kocher} in\cite{kocher2011introduction}.
+		Questo tipo di attacchi si basa sull'analisi del consumo energetico di un \disps mentre esegue una encryption o una decryption. Gli attacchi "classici" di questo tipo sono la \ac{SPA} e la \ac{DPA} entrambe introdotte da \emph{Kocher}\cite{kocher2011introduction}.
 		
-		\subsection*{Simple Power Analysis}
-		Nella \ac{SPA} l'attaccante osserva il consumo energetico istantaneo del dispositivo. Questo consumo è direttamente collegato alle istruzioni eseguite dal microprocessore.
-	\subsection{Possibili contromisure}	
-	\lipsum[1-5]
+		\subsection*{Simple Power Analysis}\index{Simple Power Analysis}
+		Nella \ac{SPA} l'attaccante osserva il consumo energetico istantaneo del dispositivo. Questo consumo è direttamente dipendente dalle istruzioni eseguite dal microprocessore. Funzioni complesse come il \ac{DES} o RSA possono essere identificate grazie alla grande differenza di operazioni svolte dal processore nelle varie parti che compongono questi algoritmi. 
+		
+		Visto che la \ac{SPA} riesce a rivelare la sequenza di istruzioni eseguita, può essere usata per attaccare implementazioni di funzioni crittografiche che richiedono l'esecuzione di precisi path di operazioni a seconda dei dati forniti in input. Le permutazioni di \ac{DES} come le moltiplicazioni o le esponenziazioni di RSA sono vittime tipiche di questi attacchi.
+		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[scale=.5]{powerRSA}
+				\caption{SPA contro RSA}
+				\label{fig:RSAPower}
+			\end{center}
+		\end{figure}
+	
+		Le operazioni che RSA esegue ad ogni passo di encryption/decryption possono essere tre (square,reduce e multiply) dipendono dalla chiave. Viene scandita bit a bit la chiave e, se l'i-esimo bit è un $1$ RSA esegue la sequenza square-reduce-multiply-reduce, altrimenti esegue solamente la sequenza square-reduce. \'{E} possibile riconoscere questi pattern dall'analisi del consumo energetico come si può vedere in \cref{fig:RSAPower}. 
+		
+		\subsection*{Differential Power Analysis}\index{Differential Power Analysis}
+			La \ac{DPA} è un attacco più sofisticato della \ac{SPA} perché aggiunge all'analisi istantanea del consumo anche un'analisi statistica. Per questo motivo è più potente e più difficile da prevenire (ma è anche più costoso in termini di tempo).
+			
+			Generalmente un attacco \ac{DPA} si divide in una fase di raccolta dei dati e in una fase di analisi statistica degli stessi. L'utilizzo di tecniche statistiche elaborate, da una parte "filtra" i dati da possibili sorgenti di rumori e dall'altra può permettere di estrarre informazioni maggiori rispetto alla semplice esecuzione delle singole operazioni. 
+	
 	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
-	\lipsum[1-5]
-	\subsection{Possibili contromisure}	
 	\lipsum[1-5]
 	\section{Attacchi basati sulla temperatura}\index{Temperature attacks}
 	\lipsum[1-5]
-	\subsection{Possibili contromisure}	
-	\lipsum[1-5]
 	\section{Attacchi fault-based}\index{Fault-based attacks}
 	\lipsum[1-5]
-	\subsection{Possibili contromisure}	
-	\lipsum[1-5]
+	\section{Possibili contromisure}	
+		Le possibili contromisure a questi attacchi sono molteplici e sono sia fisiche che algoritmiche. Presentiamo un elenco di soluzioni, alcune specifiche per un determinato tipo di attacco ed altre più generali.
+		
+		\subsubsection*{Rumori - Insonorizzazione}			
+			Insonorizzare il dispositivo ad esempio ponendolo dentro a contenitori studiati appositamente. Il problema di questa soluzione è la difficoltà di ottenere un ricircolo d'aria per il raffreddamento. Le aperture per le ventole di raffreddamento sono infatti la fonte di emanazione di questi rumori e non possono essere rimosse facilmente. 
+			
+			Una soluzione potrebbe essere un contenitore insonorizzato e sigillato dotato di un circuito di raffreddamento a liquido. Questo ovviamente porta ad un notevole innalzamento dei costi del dispositivo.
+		
+		\subsubsection*{Rumori - Ambiente rumoroso}
+			Un'altra semplice idea è quella di posizionare il dispositivo in un ambiente rumoroso (all'aperto o in stanze rumorose). Neanche questa soluzione sembra però funzionare perché i rumori "normali" sono concentrate su frequenze più basse rispetto a quelli di interesse e possono essere facilmente filtrati.
+			
+		\subsubsection*{Consumo - Bilanciamento energetico}
+			Possono essere inseriti registri "dummy" o porte aggiuntive che possono essere utilizzate per eseguire operazioni inutili atte a bilanciare il consumo energetico. Ogni volta che un'operazione viene eseguita su un certo hardware, una sua complementare verrà eseguita su un certo altro hardware. In questo modo il consumo energetico di ogni singolo passo dell'algoritmo può essere reso praticamente costante.
+			
+		\subsubsection*{Consumo - Schermatura}
+			Una schermatura fisica può rendere inapplicabile tanto un attacco \ac{SPA} che \ac{DPA} ma aggiunge un costo significativo al dispositivo in termini di prezzo e di dimensioni.			
+		
+		\subsubsection*{Rumori e consumo - Randomizzazione}		
+			La soluzione migliore è algoritmica e prevede una randomizzazione dell'input. Se parliamo di RSA ad esempio possiamo pensare di modificare l'esponente e il modulo ad ogni iterazione sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. In questo modo le analisi dirette delle operazioni vengono "mascherate" ed anche le possibilità di correlazioni statistiche vengono (quasi) annullate.
+			
+			Queste soluzioni possono risolvere il problema ma richiedono cambiamenti nel design degli algoritmi e dei protocolli che rischiano di rendere il prodotto incompatibile con standard o specifiche pubbliche.
