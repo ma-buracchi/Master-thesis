@@ -102,19 +102,16 @@ parts,dottedtoc]{classicthesis}
 \end{flushright}
 \cleardoublepage
 %----------------CAPITOLI--------------------------------------
-\include{Chapters/intro}
-\include{Chapters/sideChannels}
-\chapter{Cache attacks}
-\lipsum
-\chapter{SPECTRE attacks}
-\lipsum
-\chapter{Quantitative Information-flow Analysis}
-\lipsum
+\include{chapters/intro}
+\include{chapters/sideChannels}
+\include{chapters/cache}
+\include{chapters/spectre}
+\include{chapters/qif}
 %-----------------BIBLIOGRAFIA---------------------------------
 \bibliography{bib/bibliografia}
 \bibliographystyle{unsrt}
 %--------------------------------------------------------------
-\include{Chapters/acro}
+\include{chapters/acro}
 \printindex
 \end{document}
 %--------------------------------------------------------------
