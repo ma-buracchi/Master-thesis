@@ -70,6 +70,19 @@
 			
 			Passiamo adesso ad una breve panoramica sui maggiori attacchi per ogni tipo di grandezza fisica attaccata. Si ricorda che gli attacchi basati sul tempo, categoria nella quale ricadono la maggior parte degli attacchi eseguiti contro le cache, verranno approfonditi nel prossimo capitolo.
 			
+	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
+		Fin dalla metà del '900, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer avessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
+		
+		TEMPEST è stato standardizzato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-resistant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
+		
+		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI5), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti.
+		
+		I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
+		
+		Il primo documento pubblico riguardante le minacce alla sicurezza prodotte dalle emanazioni dei computer (primo esempio pubblico di side-channel attack) risale al 1985 ed è opera di \emph{Wim van Eck}\cite{van1985electromagn}. Nel suo lavoro dimostrò come fosse possibile ricostruire l'immagine prodotta da un monitor attraverso l'analisi a distanza del campo elettromagnetico emesso, riproducendola su un altro schermo. La comunità scientifica specializzata nella sicurezza era già a conoscenza di questo fenomeno che veniva però ritenuto di poco interesse perché si pensava che servissero attrezzature molto costose disponibili soltanto per uso militare. Van Eck li smentì ricostruendo l'immagine di un monitor posto a centinaia di metri di distanza usando solamente una televisione modificata con 15 dollari di accessori.
+		
+		Nel corso degli anni tali tipi di attacco si sono evoluti andando a colpire schermi piatti\cite{kuhn2006eavesdropping}, chip\cite{martinasek2012simple}, tastiere\cite{vuagnoux2009compromising} e in generale qualunque dispositivo contenente componenti elettronici che quindi produce onde elettromagnetiche.
+			
 	\section{Attacchi basati sul suono}\index{Acoustic attacks}
 		L'analisi di suoni prodotti da dispositivi meccanici, specialmente in campo militare, risalgono a molto indietro quando si riusciva a distinguere un aereo o una nave a seconda del rumore che produceva.
 	
@@ -133,8 +146,6 @@
 			
 			Generalmente un attacco \ac{DPA} si divide in una fase di raccolta dei dati e in una fase di analisi statistica degli stessi. L'utilizzo di tecniche statistiche elaborate, da una parte "filtra" i dati da possibili sorgenti di rumori e dall'altra può permettere di estrarre informazioni maggiori rispetto alla semplice esecuzione delle singole operazioni. 
 	
-	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
-	\lipsum[1-5]
 	\section{Attacchi basati sulla temperatura}\index{Temperature attacks}
 	\lipsum[1-5]
 	\section{Attacchi fault-based}\index{Fault-based attacks}
