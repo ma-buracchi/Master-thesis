@@ -33,7 +33,7 @@
 		\subsection*{Grandezza fisica osservata}		
 			Una caratteristica principale di questi attacchi è sicuramente la grandezza fisica che viene osservata per montare l'attacco. Teoricamente, qualunque grandezza fisica misurabile può essere sfruttata ma alcune si prestano maggiormente rispetto ad altre. 
 			
-			Il tempo e il consumo energetico sono le più sfruttate ma non sono di certo le uniche. \emph{Genkin, Shamir e Tromer} nel loro lavoro \cite{genkin2014rsa} vanno ad ascoltare i rumori prodotti dal processore. \emph{Ferrigno e Hlavac}\cite{ferrigno2008aes} osservano la luce (qualche fotone) emessa dai transistor nel passaggio di stato da 0 a 1. \emph{Martinasek, Zeman e Trasy}\cite{martinasek2012simple} sfruttano i campi elettromagnetici creati dai chip. \emph{Murdoch}, attraverso le variazioni delle frequenze del clock, ricava informazioni sulla temperatura ambientale e cerca di localizzare geograficamente il dispositivo della vittima.
+			Il tempo e il consumo energetico sono le più comunemente utilizzate ma non sono di certo le uniche. \emph{Genkin, Shamir e Tromer} nel loro lavoro \cite{genkin2014rsa} vanno ad ascoltare i rumori prodotti dal processore. \emph{Ferrigno e Hlavac}\cite{ferrigno2008aes} osservano la luce (qualche fotone) emessa dai transistor nel passaggio di stato da 0 a 1. \emph{Martinasek, Zeman e Trasy}\cite{martinasek2012simple} sfruttano i campi elettromagnetici creati dai chip. \emph{Murdoch}, attraverso le variazioni delle frequenze del clock, ricava informazioni sulla temperatura ambientale e cerca di localizzare geograficamente il dispositivo della vittima.
 			
 			Questo elenco assolutamente non esaustivo delle tecniche utilizzate può far capire quanto variegato ed eterogeneo (nonché in continua evoluzione) sia questo settore.
 			
@@ -71,13 +71,11 @@
 			Passiamo adesso ad una breve panoramica sui maggiori attacchi per ogni tipo di grandezza fisica attaccata. Si ricorda che gli attacchi basati sul tempo, categoria nella quale ricadono la maggior parte degli attacchi eseguiti contro le cache, verranno approfonditi nel prossimo capitolo.
 			
 	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
-		Fin dalla metà del '900, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer avessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
+		Fin dalla metà del '900, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer producessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
 		
-		TEMPEST è stato standardizzato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-resistant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
+		TEMPEST è uno standard creato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-compliant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
 		
-		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI5), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti.
-		
-		I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
+		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI5), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti. I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
 		
 		Il primo documento pubblico riguardante le minacce alla sicurezza prodotte dalle emanazioni dei computer (primo esempio pubblico di side-channel attack) risale al 1985 ed è opera di \emph{Wim van Eck}\cite{van1985electromagn}. Nel suo lavoro dimostrò come fosse possibile ricostruire l'immagine prodotta da un monitor attraverso l'analisi a distanza del campo elettromagnetico emesso, riproducendola su un altro schermo. La comunità scientifica specializzata nella sicurezza era già a conoscenza di questo fenomeno che veniva però ritenuto di poco interesse perché si pensava che servissero attrezzature molto costose disponibili soltanto per uso militare. Van Eck li smentì ricostruendo l'immagine di un monitor posto a centinaia di metri di distanza usando solamente una televisione modificata con 15 dollari di accessori.
 		
@@ -139,7 +137,7 @@
 			\end{center}
 		\end{figure}
 	
-		Le operazioni che RSA esegue ad ogni passo di encryption/decryption possono essere tre (square,reduce e multiply) dipendono dalla chiave. Viene scandita bit a bit la chiave e, se l'i-esimo bit è un $1$, RSA esegue la sequenza square-reduce-multiply-reduce, altrimenti esegue solamente la sequenza square-reduce. \'{E} possibile riconoscere questi pattern dall'analisi del consumo energetico come si può vedere in \cref{fig:RSAPower}. 
+		Le operazioni che RSA esegue ad ogni passo di encryption/decryption possono essere tre (square,reduce e multiply) e dipendono dalla chiave. Viene scandita bit a bit la chiave e, se l'i-esimo bit è un $1$, RSA esegue la sequenza square-reduce-multiply-reduce, altrimenti esegue solamente la sequenza square-reduce. \'{E} possibile riconoscere questi pattern dall'analisi del consumo energetico come si può vedere in \cref{fig:RSAPower}. 
 		
 		\subsection{Differential Power Analysis}\index{Differential Power Analysis}
 			La \ac{DPA} è un attacco più sofisticato della \ac{SPA} perché aggiunge all'analisi istantanea del consumo anche un'analisi statistica. Per questo motivo è più potente e più difficile da prevenire (ma è anche più costoso in termini di tempo).
@@ -147,7 +145,12 @@
 			Generalmente un attacco \ac{DPA} si divide in una fase di raccolta dei dati e in una fase di analisi statistica degli stessi. L'utilizzo di tecniche statistiche elaborate, da una parte "filtra" i dati da possibili sorgenti di rumori e dall'altra può permettere di estrarre informazioni maggiori rispetto alla semplice esecuzione delle singole operazioni. 
 	
 	\section{Attacchi basati sulla temperatura}\index{Temperature attacks}
-	\lipsum[1-5]
+		Di attacchi basati sulla temperatura se ne parla molto nella letteratura\cite{brouchier2009temperature,brouchier2009thermocommunication,skorobogatov2002low} ma la maggior parte delle pubblicazioni sull'argomento menzionano l'esistenza e la possibilità di sfruttare questo canale senza approfondire l'argomento. In particolare in \cite{bar2006sorcerer} si afferma che attacchi di questo tipo su smart-card sono "never documented in the open literature to the author’s knowledge".
+		
+		L'unica pubblicazione in cui viene effettivamente eseguito un attacco su un algoritmo crittografico basato sulla temperatura è quello di \emph{Brouchier et al.}\cite{brouchier2009temperature} che dimostra come una ventola di raffreddamento può portare indirettamente informazioni sui dati processati analizzando la necessità di dissipazione del calore da parte del computer.
+		
+		Un altro lavoro interessante è quello di \emph{Murdoch}\cite{murdoch2006hot} nel quale si sfrutta la seguente idea. Il tempo misurato dal clock di un computer non è costante ma tende a discostarsi dal tempo "reale" (ad esempio quello fornito dal \ac{GPS}) con un certo tasso che dipende anche dalla temperatura\cite{buracchi2015tri}. Attraverso la richiesta di timestamps alla vittima è possibile calcolare questo tasso, capire il relativo carico di lavoro e deanonimizzare la vittima da una rete \ac{TOR}.
+		
 	\section{Attacchi fault-based}\index{Fault-based attacks}
 	\lipsum[1-5]
 	\section{Possibili contromisure}	
