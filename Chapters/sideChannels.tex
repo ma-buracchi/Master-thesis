@@ -73,7 +73,7 @@
 	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
 		Fin dalla metà del '900, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer producessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
 		
-		TEMPEST è uno standard creato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-compliant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
+		TEMPEST è uno standard creato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-compliant sono specificati nel documento riservato NACSIM5100A. Anche la \acs{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
 		
 		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI5), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti. I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
 		
@@ -149,28 +149,28 @@
 		
 		L'unica pubblicazione in cui viene effettivamente eseguito un attacco su un algoritmo crittografico basato sulla temperatura è quello di \emph{Brouchier et al.}\cite{brouchier2009temperature} che dimostra come una ventola di raffreddamento può portare indirettamente informazioni sui dati processati analizzando la necessità di dissipazione del calore da parte del computer.
 		
-		Un altro lavoro interessante è quello di \emph{Murdoch}\cite{murdoch2006hot} nel quale si sfrutta la seguente idea. Il tempo misurato dal clock di un computer non è costante ma tende a discostarsi dal tempo "reale" (ad esempio quello fornito dal \ac{GPS}) con un certo tasso che dipende anche dalla temperatura\cite{buracchi2015tri}. Attraverso la richiesta di timestamps alla vittima è possibile calcolare questo tasso, capire il relativo carico di lavoro e deanonimizzare la vittima da una rete \ac{TOR}.
+		Un altro lavoro interessante è quello di \emph{Murdoch}\cite{murdoch2006hot} nel quale si sfrutta la seguente idea. Il tempo misurato dal clock di un computer non è costante ma tende a discostarsi dal tempo "reale" (ad esempio quello fornito dal \acs{GPS}) con un certo tasso che dipende anche dalla temperatura\cite{buracchi2015tri}. Attraverso la richiesta di timestamps alla vittima è possibile calcolare questo tasso, capire il relativo carico di lavoro e deanonimizzare la vittima da una rete \acs{TOR}.
 		
 	\section{Attacchi fault-based}\index{Fault-based attacks}
-	\lipsum[1-5]
+		Gli attacchi basati sui fault si ottengono modificando maliziosamente la normale esecuzione di un algoritmo crittografico. Tale esecuzione errata può far trapelare informazioni che possono essere utilizzate per recuperare la chiave. In generale gli attacchi fault-based si dividono nelle seguenti quattro categorie\cite{patranabis2018fault}.
+		
+		\subsection*{\ac{DFA}}
+			La \ac{DFA} è una tecnica nella quale l'attaccante inserisce un errore durante la computazione in un fissato punto spazio-temporale dell'algoritmo e successivamente analizza le differenze tra il ciphertext esatto e quello errato per recuperare la chiave segreta. Tecniche di \ac{DFA} sono state applicate ai principali algoritmi crittografici, soprattutto su \ac{AES}-128. Lo stato dell'arte degli attacchi \ac{DFA} permette di recuperare l'intera chiave a 128 bit di \ac{AES} con l'inserimento di un singolo fault\cite{tunstall2011differential}.
+			
+		\subsection*{\ac{FSA}}
+			La \ac{FSA} è stata introdotta da \emph{Li et al.}\cite{li2010fault} ed è una tecnica che non utilizza i ciphertext ottenuti tramite una computazione in presenza di fault. Nel loro lavoro gli autori cercano di trovare delle condizioni critiche che fanno assumere al ciphertext alcune caratteristiche riconoscibili (ad esempio la frequenza di clock al momento dell'esecuzione dell'istruzione difettosa) chiamate \emph{fault sensitivity}. La \ac{FSA} sfrutta poi le relazioni tra queste caratteristiche e i dati processati per recuperare informazioni segrete dal \disps.
+			
+		\subsection*{\ac{DFIA}}
+			La \ac{DFIA} è stata introdotta da \emph{Ghalaty et al.}\cite{ghalaty2014differential} ed è una classe di attacchi che combina tecniche di \ac{DPA} con tecniche di fault analysis per il recupero di chiavi\cite{fuhr2013fault}. Gli autori osservano che la maggior parte dei fault restituiscono byte con un numero di bit errati non sempre uguale (generalmente da 1 a 3) e che questa informazione può essere sfruttata per rivelare la chiave segreta attraverso un test di verifica d'ipotesi. Data la sua natura statistica, la \ac{DFIA} ha bisogno di un gran numero di modelli di fault ma è comunque una minaccia importante verso molti cifrari a blocchi.
+			
+		\subsection*{\ac{SEA} e \ac{DBA}}
+			Questa ultima categoria di attacchi mira a dedurre dal comportamento di un \disps se un fault che ha portato ad una computazione scorretta è avvenuto durante una operazione di encryption oppure no\cite{robisson2007differential}. Questa categoria si sta sviluppando nella direzione della \ac{FBA} tecnica introdotta da \emph{Li et al.} in \cite{li2014yet}. Questi attacchi osservano solamente il comportamento del \disps durante l'iniezioni di fault e non richiedono di conoscere il valore del ciphertext.
+			
 	\section{Possibili contromisure}	
-		Le possibili contromisure a questi attacchi sono molteplici e sono sia fisiche che algoritmiche. Presentiamo un elenco di soluzioni, alcune specifiche per un determinato tipo di attacco ed altre più generali.
+		Le possibili contromisure a questi attacchi sono molteplici e sono sia fisiche che algoritmiche.
 		
-		\subsubsection*{Rumori - Insonorizzazione}			
-			Insonorizzare il dispositivo ad esempio ponendolo dentro a contenitori studiati appositamente. Il problema di questa soluzione è la difficoltà di ottenere un ricircolo d'aria per il raffreddamento. Le aperture per le ventole di raffreddamento sono infatti la fonte di emanazione di questi rumori e non possono essere rimosse facilmente. 
-			
-			Una soluzione potrebbe essere un contenitore insonorizzato e sigillato dotato di un circuito di raffreddamento a liquido. Questo ovviamente porta ad un notevole innalzamento dei costi del dispositivo.
+		Le soluzioni fisiche sono quelle che cercano di evitare il rilascio di informazioni nell'ambiente circostante il dispositivo. Insonorizzazione, schermature e utilizzo di circuiti \emph{dummy} che eseguono istruzioni fasulle per uniformare il consumo elettrico sono tutti esempi di contromisure fisiche sicuramente funzionanti ma che richiedono sforzi di progettazione e aumento dei costi di produzione.
 		
-		\subsubsection*{Rumori - Ambiente rumoroso}
-			Un'altra semplice idea è quella di posizionare il dispositivo in un ambiente rumoroso (all'aperto o in stanze rumorose). Neanche questa soluzione sembra però funzionare perché i rumori "normali" sono concentrate su frequenze più basse rispetto a quelli di interesse e possono essere facilmente filtrati.
-			
-		\subsubsection*{Consumo - Bilanciamento energetico}
-			Possono essere inseriti registri "dummy" o porte aggiuntive che possono essere utilizzate per eseguire operazioni inutili atte a bilanciare il consumo energetico. Ogni volta che un'operazione viene eseguita su un certo hardware, una sua complementare verrà eseguita su un certo altro hardware. In questo modo il consumo energetico di ogni singolo passo dell'algoritmo può essere reso praticamente costante.
-			
-		\subsubsection*{Consumo - Schermatura}
-			Una schermatura fisica può rendere inapplicabile tanto un attacco \ac{SPA} che \ac{DPA} ma aggiunge un costo significativo al dispositivo in termini di prezzo e di dimensioni.			
+		Le soluzioni che stanno andando per la maggiore sono quelle software come ad esempio la randomizzazione dell'input. Se parliamo di RSA possiamo pensare ad esempio di modificare l'esponente o il modulo ad ogni iterazione sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. In questo modo le analisi dirette delle operazioni vengono "mascherate" ed anche le possibilità di correlazioni statistiche vengono (quasi) annullate.
 		
-		\subsubsection*{Rumori e consumo - Randomizzazione}		
-			La soluzione migliore è algoritmica e prevede una randomizzazione dell'input. Se parliamo di RSA ad esempio possiamo pensare di modificare l'esponente e il modulo ad ogni iterazione sommandoci un valore casuale che poi verrà sottratto in maniera opportuna. In questo modo le analisi dirette delle operazioni vengono "mascherate" ed anche le possibilità di correlazioni statistiche vengono (quasi) annullate.
-			
-			Queste soluzioni possono risolvere il problema ma richiedono cambiamenti nel design degli algoritmi e dei protocolli che rischiano di rendere il prodotto incompatibile con standard o specifiche pubbliche.
+		Questo tipo di soluzioni possono risolvere il problema ma richiedono cambiamenti nel design degli algoritmi e dei protocolli che rischiano di rendere il prodotto incompatibile con standard o specifiche pubbliche.
