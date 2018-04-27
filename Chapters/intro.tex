@@ -1,4 +1,5 @@
-\chapter{Introduzione}
+\addcontentsline{toc}{chapter}{Introduzione}
+\chapter*{Introduzione}
 	Il mondo moderno è ormai pervaso dalla \emph{crittografia}. Quotidianamente e spesso inconsapevolmente utilizziamo funzioni crittografiche per le normali operazioni della vita quotidiana. Controllare il conto sull'home-banking, scambiarsi messaggi tramite servizi di messaggistica o anche navigare in internet utilizzando il protocollo \acs{HTTPS} sono azioni che svolgiamo ormai con naturalezza. I sistemi moderni rendono trasparente all'utente l'utilizzo di tali tecnologie ma ciò non vuol dire che non ci siano.
 	
 	Una \emph{funzione crittografica}\index{Funzione crittografica} è un oggetto matematico astratto che trasforma con l'utilizzo di una chiave, un dato in input (plaintext) in una sua rappresentazione diversa (ciphertext) il più possibile non riconducibile al dato originale. Questa funzione deve poi essere implementata in un programma che girerà su un \emph{dispositivo crittografico} in un certo ambiente, presentando perciò caratteristiche fisiche peculiari. Esempi di \dispp potrebbero essere smartcard, chiavette \acs{USB}, chip dedicati montati su dispositivi general purpose (smartphone, notebook) o periferiche progettate e costruite apposta per effettuare questo unico compito.
@@ -9,4 +10,4 @@
 	 
 	 Il resto della tesi è organizzata nel seguente modo. Nel capitolo 1 verrà definita una classificazione dei side-channel attacks e verrà presentata una panoramica dello stato dell'arte. Il capitolo 2 approfondirà i \emph{cache attacks} e in particolar modo quelli basati sul tempo.
 	 Nel capitolo 3 verrà presentato approfonditamente il recente attacco \emph{SPECTRE} che ha afflitto tutti i recenti processori AMD, ARM e Intel.
-	 Nel capitolo 4 verrà affrontato il problema della generalizzazione di questi attacchi utilizzando la Quantitative information-flow analysis (QIF) una nuova tecnica che permette di stabilire proprietà di confidenzialità delle informazioni.
+	 Nel capitolo 4 verrà affrontato il problema della generalizzazione di questi attacchi utilizzando la \ac{QIF} una nuova tecnica che permette di stabilire proprietà di confidenzialità delle informazioni.
