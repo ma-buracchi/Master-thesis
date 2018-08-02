@@ -6,9 +6,9 @@
 	\begin{figure}
 		\begin{center}
 			\lstinputlisting[language=Java]{code/timingBase.txt}
-			\caption{Esempio di timing attack}
+			\caption{Esempio di una funzione attaccabile tramite un timing attack}
 			\label{fig:timingBase}
 		\end{center}
 	\end{figure}
 	
-	Ad esempio il codice in \cref{fig:timingBase} se fatto girare con la stringa ("passwordDaRubare") impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa ("foo"). Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante per capire la stringa esatta.
+	Ad esempio il codice in \cref{fig:timingBase} se fatto girare con la stringa ("passwordToBeStolen") impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa ("foo"). Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante per capire la stringa esatta.

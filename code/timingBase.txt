@@ -1,5 +1,5 @@
 int dummyCheckPassword(String pwd){
-	String password = "passwordDaRubare";
+	String password = "passwordToBeStolen";
 	int i = 0;
 	if (password.length() != pwd.length()){
 		return 0;
