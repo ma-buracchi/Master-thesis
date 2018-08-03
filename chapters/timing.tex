@@ -14,25 +14,27 @@
 	Ad esempio il codice in \cref{fig:timingBase} se fatto girare con la stringa ("passwordToBeStolen") impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa ("foo"). Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante per capire la stringa esatta. Per portare questo concetto al livello che ci interessa vediamo prima delle nozioni fondamentali sulla cache del processore. 
 	
 	\section{La cache del processore}
-		Dato che la differenza di velocità tra le memorie e la capacità di calcolo dei processori aumenta sempre di più \cite{hennessy2011computer} la banda del bus di comunicazione e la velocità di accesso alla memoria principale sono diventati un fattore limitante sul throughput generale del processore. Questo collo di bottiglia viene attenuato dall'utilizzo delle cache\index{Cache}.
+		Dato che la differenza di velocità tra le memorie e la capacità di calcolo dei processori aumenta sempre di più \cite{hennessy2011computer} la banda del bus di comunicazione e la velocità di accesso alla memoria principale sono diventati un fattore limitante sul throughput generale del processore. Questo collo di bottiglia viene attenuato dall'utilizzo delle cache\index{Cache}. 
+		
+		La cache è infatti un piccolo banco di memoria molto veloce sito all'interno di ogni core che il processore utilizza per immagazzinare i valori delle celle di memoria accedute più recentemente. 
 		
 		\subsection{Struttura della cache}
-			La cache è un piccolo banco di memoria molto veloce sito all'interno di ogni core che il processore utilizza per immagazzinare i valori delle celle di memoria accedute più recentemente. I processori moderni hanno generalmente due livelli di cache per ogni core (L1 e L2). Considerando che l'accesso alla memoria principale in media impiega dai 50 ai 150 \emph{ns} mentre l'accesso alla cache L1 utilizza un tempo nell'ordine degli 0.3 \emph{ns} si può capire l'enorme differenza di prestazioni che possono essere raggiunte utilizzando questo tipo di memoria.
+			I processori moderni hanno generalmente due livelli di cache per ogni core (L1 e L2). Considerando che l'accesso alla memoria principale in media impiega dai 50 ai 150 \emph{ns} mentre l'accesso alla cache L1 utilizza un tempo nell'ordine degli 0.3 \emph{ns} si può capire l'enorme differenza di prestazioni che possono essere raggiunte utilizzando questo tipo di memoria.
+		
+			Nella \cref{fig:cachei5} si può vedere l'architettura del processore quadcore Intel Core i5-3470. La gerarchia delle cache è organizzata in una memoria L1 di 64KB (divisa in 32KB per le istruzioni e 32KB per i dati) ed una memoria L2 da 256KB per ogni core ed un terzo livello chiamato L3 o \ac{LLC} da 6MB comune a tutti e 4 i core.
 			
 			\begin{figure}
 				\begin{center}
-					\includegraphics[scale=0.5]{cachei5}
+					\includegraphics[scale=0.6]{cachei5}
 					\caption{Architettura del processore Intel Core i5-3470}
 					\label{fig:cachei5}
 				\end{center}
 			\end{figure}
-		
-			Nella \ref{fig:cachei5} si può vedere l'architettura del processore quadcore Intel Core i5-3470. La gerarchi delle cache è organizzata in una memoria L1 di 64KB (divisa in 32KB per le istruzioni e 32KB per i dati) ed una memoria L2 da 256KB per ogni core ed un terzo livello chiamato L3 o \ac{LLC} da 6MB comune a tutti e 4 i core.
 			
 			Andiamo ad analizzare più nel dettaglio le caratteristiche di una singola cache\cite{ge2016survey,yarom2014flush+}.
 			
 			\subsubsection{Cache lines}
-				\index{Cache lines}Per sfruttare la località spaziale le caches sono divise in lines. Una cache line contiene un blocco di Bytes adiacenti (generalmente di dimensione congrua ad una potenza di 2) caricati dalla memoria. Se uno qualunque dei Bytes deve essere rimosso (si parla di \emph{evicting}) per far spazio ad un altro dato, tutta la line viene ricaricata.
+				\index{Cache lines}Per sfruttare la località spaziale le caches sono divise in lines. Una cache line contiene un blocco di bytes adiacenti (generalmente di dimensione congrua ad una potenza di 2) caricati dalla memoria. Se uno qualunque dei bytes deve essere rimosso (si parla di \emph{evicting}) per far spazio ad un altro dato, tutta la line viene ricaricata.
 				
 			\subsubsection{Associatività}
 				Teoricamente una qualunque posizione di memoria può essere mappata in una qualunque cache line ed una cache ad \emph{n} lines potrebbe contenere \emph{n} linee qualunque dalla memoria. Questo tipo di cache viene chiamato \emph{fully-associative cache}\index{Fully-associative cache} ed è la migliore in teoria perché può sempre essere usata al massimo delle sue capacità e i cache miss si hanno solamente quando non c'è più spazio libero nella cache. In pratica però questo si traduce in un controllo in parallelo di tutte le linee che aumenta la complessità architetturale e il consumo di energia.
@@ -48,6 +50,42 @@
 				
 				Ogni livello superiore di cache contiene un sottoinsieme dei dati contenuti dal livello direttamente inferiore. Per mantenere questa caratteristica, quando viene eseguito un evicting di un dato da un livello inferiore, questo viene rimosso anche da tutti i livelli superiori.
 				
+	\section{Cache attacks}
+		Per capire come funzionano la maggior parte degli attacchi alle cache prendiamo in considerazione un array di dati. Quando un elemento di questo array viene acceduto possono verificarsi una di queste due condizioni:
+		
+		\begin{enumerate}
+			\item Il dato è presente in cache, si verifica una hit e viene recuperato molto velocemente.
+			\item Il dato non è presente in cache, si verifica una miss e bisogna aspettare che venga recuperato dalla memoria principale.
+		\end{enumerate}
+		
+		La differenza tra le due esecuzioni è notevole (diversi ordini di grandezza) ed è questa l'informazione utilizzata nell'attacco.
+		
+		\subsection{Tassonomia}
+			Una prima classificazione dei cache attacks si basa sullo stato della cache al momento dell'attacco\cite{canteaut2006understanding}.
 			
+			\begin{itemize}
+				\item \emph{Empty initial state}\index{Empty initial state} (reset attacks): questi attacchi si basano sull'assunzione che nessun dato che dovrà essere utilizzato dalla vittima è presente in cache.
+				\item \emph{Forged initial state}\index{Forged initial state} (initialization attacks): in questo caso l'attaccante deve essere in grado di portare la cache in uno stato noto prima di poter effettuare l'attacco.
+				\item \emph{Loaded initial state}\index{Loaded initial state} (micro-architecture attacks): la cache contiene tutti i dati necessari alla vittima per eseguire il programma.
+			\end{itemize}
 			
-	
+			In \cite{lipp2016armageddon,ge2016survey} si classificano gli attacchi in base all'approccio utilizzato:
+			
+			\begin{itemize}
+				\item \emph{Evict+Time}\cite{osvik2006cache}\index{Evict+Time}: Questo attacco è di tipo loaded initial state e suppone che tutti i dati che servono alla vittima siano già in cache. Questa condizione può essere ottenuta facendo eseguire una prima volta la funzione vittima. Con questa base, l'attaccante fa eseguire la funzione alla vittima calcolandone il tempo di esecuzione. Successivamente esegue una evict di una cache line caricando in memoria un dato che va a sovrascrivere uno presente in cache e fa eseguire nuovamente la funzione vittima. Se il tempo di questa ultima esecuzione è maggiore del precedente vuol dire che la funzione ha cercato di utilizzare il dato che è stato rimosso dalla cache ed ha dovuto aspettare di recuperarlo dalla memoria principale.
+				\item \emph{Prime+Probe}\cite{osvik2006cache}\index{Prime+Probe}: Questo è un attacco di tipo forged initial state. L'attaccante precarica uno o più set della cache con dati propri. Dopo l'esecuzione della funzione vittima prova a riaccedere ad i propri dati. Se la funzione vittima non ha utilizzato lines mappate nei cache set occupati dall'attaccante, egli otterrà solo cache hit. Al contrario, se c'è stato l'evict di qualche line allora capirà quale ha utilizzato la vittima.
+				\item \emph{Flush+Reload}\cite{yarom2014flush+}\index{Flush+Reload}: Questo attacco è una variante di Prime+Probe. L'attacco si divide in tre fasi. Nella prima fase l'attaccante esegue l'evict della linea a cui è interessato utilizzando l'istruzione \emph{clflush} che invalida il dato su tutti i livelli della cache. Nella seconda fase aspetta che la vittima esegua la propria funzione. Nella terza fase l'attaccante ricarica la linea che aveva rimosso. Se la risposta è veloce vuol dire che la vittima l'ha portata in cache durante l'esecuzione della sua funzione.
+				\item \emph{Evict+Reload}\cite{gruss2015cache}\index{Evict+Reload}: Una variante del Flush+Reload che utilizza la eviction al posto dell'istruzione di flush.
+				\item \emph{Flush+Flush}\cite{gruss2016flush+}\index{Flush+Flush}: Diversamente da tutti i precedenti approcci, in questo caso non si esegue nessun accesso alla memoria ma l'attaccante si basa solamente sul tempo impiegato dall'istruzione \emph{clflush}. In \cite{lipp2016armageddon} si fa vedere come l'esecuzione di questa funzione abbia tempi differenti se chiamata su un indirizzo presente in cache o meno.  
+			\end{itemize}
+		
+		\section{Contromisure possibili}
+			Le difese da questo tipo di attacchi sono sia software che hardware e si dividono in 6 grandi famiglie\cite{ge2016survey}
+			
+			\begin{description}
+				\item[Tecniche a tempo costante:] L'idea di base è quella di rendere il comportamento del codice che esegue operazioni critiche indipendente dai dati. Per esempio cercare di rendere una funzione crittografica indipendente sia dalla chiave che dall'input. Questo può essere ottenuto facendo eseguire istruzioni inutili per uniformare il tempo di esecuzione o accedendo a dati casuali dalla memoria per confondere l'attaccante sull'utilizzo della cache. Queste soluzioni ovviamente portano ad una drastica perdita di prestazioni. Il tempo di esecuzione dovrà infatti tendere al tempo di esecuzione massimo ogni volta che sarà necessario richiamare la funzione.
+				\item[Inserimento di rumore:] Questa famiglia di contromisure tende a rendere inutilizzabili le misure ottenute dall'attaccante inserendo in ogni evento osservabile da qualsiasi processo una quantità di rumore tale da renderne impossibile una qualunque analisi\cite{hu1992reducing}.
+				\item[Imporre determinismo:] In questo caso si cerca di eliminare qualsiasi tipo di misura sul tempo eliminando completamente le variazioni di tempo visibile. Ad esempio in \cite{aviram2012efficient} si propone di eliminare completamente l'accesso al tempo reale fornendo all'esterno solamente un clock virtuale il cui avanzamento è completamente deterministico e indipendente dalle azioni di componenti vulnerabili. Per ottenere questo risultato si cerca di sincronizzare tutti i clock con l'esecuzione di un singolo processo che esegue in tempo costante.
+				\item[Partizionare il tempo:] In questo caso si cerca di suddividere il tempo in sezioni nelle quali si fornisce un accesso esclusivo all'hardware condiviso. Ci sono diverse tecniche per ottenere questo risultato uno dei quali è la cancellazione completa della cache ad ogni context switch(\emph{cache flushing}\index{Cache flushing}). Questo ovviamente porta ad una perdita in prestazioni molto grande e si è passati al \emph{lattice scheduling}\index{Lattice scheduling} che esegue il flushing della cache non ad ogni context switch ma solo nel passaggio da processi sensibili a processi inaffidabili. Attacchi di tipo Prime+Probe hanno bisogno di analizzare molto spesso lo stato della cache della vittima. Questa cosa viene evitata imponendo un tempo minimo di esecuzione per le componenti vulnerabili entro il quale non possono essere prelazionate.
+				 
+			\end{description}
