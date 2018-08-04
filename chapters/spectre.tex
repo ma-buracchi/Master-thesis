@@ -13,7 +13,7 @@
 		Il responsabile di questa scelta è una piccola unità all'interno del processore chiamata \ac{BP}.
 		
 		\subsection{Branch predictor}
-			\index{Branch Predictor}Esistono svariati tipi di branch predictor; andiamo a vedere come funziona uno dei più semplici, il \emph{one-level branch predictor} a 2 bit.
+			\index{Branch Predictor}Esistono svariati tipi di branch predictor; andiamo a vedere come funziona uno dei più semplici, il \emph{one-level branch predictor}\index{One-level branch predictor} a 2 bit.
 			
 			\begin{figure}
 				\begin{center}
@@ -38,9 +38,40 @@
 		L'attacco SPECTRE induce la vittima ad eseguire speculativamente operazioni che non dovrebbero essere eseguite durante l'esecuzione corretta del programma. Da tali operazioni si otterranno poi le informazioni ricercate tramite un side-channel temporale.
 		
 		L'attacco si può scomporre in tre fasi:
+		
 		\begin{enumerate}
 			\item \emph{Fase di setup:} in questa fase l'attaccante esegue delle operazioni che convincono il \ac{BP} ad eseguire il ramo then in caso si rendesse necessaria una esecuzione speculativa. In questa fase si cerca anche di costruire tale necessità ad esempio eseguendo letture di memoria che rimuovono dalla cache un valore che sarà poi necessario successivamente. Come ultima cosa l'attaccante può iniziare a preparare la porzione di cache dalla quale estrarrà il valore che vuole carpire alla vittima (ad esempio eseguendo il flush o l'evict di una line o di un set).
 			\item \emph{Esecuzione speculativa:} in questa fase il processore esegue speculativamente delle istruzioni che esporrano informazioni confidenziali della vittima recuperabili tramite un side-channel. Tale esecuzione può esporre dati sensibili attraverso una vasta gamma di side-channels ma nell'articolo gli autori si concentrano sulla possibilità di recuperare un valore che risiede ad un indirizzo preciso nella memoria della vittima attraverso un attacco di tipo Flush+Reload o Evict+Reload.
 			\item \emph{Recupero del dato:} come ultimo passo, viene montato l'attacco alla cache (Flush+Reload o Evict+Reload). Il recupero del dato si ottiene andando a misurare il tempo necessario alla lettura dall'indirizzo di memoria presente nella line sotto attacco.
 		\end{enumerate}
+	
+		Vediamo adesso un esempio pratico di attacco.
+		
+		\subsection{Esempio}
+		
+			Consideriamo il caso di una funzione che contiene al suo interno il seguente codice che riceve un intero x da una fonte non fidata:
+			
+			\begin{lstlisting}[language={C}, frame={none},basicstyle={\footnotesize}]
+				if (x < array1_size) {
+					y = array2[array1[x] * 256];
+				}
+			\end{lstlisting}
+			
+			Il processo che esegue il codice ha accesso ad un array di bytes \emph{array1} di dimensione \emph{array1\_size} ed un secondo array, \emph{array2}, di dimensione pari a 64KB.
+			
+			La funzione inizia con un controllo su x, necessario per essere sicuri di non permettere la lettura di porzioni di memoria al di fuori di array1. Durante l'esecuzione speculativa di questo codice però, il \ac{BP} può selezionare il ramo then relativo a questo controllo ad esempio nel seguente caso:
+			
+			\begin{itemize}
+				\item il valore di x viene scelto in maniera malevola in maniera tale da far puntare array1[x] ad un byte segreto \emph{k} che risiede da qualche parte nella memoria della vittima.
+				\item \emph{array1\_size} e \emph{array2} non sono presenti nella cache ma \emph{k} lo è.
+				\item operazioni precedenti hanno restituito un valore di x corretto, addestrando il \ac{BP} a scegliere il ramo then.
+			\end{itemize}
+		
+			Questa situazione può presentarsi in maniera normale o può essere creata dall'attaccante ad esempio leggendo grandi quantità di memoria per riempire la cache di valori completamente scorrelati ed effettuando una chiamata legittima ad una funzione che utilizzi \emph{k}.
+			
+			A questo punto, quando il programma inizia a girare il processore esegue il confronto tra x e \emph{array1\_size}. La lettura di \emph{array1\_size} si traduce in un cache miss ed il processore richiede il dato dalla memoria principale. Durante l'attesa il \ac{BP} assume che il risultato dell' \emph{if} sarà \emph{true}, eseguirà speculativamente la somma di x all'indirizzo base di \emph{array1} e richiederà il dato presente all'indirizzo appena calcolato. Questa operazione si tradurrà in una cache hit e verrà restituito molto velocemente il valore del byte segreto \emph{k}. L'esecuzione speculativa continua il suo percorso e verrà calcolato l'indirizzo di \emph{array2[k*256]}. La richiesta del dato contenuto a questo indirizzo si tradurrà in una cache miss e verrà richiesta una lettura dalla memoria principale. Durante questa seconda attesa, al processore arriva finalmente il valore di \emph{array1\_size}. Dopo aver eseguito il confronto il processore si accorge che l'esecuzione speculativa era errata ed esegue un rollback allo stato precedente al branch. Il problema sorge in questo momento. La richiesta di lettura rimasta sospesa viene comunque portata a termine e il valore relativo non viene rimosso dalla cache.
+			
+			Per completare l'attacco l'attaccante non deve fare altro che rilevare questo cambiamento nello stato della cache per recuperare il byte segreto \emph{k}.
+			
+			Nel caso più semplice, quello cioè in cui l'attaccante ha accesso diretto ad \emph{array2}, egli non dovrà fare altro che provare  a leggere tutte le posizioni di \emph{array2[n*256]} per tutti i valori di $n \in (0\dots255)$. Solamente uno di questi sarà presente in cache (quello per \emph{n} = \emph{k}) e verrà restituito velocemente mentre tutti gli altri verranno restituiti in tempi molto lunghi. Prendendo l'unico valore restituito in tempo breve, l'attaccante avrà trovato il byte segreto \emph{k}.
 			
