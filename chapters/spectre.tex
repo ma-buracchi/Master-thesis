@@ -122,4 +122,46 @@
 		
 		Questa soluzione sicuramente risolve il problema ma ha due grossi difetti; deve essere inserita manualmente a livello di programmazione e porta una perdita di prestazioni notevole\cite{AMD2018speculation}.
 		
-		Microsoft implementa nel proprio compilatore una rilevazione automatica del codice vulnerabile agli attacchi di tipo SPECTRE ed inserisce tali barriere automaticamente. Purtroppo la blacklist di questo strumento comprende solamente le situazioni più comuni e maggiormente utilizzat. Kocher infatti dimostra che tale analisi automatica non rileva molte sezioni di codice vulnerabile\cite{kocher2018mitigation}.
+		Microsoft implementa nel proprio compilatore una rilevazione automatica del codice vulnerabile agli attacchi di tipo SPECTRE ed inserisce tali barriere automaticamente. Purtroppo la blacklist di questo strumento comprende solamente le situazioni più comuni e maggiormente utilizzate. Kocher infatti dimostra che tale analisi automatica non rileva molte sezioni di codice vulnerabile\cite{kocher2018mitigation}.
+		
+		\subsection{Utilizzare variabili "volatile"}
+		
+		Un'altra possibile contromisura può essere quella di utilizzare variabili dichiarate \emph{volatile} come in questo esempio:
+		
+		\begin{lstlisting}[language={C},frame={rlbt},basicstyle=\footnotesize,numbers=left,numberstyle=\scriptsize\color{black}]
+		volatile int user_value;
+		/*
+		* some untrusted operations 
+		* to get the value of user_value
+		*/
+		if (user_value >= LIMIT) {
+		return ERROR;
+		} 
+		x = table[user_value]; 
+		node = entry[x];
+		\end{lstlisting}
+		
+		L'attributo \emph{volatile} vieta al processore di cercare in cache il valore di variabili così dichiarate ma lo costringe a recuperarlo sempre dalla memoria principale ed evita che il compilatore esegua qualunque tipo di ottimizzazione di istruzioni contenenti tali variabili.
+				
+		Ovviamente anche questo metodo risolve il problema ma, come il precedente, influisce negativamente sulle prestazioni in quanto ogni volta che la variabile \emph{user\_value} viene utilizzata (anche in altri punti del programma) si dovrà sempre aspettare il suo recupero dalla memoria principale.
+		
+		\subsection{Forzare la variabile entro i limiti}
+		
+		Questa ultima soluzione prevede di accertarsi che il valore di \emph{user\_value}, quando viene usato come indice, non vada mai a superare la dimensione del nostro array. Per ottenere questa certezza si può utilizzare l'operatore di modulo come nel seguente codice:
+		
+		\begin{lstlisting}[language={C},frame={rlbt},basicstyle=\footnotesize,numbers=left,numberstyle=\scriptsize\color{black}]
+		if (user_value >= LIMIT) {
+		return ERROR;
+		}
+		x = table[user_value % LIMIT]; 
+		node = entry[x];
+		\end{lstlisting}
+		
+		In questo caso le situazioni possibili sono due:
+		
+		\begin{enumerate}
+			\item \emph{user\_value} è minore di \emph{LIMIT} e quindi \emph{user\_value \% LIMIT} non cambia valore.
+			\item \emph{user\_value} non è minore di \emph{LIMIT} ma \emph{user\_value \% LIMIT} lo riporta entro i limiti e non può essere utilizzato per leggere memoria esterna all'array.
+		\end{enumerate}
+	
+		Come le precedenti, anche questa soluzione funziona ma comporta un calo delle prestazioni dovuto al fatto che se la variabile \emph{LIMIT} non è in cache al momento del controllo, non lo sarà neanche quando verrà eseguita speculativamente l'istruzione della riga 4 che quindi dovrà comunque aspettare il valore corretto. 
