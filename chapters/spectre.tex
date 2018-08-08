@@ -8,16 +8,28 @@
 
 	\index{Spectre}In questo capitolo verrà presentato il progetto \emph{SPECTRE}\cite{kocher2018spectre} (il cui logo è rappresentato in \cref{fig:spectre}), una famiglia di attacchi molto recenti che sfruttano una vulnerabilità presente nella maggior parte dei processori moderni (Intel, AMD e ARM) e per i quali, al momento attuale, non esistono contromisure tranne l'utilizzo di alcuni accorgimenti in fase di programmazione come vedremo più avanti.
 	
-	La caratteristica che viene sfruttata principalmente da questi tipi di attacchi è la cosiddetta \emph{esecuzione speculativa}, una funzione presente in quasi tutti i processori moderni.
+	Si parla di famiglia di attacchi perché di questo attacco esistono cinque varianti, tutti documentati con il proprio codice \ac{CVE} nello \emph{Standard for Information Security Vulnerability Names} gestito dalla \href{https://www.mitre.org/}{MITRE Corporation}. Le varianti sono le seguenti:
+	
+	\begin{itemize}
+		\item [v1:] bounds check bypass \href{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5753}{(CVE-2017-5753)}
+		\item [v2:] branch target injection \href{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5715}{(CVE-2017-5715)}
+		\item [v3:] using speculative reads of inaccessible data \href{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5754}{(CVE-2017-5754)}
+		\item [v3a:] using speculative reads of inaccessible data, aka "rogue system register read" \href{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-3640}{(CVE-2018-3640)}
+		\item [v4:] speculative bypassing of stores by younger loads despite the presence of a dependency \href{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-3639}{(CVE-2018-3639)}
+	\end{itemize}
+	
+	Nel resto di questo lavoro ci focalizzeremo sulla prima variante di questa tipologia di attacchi.
+	
+	La caratteristica che viene sfruttata principalmente in questa variante è la cosiddetta \emph{esecuzione speculativa}, una funzione presente in quasi tutti i processori moderni.
 	
 	\section{Esecuzione speculativa}
-		\index{Esecuzione speculativa}L'esecuzione speculativa è una tecnica utilizzata dai processori per migliorare le prestazioni che consiste nel cercare di "indovinare" il risultato di un branch basandosi sui risultati ottenuti in precedenza, per eseguire preventivamente alcune istruzioni.
+		\index{Esecuzione speculativa}L'esecuzione speculativa è una tecnica utilizzata dai processori per migliorare le prestazioni; essa consiste nel cercare di "indovinare" il risultato di un branch basandosi sui risultati ottenuti in precedenza, per poter eseguire anticipatamente alcune istruzioni.
 		
-		Immaginiamo di essere in campo durante la finale del mondiale di calcio. Stiamo battendo il rigore decisivo. Abbiamo studiato bene il portiere avversario nell'ultimo anno e sappiamo che le 3 volte che gli si è presentato davanti un tiratore mancino (come lo siamo noi) si è sempre tuffato alla sua sinistra ed ha sempre parato il rigore. Avendo fiducia nel nostro studio decidiamo di calciare alla sua destra in maniera non troppo angolata per non rischiare di sbagliare certi comunque di spiazzarlo. Sfortunatamente però, questa volta il portiere decide di cambiare angolo e para facilmente il nostro rigore facendoci perdere il mondiale.
+		Immaginiamo di essere in campo durante la finale del mondiale di calcio. Stiamo battendo il rigore decisivo. Abbiamo studiato bene il portiere avversario nell'ultimo anno e sappiamo che le 10 volte che gli si è presentato davanti un tiratore mancino (come lo siamo noi) si è sempre tuffato alla sua sinistra ed ha sempre parato il rigore. Avendo fiducia nel nostro studio decidiamo di calciare alla sua destra in maniera non troppo angolata, per non rischiare di sbagliare, certi comunque di spiazzarlo. Sfortunatamente però, questa volta il portiere decide di cambiare angolo e para facilmente il nostro rigore facendoci perdere il mondiale.
 		
-		Quale è stata la cosa che ci ha fatto sbagliare? L'aver speculato sul comportamento del portiere ed aver pensato che se si era tuffato a sinistra nelle tre occasioni precedenti, allora avrebbe continuato a farlo anche nella quarta. Vediamo come riportare questo esempio nel nostro ambito. 
+		Quale è stata la cosa che ci ha fatto sbagliare? L'aver speculato sul comportamento del portiere ed aver pensato che il fatto che si fosse sempre tuffato a sinistra nelle occasioni precedenti ed avesse sempre parato il rigore, lo avrebbe portato a farlo di nuovo. Vediamo come riportare questo esempio nel nostro ambito. 
 		
-		Supponiamo ad esempio che l'esecuzione di un programma dipenda da un controllo su di un valore non presente in cache che quindi deve essere recuperato dalla memoria principale. Questo può portare ad un attesa di svariate centinaia di cicli di clock prima che questo valore sia disponibile. Invece di aspettare tutto questo tempo inutilmente, il processore cerca di indovinare il risultato del controllo, salva lo stato attuale dei suoi registri, e procede ad eseguire speculativamente il ramo del branch che ritiene più plausibile (supponiamo il ramo then). Quando poi arriverà il valore effettivo dalla memoria, il controllo verrà effettivamente effettuato. Se il risultato è quello aspettato (true nel nostro caso), si procede con la computazione e saranno stati risparmiati tutti quei cicli di clock che sarebbero stati persi nell'attesa. Se la scelta si rivela sbagliata (false), il processore scarta tutti i risultati dell'esecuzione speculativa, si riporta allo stato che si era salvato precedentemente ed esegue l'altro ramo del branch (else).
+		Supponiamo ad esempio che l'esecuzione di un programma dipenda da un controllo su di un valore non presente in cache che quindi deve essere recuperato dalla memoria principale. Questo può portare ad un attesa di svariate centinaia di cicli di clock prima che questo valore sia disponibile. Invece di aspettare tutto questo tempo inutilmente, il processore cerca di indovinare il risultato del controllo, salva lo stato attuale dei suoi registri, e procede ad eseguire speculativamente il ramo del branch che ritiene più plausibile (supponiamo il ramo then). Quando poi arriverà il valore effettivo dalla memoria, verrà eseguito il controllo. Se il risultato è quello aspettato (true nel nostro caso), si prosegue con la computazione e saranno stati risparmiati tutti quei cicli di clock che sarebbero stati persi nell'attesa. Se la scelta si rivela sbagliata (false), il processore scarta tutti i risultati dell'esecuzione speculativa, si riporta allo stato che aveva salvato prima del branch ed esegue l'altro ramo (else).
 		
 		Questa ottimizzazione sembra perfetta in quanto in caso di successo, si risparmiano molti cicli di clock mentre in caso di insuccesso il risultato è paragonabile a quello che avremmo ottenuto aspettando il dato senza eseguire alcuna istruzione.
 		
@@ -39,8 +51,8 @@
 			\begin{enumerate}
 				\item \emph{Strongly not taken:} in questo stato il \ac{BP} sceglierà il ramo else del branch. In caso di risultato effettivamente negativo resterà in questo stato altrimenti passerà allo stato 2.
 				\item \emph{Weakly not taken:} in questo stato il \ac{BP} ha già osservato una esecuzione then ma la sua scelta resterà ancora il ramo else. Se il controllo si rivelerà false, il \ac{BP} tornerà allo stato 1 ma se si rivelerà true andrà allo stato 3 dal quale inizierà a scegliere il ramo then.
-				\item \emph{Weakly taken:} come detto in precedenza, in questo stato il \ac{BP} inizierà ad eseguire speculativamente il ramo then. Se da questo stato si ottiene un false, torneremo allo stato 2, altrimenti passeremo al 4.
-				\item \emph{Strongly taken:} questo stato è il duale dello stato 1. In questa situazione il \ac{BP} eseguirà il ramo then rimanendo in questo stato se otterrà un true e tornando allo stato 3 se otterrà un false (continuando comunque ad eseguire il ramo then).
+				\item \emph{Weakly taken:} come detto in precedenza, in questo stato il \ac{BP} inizierà a scegliere il ramo then. Se da questo stato si ottiene un false, torneremo allo stato 2, altrimenti passeremo al 4.
+				\item \emph{Strongly taken:} questo stato è il duale dello stato 1. In questa situazione il \ac{BP} sceglierà il ramo then rimanendo in questo stato se otterrà un true e tornando allo stato 3 se otterrà un false (continuando comunque ad eseguire il ramo then).
 			\end{enumerate}
 		
 			In questo caso vediamo come l'esecuzione consecutiva di al più due rami then ci porta sicuramente in uno stato in cui il ramo scelto dal \ac{BP} sarà sicuramente quello then. Questa informazione sarà molto utile quando dovremo effettuare un training sul \ac{BP} per convincerlo a prendere una certa decisione quando si troverà davanti ad un certo branch.
@@ -73,7 +85,7 @@
 			La funzione inizia con un controllo su x, necessario per essere sicuri di non permettere la lettura di porzioni di memoria al di fuori di array1. Durante l'esecuzione speculativa di questo codice però, il \ac{BP} può selezionare il ramo then relativo a questo controllo ad esempio nel seguente caso:
 			
 			\begin{itemize}
-				\item il valore di x viene scelto in maniera malevola in maniera tale da far puntare array1[x] ad un byte segreto \emph{k} che risiede da qualche parte nella memoria della vittima.
+				\item il valore di x viene scelto in maniera malevola in maniera tale da far puntare array1[x] ad un byte segreto \emph{k} che risiede da qualche parte nella memoria della vittima al di fuori di \emph{array1}(\cref{fig:array}).
 				\item \emph{array1\_size} e \emph{array2} non sono presenti nella cache ma \emph{k} lo è.
 				\item operazioni precedenti hanno restituito un valore di x corretto, addestrando il \ac{BP} a scegliere il ramo then.
 			\end{itemize}
@@ -81,6 +93,14 @@
 			Questa situazione può presentarsi in maniera normale o può essere creata dall'attaccante ad esempio leggendo grandi quantità di memoria per riempire la cache di valori completamente scorrelati ed effettuando una chiamata legittima ad una funzione che utilizzi \emph{k}.
 			
 			A questo punto, quando il programma inizia a girare il processore esegue il confronto tra x e \emph{array1\_size}. La lettura di \emph{array1\_size} si traduce in un cache miss ed il processore richiede il dato dalla memoria principale. Durante l'attesa il \ac{BP} assume che il risultato dell' \emph{if} sarà \emph{true}, eseguirà speculativamente la somma di x all'indirizzo base di \emph{array1} e richiederà il dato presente all'indirizzo appena calcolato. Questa operazione si tradurrà in una cache hit e verrà restituito molto velocemente il valore del byte segreto \emph{k}. L'esecuzione speculativa continua il suo percorso e verrà calcolato l'indirizzo di \emph{array2[k*256]}. La richiesta del dato contenuto a questo indirizzo si tradurrà in una cache miss e verrà richiesta una lettura dalla memoria principale. Durante questa seconda attesa, al processore arriva finalmente il valore di \emph{array1\_size}. Dopo aver eseguito il confronto il processore si accorge che l'esecuzione speculativa era errata ed esegue un rollback allo stato precedente al branch. Il problema sorge in questo momento. La richiesta di lettura rimasta sospesa viene comunque portata a termine e il valore relativo non viene rimosso dalla cache.
+			
+			\begin{figure}
+				\begin{center}
+					\includegraphics[scale=.3]{arraySpectre}
+					\caption{Recupero del valore al di fuori di \emph{array1}}
+					\label{fig:array}
+				\end{center}
+			\end{figure}
 			
 			Per completare l'attacco l'attaccante non deve fare altro che rilevare questo cambiamento nello stato della cache per recuperare il byte segreto \emph{k}.
 			
