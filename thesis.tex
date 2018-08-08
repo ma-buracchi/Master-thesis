@@ -23,9 +23,9 @@
 \usepackage{dia-classicthesis-ldpkg}
 \usepackage[eulerchapternumbers,linedheaders,subfig,beramono,eulermath,
 parts,dottedtoc]{classicthesis}
-\usepackage[italian,noabbrev]{cleveref}
 \usepackage{imakeidx}
 \usepackage{wrapfig}
+\usepackage[italian,noabbrev]{cleveref}
 %---------------------------------------------------------------
 \newcommand{\myItalianTitle}{Titolo italiano\xspace}
 \newcommand{\myEnglishTitle}{Titolo inglese\xspace}
@@ -63,21 +63,23 @@ parts,dottedtoc]{classicthesis}
 	tmargin       = 4cm    % top margin 
 }
 
+\crefname{listing}{codice}{codici}
+
 \lstset{ %
-	% backgroundcolor=\color{back},  	% choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
-	basicstyle=\scriptsize,        		% the size of the fonts that are used for the code
+	%backgroundcolor=\color{back},	% choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+	basicstyle=\footnotesize,  		% the size of the fonts that are used for the code
 	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
 	breaklines=true,                % sets automatic line breaking
 	captionpos=b,                   % sets the caption-position to bottom
 	commentstyle=\color{gray},   	% comment style
-	frame=trLB,	                % adds a frame around the code
+	frame=rlbt,	         	        % adds a frame around the code
 	frameround=fttt					% round corner (use f instead t to edge corner)
 	keepspaces=true,                % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
 	keywordstyle=\color{blue},      % keyword style
-	%language=Python,               	% the language of the code
-	numbers=none,                   % where to put the line-numbers; possible values are (none, left, right)
+	language=C,               % the language of the code
+	numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
 	numbersep=5pt,                  % how far the line-numbers are from the code
-	numberstyle=\tiny\color{black}, % the style that is used for the line-numbers
+	numberstyle=\scriptsize\color{black}, % the style that is used for the line-numbers
 	rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
 	showspaces=false,               % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
 	showstringspaces=false,         % underline spaces within strings only
@@ -105,6 +107,7 @@ parts,dottedtoc]{classicthesis}
 \pagenumbering{arabic}
 \tableofcontents
 \listoffigures
+\lstlistoflistings
 \listoftables
 \cleardoublepage
 \thispagestyle{empty}
