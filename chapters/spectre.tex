@@ -74,7 +74,7 @@
 		
 			Consideriamo il caso di una funzione che riceve un intero x da una fonte non fidata (come ad esempio il \cref{list:vulnerabile}).
 			
-			\begin{lstlisting}[caption={Funzione vulnerabile},label={list:vulnerabile}]
+			\begin{lstlisting}[caption={Funzione sotto attacco},label={list:vulnerabile}]
 				if (x < array1_size) {
 					y = array2[array1[x] * 256];
 				}
@@ -115,7 +115,7 @@
 		
 		In questa direzione, sia Intel che AMD, nei loro white papers \cite{AMD2018speculation,intel2018speculative}, suggeriscono alcune regole di programmazione per difendersi da questi attacchi.
 		
-		\subsection{Serializzare gli accessi alla memoria}
+		\subsection*{Serializzare gli accessi alla memoria}
 		
 		La prima regola è quella di serializzare gli accessi alla memoria tramite l'utilizzo dell'istruzione \emph{lfence()}\index{Lfence()}. Questa è un tipo di istruzione di \emph{barriera} che forza il processore o il compilatore ad una esecuzione ordinata delle operazioni di memoria richieste immediatamente prima ed immediatamente dopo la barriera. Tipicamente questo fa sì che sia garantito che l'istruzione che segue la barriera non venga eseguita prima di quella che la precede. A titolo di esempio, analizziamo il \cref{list:difendere}.
 		
@@ -144,7 +144,7 @@
 		
 		Microsoft implementa nel proprio compilatore una rilevazione automatica del codice vulnerabile agli attacchi di tipo SPECTRE ed inserisce tali barriere automaticamente. Purtroppo la blacklist di questo strumento comprende solamente le situazioni più comuni e maggiormente utilizzate. Kocher infatti dimostra che tale analisi automatica non rileva molte sezioni di codice vulnerabile\cite{kocher2018mitigation}.
 		
-		\subsection{Utilizzare variabili "volatile"}
+		\subsection*{Utilizzare variabili "volatile"}
 		
 		Un'altra possibile contromisura può essere quella di utilizzare variabili dichiarate \emph{volatile} come nel \cref{cod:volatile}:
 		
@@ -165,7 +165,7 @@
 				
 		Ovviamente anche questo metodo risolve il problema ma, come il precedente, influisce negativamente sulle prestazioni in quanto ogni volta che la variabile \emph{user\_value} viene utilizzata (anche in altri punti del programma) si dovrà sempre aspettare il suo recupero dalla memoria principale.
 		
-		\subsection{Forzare la variabile entro i limiti}
+		\subsection*{Forzare le variabili entro i limiti}
 		
 		Questa ultima soluzione prevede di accertarsi che il valore di \emph{user\_value}, quando viene usato come indice, non vada mai a superare la dimensione del nostro array. Per ottenere questa certezza si può utilizzare l'operatore di modulo come nel \cref{list:limiti}:
 		
