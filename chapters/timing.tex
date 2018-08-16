@@ -49,7 +49,7 @@
 			Andiamo ad analizzare più nel dettaglio le caratteristiche di una singola cache\cite{ge2016survey,yarom2014flush+}.
 			
 			\subsubsection{Cache lines}
-				\index{Cache lines}Per sfruttare anche la località spaziale le caches sono divise in lines. Una cache line contiene un blocco di bytes adiacenti (generalmente di dimensione congrua ad una potenza di 2) caricati dalla memoria. Se uno qualunque dei bytes deve essere rimosso (si parla di \emph{evicting}\index{Evict}) per far spazio ad un altro dato, viene rimossa l'intera line.
+				\index{Cache lines}Per sfruttare anche la località spaziale le caches sono divise in lines. Una cache line contiene un blocco di byte adiacenti (generalmente di dimensione congrua ad una potenza di 2) caricati dalla memoria. Se uno qualunque dei byte deve essere rimosso (si parla di \emph{evicting}\index{Evict}) per far spazio ad un altro dato, viene rimossa l'intera line.
 				
 			\subsubsection{Associatività}
 				Teoricamente una qualunque posizione di memoria può essere mappata in una qualunque cache line ed una cache ad \emph{n} lines potrebbe contenere \emph{n} linee qualunque dalla memoria. Questo tipo di cache viene chiamato \emph{fully-associative cache}\index{Fully-associative cache} ed è la migliore in teoria perché può sempre essere usata al massimo delle sue capacità e i cache miss si hanno solamente quando non c'è più spazio libero nella cache. In pratica però questo si traduce in un controllo in parallelo di tutte le linee che aumenta la complessità architetturale e il consumo di energia.
@@ -126,8 +126,56 @@
 				\item \emph{Flush+Flush}\cite{gruss2016flush+}\index{Flush+Flush}: Diversamente da tutti i precedenti approcci, in questo caso non si esegue nessun accesso alla memoria ma l'attaccante si basa solamente sul tempo impiegato dall'istruzione \emph{clflush}. In \cite{lipp2016armageddon} si fa vedere come l'esecuzione di questa funzione abbia tempi differenti se chiamata su un indirizzo presente in cache o meno.  
 			\end{itemize}
 		
+		\section{L'attacco ad AES}
+			Un ottimo esempio di come sono stati messi in pratica buona parte dei concetti visti fino ad ora è l'attacco ad \ac{AES} portato da \emph{Osvik, Shamir \text{e} Tromer} in \cite{osvik2006cache}.
+			
+			\subsection{AES}
+				\ac{AES}\index{AES} è un algoritmo di cifratura a blocchi, a chiave simmetrica, scelto come standard dagli Stati Uniti d'America dalla \ac{FIPS} nel documento PUB 197\cite{pub2001197}. Viene considerato a tutti gli effetti il successore di \ac{DES}, in via di abbandono a causa della sua ormai provata insicurezza\cite{kumar2006breaking,gilmore1998cracking}. La rimanente spiegazione dell'algoritmo è presa da \cite{stallings2012computer}.
+				
+				\ac{AES} utilizza blocchi di 128 bit e una chiave che può essere lunga 128, 192 o 256 bit (128 è la lunghezza più comunemente implementata).
+				
+				\begin{figure}
+					\begin{center}
+						\includegraphics[width=\textwidth]{AES}
+						\caption{Schema di funzionamento di AES}
+						\label{fig:aes}
+					\end{center}
+				\end{figure}
+			
+				L'input dell'algoritmo è un singolo blocco di 128 bit che nello standard viene trattato come una matrice quadrata di byte (come la chiave a 128 bit). Questo blocco viene copiato in un array chiamato \emph{stato} che verrà modificato ad ogni round di encryption/decryption. Alla fine dell'ultimo round, lo stato finale sarà copiato in una matrice che rappresenterà il risultato della computazione. La chiave viene espansa in un array di word (della lunghezza di 4 byte) ricavando 44 word dai 128 bit di partenza. Ad ogni round verranno prese di volta in volta 4 word (128 bit) e verranno utilizzate come chiave per quel round.
+				
+				Senza scendere troppo nell'implementazione è importante capire le quattro operazioni effettuate ad ogni round:
+				\begin{itemize}
+					\item \emph{Substitute byte}: tramite una tabella (\emph{S-Box}) vengono sostituiti, byte per byte, tutti i byte del blocco.
+					\item \emph{Shift row}: viene effettuata una permutazione delle righe della matrice
+					\item \emph{Mix columns}: vengono modificate le colonne con una funzione su ogni bytes di ogni colonna.
+					\item \emph{Add round key}: viene effettuato uno XOR tra il blocco corrente e la chiave di round.
+				\end{itemize}
+			
+				Come si vede in \cref{fig:aes} l'algoritmo inizia con un \emph{add round key} seguito da nove round in cui vengono effettuate tutte e quattro le operazioni. L'ultimo round (il decimo) è composto da solo tre di queste in quanto non viene effettuata la \emph{Mix columns}.
+				
+			\subsection{Implementazione e uso della memoria}
+				Quello descritto fino a qui è il funzionamento teorico di \ac{AES}; in effetti, in teoria, tutto l'algoritmo è eseguibile tramite semplici operazioni algebriche ma in realtà, per migliorare le performance, vengono create (dal programmatore o durante l'inizializzazione del sistema) otto tabelle di lookup che chiameremo $\mathcal{T}_0, \mathcal{T}_1, \mathcal{T}_2, \mathcal{T}_3$ e $\mathcal{T}_{0}^{(10)}, \mathcal{T}_{1}^{(10)}, \mathcal{T}_{2}^{(10)}, \mathcal{T}_{3}^{(10)}$. Ognuna di queste tabelle contiene 256 word da 4 byte. La chiave (16 byte) $\mathbf{k} = (k_1,\dots ,k_{16})$ viene estesa per formare 10 chiavi (una per ogni round) $\mathbf{K}^{(r)}$ per $r = 1,\dots ,10$ che vengono suddivise in 4 word di 4 byte ciascuna $\mathbf{K}^{(r)}=(K_{0}^{(r)},K_{1}^{(r)},K_{2}^{(r)},K_{3}^{(r)})$. Dato un plaintext di 16 byte $\mathbf{p}=(p_0, \dots , p_{15})$ la funzione di encryption calcola uno stato intermedio $\mathbf{x}^{(r)}=(x_{0}^{(r)}, \dots , x_{15}^{(r)})$ ad ogni round r. Lo stato iniziale $\mathbf{x}^{(0)}$ viene calcolato come $x_{i}^{(0)} = p_i \oplus k_i \text{ con }(i = 0,\dots ,15)$. I nove round seguenti vengono calcolati aggiornando lo stato intermedio secondo le seguenti equazioni (per $r = 0,\dots,8$):
+				{
+					\footnotesize
+					\begin{center}
+						\begin{tabular}{ccc}
+							$(x_{0}^{(r+1)},x_{1}^{(r+1)},x_{2}^{(r+1)},x_{3}^{(r+1)})$ & $\leftarrow$ & $\mathcal{T}_{0}[x_{0}^{(r)}] \oplus \mathcal{T}_{1}[x_{5}^{(r)}] \oplus \mathcal{T}_{2}[x_{10}^{(r)}] \oplus \mathcal{T}_{3}[x_{15}^{(r)}]\oplus K_{0}^{(r+1)}$\\
+							$(x_{4}^{(r+1)},x_{5}^{(r+1)},x_{6}^{(r+1)},x_{7}^{(r+1)})$ & $\leftarrow$ & $\mathcal{T}_{0}[x_{4}^{(r)}] \oplus \mathcal{T}_{1}[x_{9}^{(r)}] \oplus \mathcal{T}_{2}[x_{14}^{(r)}] \oplus \mathcal{T}_{3}[x_{3}^{(r)}]\oplus K_{1}^{(r+1)}$\\
+							$(x_{8}^{(r+1)},x_{9}^{(r+1)},x_{10}^{(r+1)},x_{11}^{(r+1)})$ & $\leftarrow$ & $\mathcal{T}_{0}[x_{8}^{(r)}] \oplus \mathcal{T}_{1}[x_{13}^{(r)}] \oplus \mathcal{T}_{2}[x_{2}^{(r)}] \oplus \mathcal{T}_{3}[x_{7}^{(r)}]\oplus K_{2}^{(r+1)}$\\
+							$(x_{12}^{(r+1)},x_{13}^{(r+1)},x_{14}^{(r+1)},x_{15}^{(r+1)})$ & $\leftarrow$ & $\mathcal{T}_{0}[x_{12}^{(r)}] \oplus \mathcal{T}_{1}[x_{1}^{(r)}] \oplus \mathcal{T}_{2}[x_{6}^{(r)}] \oplus \mathcal{T}_{3}[x_{11}^{(r)}]\oplus K_{3}^{(r+1)}$
+						\end{tabular}
+					\end{center}
+				}
+			
+				L'ultimo round viene calcolato con $r = 9$ ma, al posto di usare $\mathcal{T}_0, \mathcal{T}_1, \mathcal{T}_2, \mathcal{T}_3$ verranno usate $\mathcal{T}_{0}^{(10)}, \mathcal{T}_{1}^{(10)}, \mathcal{T}_{2}^{(10)}, \mathcal{T}_{3}^{(10)}$. Il risultante $\mathbf{x}^{10}$ sarà il ciphertext.
+				
+				Paragonando questa implementazione con la formulazione algebrica teorica di \ac{AES} si può vedere che le otto tabelle di lookup vengono usate per effettuare le quattro operazioni di ogni round in maniera immediata. L'ultimo round ha bisogno di quattro tabelle diverse perché, solamente in questo, l'operazione \emph{mix columns} non viene eseguita.
+				
+				L'attacco (i cui dettagli possono essere trovati nell'articolo) si basa proprio sul cercare di capire i valori $x_{i}^{(r)}$ usati come indici nelle varie tabelle che di volta in volta verranno caricate in cache. Tali valori vengono recuperati tramite attacchi evict+time o prime+probe.
+		
 		\section{Contromisure possibili}
-			Le difese da questo tipo di attacchi sono sia software che hardware e si dividono in 5 grandi famiglie\cite{ge2016survey}
+			Le difese da questo tipo di attacchi sono sia software che hardware e si dividono in cinque grandi famiglie\cite{ge2016survey}
 			
 			\begin{description}
 				\item[Tecniche a tempo costante:] L'idea di base è quella di rendere il comportamento del codice che esegue operazioni critiche indipendente dai dati. Per esempio cercare di rendere una funzione crittografica indipendente sia dalla chiave che dall'input. Questo può essere ottenuto facendo eseguire istruzioni inutili per uniformare il tempo di esecuzione o accedendo a dati casuali dalla memoria per confondere l'attaccante sull'utilizzo della cache. 
