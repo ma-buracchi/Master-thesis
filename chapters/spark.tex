@@ -1,0 +1,16 @@
+\chapter{SPARK}
+	In questo capitolo verrà analizzato \ac{SPARK}\index{SPARK}, un attacco basato sul progetto SPECTRE capace di recuperare chiavi (o più in generale "segreti") evitando il controllo della password.
+	
+	\section{Scenario}
+		Immaginiamo di partire dalla funzione attaccata da SPECTRE (\cref{list:vulnerabile}). Nello scenario più semplice si può pensare che \emph{array1} (da adesso sarà chiamato \emph{secret}) contenga delle chiavi predefinite assegnate ad ogni utente che vengono utilizzate come indici  per accedere ad \emph{array2} che contiene le informazioni riservate di tutti gli utenti. Dato che queste informazioni sono riservate, il tutto è protetto con una password. 
+		
+		L'utente \emph{x}, identificato tramite il proprio \emph{userID}, che vuole consultare i propri dati dovrà inserire ID e password (salvate nell'array delle password \emph{passwordDigest}). In caso di controllo positivo, si utilizzerà l'indice contenuto in \emph{secret}$[$\emph{userID}$]$ per andare a recuperare l'informazione che si riferisce ad \emph{x}. In caso di controllo negativo verrà ovviamente negato l'accesso ai dati.
+		
+		Tale funzione potrebbe essere implementata dal \cref{list:spark}:
+		\codice{28}{32}{Funzione attaccata da SPARK}{list:spark}
+		
+		Supponiamo adesso che l'attaccante abbia accesso ad \emph{array2}$[]$ (come supposto anche dall'attacco SPECTRE) ma che non abbia accesso a \emph{secret}$[]$ ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il rispettivo \emph{secret}$[$\emph{x}$]$, per poter successivamente ricavare l'informazione riservata, il tutto senza conoscere la password.
+		
+		Come verrà spiegato più avanti, la precisione del risultato dipende molto dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato gli interi e questo non ci permette di recuperare esattamente \emph{secret}$[$\emph{x}$]$ ma siamo in grado di localizzarlo entro un certo intervallo \emph{secret}$[$\emph{x}$] \pm \delta$.
+		
+		 

@@ -133,29 +133,38 @@
 				\ac{AES}\index{AES} è un algoritmo di cifratura a blocchi, a chiave simmetrica, scelto come standard dagli Stati Uniti d'America dalla \ac{FIPS} nel documento PUB 197\cite{pub2001197}. Viene considerato a tutti gli effetti il successore di \ac{DES}, in via di abbandono a causa della sua ormai provata insicurezza\cite{kumar2006breaking,gilmore1998cracking}. La rimanente spiegazione dell'algoritmo è presa da \cite{stallings2012computer}.
 				
 				\ac{AES} utilizza blocchi di 128 bit e una chiave che può essere lunga 128, 192 o 256 bit (128 è la lunghezza più comunemente implementata).
+			
+				L'input dell'algoritmo è un singolo blocco di 128 bit che nello standard viene trattato come una matrice quadrata di byte (come la chiave a 128 bit). Questo blocco viene copiato in un array chiamato \emph{stato} che verrà modificato ad ogni round di encryption/decryption. Alla fine dell'ultimo round, lo stato finale sarà copiato in una matrice che rappresenterà il risultato della computazione. La chiave viene espansa in un array di word (della lunghezza di quattro byte) ricavando 44 word dai 128 bit di partenza. Ad ogni round verranno prese di volta in volta quattro word (128 bit) e verranno utilizzate come chiave per quel round.
+				
+				Senza scendere troppo nell'implementazione è importante capire le quattro operazioni effettuate ad ogni round(\cref{fig:operations}):
+				
+				\begin{itemize}
+					\item \emph{Substitute byte}: tramite una tabella (\emph{S-Box}) vengono sostituiti, byte per byte, tutti i byte del blocco.
+					\item \emph{Shift row}: viene effettuata una permutazione delle righe della matrice
+					\item \emph{Mix columns}: vengono modificate le colonne moltiplicandole per un polinomio fisso $c(x)$.
+					\item \emph{Add round key}: viene effettuato uno XOR tra il blocco corrente e la chiave di round.
+				\end{itemize}
+			
+				\begin{figure}
+					\begin{center}
+						\includegraphics[width=\textwidth]{aesOperations}
+						\caption{Schema delle operazioni effettuate da AES}
+						\label{fig:operations}
+					\end{center}
+				\end{figure}
+			
+				Come si vede in \cref{fig:aes} l'algoritmo inizia con un \emph{add round key} seguito da nove round in cui vengono effettuate tutte e quattro le operazioni. L'ultimo round (il decimo) è composto da solo tre di queste in quanto non viene effettuata la \emph{mix columns}.
 				
 				\begin{figure}
 					\begin{center}
-						\includegraphics[width=\textwidth]{AES}
+						\includegraphics[width=.9\textwidth]{AES}
 						\caption{Schema di funzionamento di AES}
 						\label{fig:aes}
 					\end{center}
 				\end{figure}
-			
-				L'input dell'algoritmo è un singolo blocco di 128 bit che nello standard viene trattato come una matrice quadrata di byte (come la chiave a 128 bit). Questo blocco viene copiato in un array chiamato \emph{stato} che verrà modificato ad ogni round di encryption/decryption. Alla fine dell'ultimo round, lo stato finale sarà copiato in una matrice che rappresenterà il risultato della computazione. La chiave viene espansa in un array di word (della lunghezza di 4 byte) ricavando 44 word dai 128 bit di partenza. Ad ogni round verranno prese di volta in volta 4 word (128 bit) e verranno utilizzate come chiave per quel round.
-				
-				Senza scendere troppo nell'implementazione è importante capire le quattro operazioni effettuate ad ogni round:
-				\begin{itemize}
-					\item \emph{Substitute byte}: tramite una tabella (\emph{S-Box}) vengono sostituiti, byte per byte, tutti i byte del blocco.
-					\item \emph{Shift row}: viene effettuata una permutazione delle righe della matrice
-					\item \emph{Mix columns}: vengono modificate le colonne con una funzione su ogni bytes di ogni colonna.
-					\item \emph{Add round key}: viene effettuato uno XOR tra il blocco corrente e la chiave di round.
-				\end{itemize}
-			
-				Come si vede in \cref{fig:aes} l'algoritmo inizia con un \emph{add round key} seguito da nove round in cui vengono effettuate tutte e quattro le operazioni. L'ultimo round (il decimo) è composto da solo tre di queste in quanto non viene effettuata la \emph{mix columns}.
 				
 			\subsection{Implementazione e uso della memoria}
-				Quello descritto fino a qui è il funzionamento teorico di \ac{AES}; in effetti, in teoria, tutto l'algoritmo è eseguibile tramite semplici operazioni algebriche ma in realtà, per migliorare le performance, vengono create (dal programmatore o durante l'inizializzazione del sistema) otto tabelle di lookup che chiameremo $\mathcal{T}_0, \mathcal{T}_1, \mathcal{T}_2, \mathcal{T}_3$ e $\mathcal{T}_{0}^{(10)}, \mathcal{T}_{1}^{(10)}, \mathcal{T}_{2}^{(10)}, \mathcal{T}_{3}^{(10)}$. Ognuna di queste tabelle contiene 256 word da quattro byte. La chiave (sedici byte) $\mathbf{k} = (k_1,\dots ,k_{16})$ viene estesa per formare dieci chiavi (una per ogni round) $\mathbf{K}^{(r)}$ per $r = 1,\dots ,10$ che vengono suddivise in quattro word di quattro byte ciascuna $\mathbf{K}^{(r)}=\left( K_{0}^{(r)},K_{1}^{(r)},K_{2}^{(r)},K_{3}^{(r)}\right) $. Dato un plaintext di sedici byte $\mathbf{p}=(p_0, \dots , p_{15})$ la funzione di encryption calcola uno stato intermedio $\mathbf{x}^{(r)}=(x_{0}^{(r)}, \dots , x_{15}^{(r)})$ ad ogni round r. Lo stato iniziale $\mathbf{x}^{(0)}$ viene calcolato come $x_{i}^{(0)} = p_i \oplus k_i \text{ con }(i = 0,\dots ,15)$. I nove round seguenti vengono calcolati aggiornando lo stato intermedio secondo le seguenti equazioni (per $r = 0,\dots,8$):
+				Quello descritto fino a qui è il funzionamento teorico di \ac{AES}; teoricamente, tutto l'algoritmo è eseguibile tramite semplici operazioni algebriche ma in realtà, per migliorare le performance, vengono create (dal programmatore o durante l'inizializzazione del sistema) otto tabelle di lookup che chiameremo $\mathcal{T}_0, \mathcal{T}_1, \mathcal{T}_2, \mathcal{T}_3$ e $\mathcal{T}_{0}^{(10)}, \mathcal{T}_{1}^{(10)}, \mathcal{T}_{2}^{(10)}, \mathcal{T}_{3}^{(10)}$. Ognuna di queste tabelle contiene 256 word da quattro byte. La chiave (sedici byte) $\mathbf{k} = (k_1,\dots ,k_{16})$ viene estesa per formare dieci chiavi (una per ogni round) $\mathbf{K}^{(r)}$ per $r = 1,\dots ,10$ che vengono suddivise in quattro word di quattro byte ciascuna $\mathbf{K}^{(r)}=\left( K_{0}^{(r)},K_{1}^{(r)},K_{2}^{(r)},K_{3}^{(r)}\right) $. Dato un plaintext di sedici byte $\mathbf{p}=(p_0, \dots , p_{15})$ la funzione di encryption calcola uno stato intermedio $\mathbf{x}^{(r)}=(x_{0}^{(r)}, \dots , x_{15}^{(r)})$ ad ogni round r. Lo stato iniziale $\mathbf{x}^{(0)}$ viene calcolato come $x_{i}^{(0)} = p_i \oplus k_i \text{ con }(i = 0,\dots ,15)$. I nove round seguenti vengono calcolati aggiornando lo stato intermedio secondo le seguenti equazioni (per $r = 0,\dots,8$):
 				{
 					\scriptsize
 					\begin{center}
@@ -170,7 +179,7 @@
 			
 				L'ultimo round viene calcolato con $r = 9$ ma, al posto di usare $\mathcal{T}_0, \mathcal{T}_1, \mathcal{T}_2, \mathcal{T}_3$ verranno usate $\mathcal{T}_{0}^{(10)}, \mathcal{T}_{1}^{(10)}, \mathcal{T}_{2}^{(10)}, \mathcal{T}_{3}^{(10)}$. Il risultante $\mathbf{x}^{10}$ sarà il ciphertext.
 				
-				Paragonando questa implementazione con la formulazione algebrica teorica di \ac{AES} si può vedere che le otto tabelle di lookup vengono usate per effettuare le quattro operazioni di ogni round in maniera immediata. L'ultimo round ha bisogno di quattro tabelle diverse perché, solamente in questo, l'operazione \emph{mix columns} non viene eseguita.
+				Paragonando questa implementazione con la formulazione algebrica teorica di \ac{AES} si può vedere che le otto tabelle di lookup vengono usate per effettuare le quattro operazioni di ogni round in maniera immediata. L'ultimo round ha bisogno di quattro tabelle diverse perché non viene eseguita l'operazione \emph{mix columns}.
 				
 				L'attacco (i cui dettagli possono essere trovati nell'articolo) si basa proprio sul cercare di capire i valori $x_{i}^{(r)}$ usati come indici nelle varie tabelle che di volta in volta verranno caricate in cache. Tali valori vengono recuperati tramite attacchi evict+time o prime+probe.
 		
