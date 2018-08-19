@@ -9,8 +9,17 @@
 		Tale funzione potrebbe essere implementata dal \cref{list:spark}:
 		\codice{28}{32}{Funzione attaccata da SPARK}{list:spark}
 		
-		Supponiamo adesso che l'attaccante abbia accesso ad \emph{array2}$[]$ (come supposto anche dall'attacco SPECTRE) ma che non abbia accesso a \emph{secret}$[]$ ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il rispettivo \emph{secret}$[$\emph{x}$]$, per poter successivamente ricavare l'informazione riservata, il tutto senza conoscere la password.
+		Supponiamo adesso che l'attaccante abbia accesso ad \emph{array2} (come supposto anche dall'attacco SPECTRE) ma che non abbia accesso a \emph{secret} ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il rispettivo \emph{secret}$[$\emph{x}$]$, per poter successivamente avere accesso all'informazione riservata, il tutto senza conoscere la password.
 		
-		Come verrà spiegato più avanti, la precisione del risultato dipende molto dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato gli interi e questo non ci permette di recuperare esattamente \emph{secret}$[$\emph{x}$]$ ma siamo in grado di localizzarlo entro un certo intervallo \emph{secret}$[$\emph{x}$] \pm \delta$.
+		La precisione del risultato ottenuto dipende molto dal processore e dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato il tipo di dato \emph{int}; questo non ci permette di recuperare esattamente \emph{secret}$[$\emph{x}$]$ ma siamo in grado di localizzarlo entro un certo intervallo \emph{secret}$[$\emph{x}$] \pm \delta$ con, nel nostro setup sperimentale, $$\delta = \frac{\text{dimensione di una line}}{\text{dimensione del tipo di dato}} = \frac{512}{32} = 16$$.
 		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[scale=.6]{lineSize}
+				\caption{Contenuto di una cache line nel nostro setup}
+				\label{fig:lineSize}
+			\end{center}
+		\end{figure}
+		
+		Come si può vedere in \cref{fig:lineSize} ogni volta che viene richiesto il dato presente in una posizione di \emph{array2} (ad esempio \emph{array2}$[$\emph{i}$]$) e questo non si trova in cache, viene caricata un'intera line che può contenere sedici posizioni. Da quel momento, quando verrà richiesta una qualunque di quelle sedici, si otterrà una hit.
 		 
