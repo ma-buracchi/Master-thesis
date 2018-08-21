@@ -11,7 +11,15 @@
 		
 		Supponiamo adesso che l'attaccante abbia accesso ad \emph{array2} (come supposto anche dall'attacco SPECTRE) ma che non abbia accesso a \emph{secret} ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il rispettivo \arr{secret}{x}, per poter successivamente avere accesso all'informazione riservata, il tutto senza conoscere la password.
 		
-		La precisione del risultato ottenuto dipende molto dal processore e dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato il tipo di dato \emph{int} grande trentadue bit; questo, in una cache con dimensione delle line pari a 512 bit (un valore considerato standard nei processori più moderni) non ci permette di recuperare esattamente \arr{secret}{x} ma di localizzarlo entro un certo intervallo \arr{secret}{x} $\pm \ \delta$ con, $$\delta = \frac{\text{dimensione di una line}}{\text{dimensione del tipo di dato}} = \frac{512}{32} = 16.$$
+		La precisione del risultato ottenuto dipende molto dal processore e dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato il tipo di dato \emph{int} grande trentadue bit; questo, in una cache con dimensione delle line pari a 512 bit (un valore considerato standard nei processori più moderni) non ci permette di recuperare esattamente \arr{secret}{x} (\cref{fig:lineSize}) ma di localizzarlo entro un certo intervallo \arr{secret}{x} $\pm \ \delta$ con, $$\delta = \frac{\text{dimensione di una line}}{\text{dimensione del tipo di dato}} = \frac{512}{32} = 16.$$
+		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[width=.8\textwidth]{lineSize}
+				\caption{Contenuto di una cache line nel nostro setup}
+				\label{fig:lineSize}
+			\end{center}
+		\end{figure}
 		
 		\section{L'attacco}
 			Prima di analizzare l'effettiva implementazione, vediamo l'idea generale dell'attacco che può essere suddiviso in quattro parti:
@@ -23,14 +31,44 @@
 				\item Si calcola il tempo necessario all'accesso di tutte le posizioni di \emph{array2}. Considerato che l'unico dato relativo ad \emph{array2} presente in cache in questo momento è \emph{y} = \arrdoppio{array2}{secret}{userUnderAttack} (per la chiamata precedente), solamente per questo otterremo un tempo basso mentre per tutti gli altri sarà alto perché dovranno essere recuperati dalla memoria principale.
 			\end{enumerate}
 		
-			L'attacco funziona sfruttando l'esecuzione speculativa del processore sul controllo della password. Avendo eseguito il \emph{flush} di \emph{passwordDigest} al punto 2, \arr{passwordDigest}{userUnderAttack} non sarà presente in cache al momento del controllo al punto 3. Nell'attesa del suo recupero dalla memoria principale, il \ac{BP} eseguirà il ramo \emph{then} della computazione a causa dell'addestramento ottenuto al punto 1. Verrà richiesto dalla memoria \emph{y} che verrà caricato in cache. Quando sarà disponibile \arr{passwordDigest}{userUnderAttack}, il controllo fallirà e non verrà permesso l'accesso ai dati ma \emph{y} resterà in cache. A questo punto, accedendo a tutte le posizioni \arr{array2}{l} con \emph{l} $\in (0,\dots,\text{\emph{size(array2)}}-1)$ , l'unica che ci darà una risposta veloce sarà \emph{l} = \arr{secret}{userUnderAttack} e avremo scoperto il valore segreto.
-%		\begin{figure}
-%			\begin{center}
-%				\includegraphics[scale=.6]{lineSize}
-%				\caption{Contenuto di una cache line nel nostro setup}
-%				\label{fig:lineSize}
-%			\end{center}
-%		\end{figure}
+			L'attacco funziona sfruttando l'esecuzione speculativa del processore sul controllo della password. Avendo eseguito il \emph{flush} di \emph{passwordDigest} al punto 2, \arr{passwordDigest}{userUnderAttack} non sarà presente in cache al momento del controllo al punto 3. Nell'attesa del suo recupero dalla memoria principale, il \ac{BP} eseguirà il ramo \emph{then} della computazione a causa dell'addestramento ottenuto al punto 1. Verrà richiesto dalla memoria \emph{y} che verrà caricato in cache. Quando sarà disponibile \arr{passwordDigest}{userUnderAttack}, il controllo fallirà e non verrà permesso l'accesso ai dati ma \emph{y} resterà in cache. A questo punto, accedendo a tutte le posizioni \arr{array2}{l} con \emph{l} $\in (0,\dots,\text{\emph{size(array2)}}-1)$ , l'unica che ci darà una risposta veloce sarà \emph{l} = \arr{secret}{userUnderAttack} e avremo così scoperto il valore segreto.
+			
+			\subsection{Implementazione}
+				Passiamo adesso all'analisi dettagliata del codice C che implementa l'attacco.
+				
+				\subsubsection{Inizializzazione}
+				\codspark{1}{22}
+				
+				Nella primissima parte del nostro programma vengono semplicemente caricate le librerie necessarie alla compilazione, viene definito il numero di utenti (tremila), vengono creati i tre array principali \emph{secret},\emph{array2} e \emph{passwordDigest} e viene definita la funzione vittima, esattamente la stessa proposta nello scenario.
+				
+ 				La libreria \emph{x86intrin} fornisce le istruzioni \emph{rdtscp} e \emph{\_\_mm\_clflush} necessarie al calcolo dei tempi di hit e al flush della cache. In particolare l'istruzione \emph{\_\_mm\_clflush} prende come argomento un indirizzo di memoria ed invalida, su tutti i livelli della cache, tutte le line che contengono quell'indirizzo.
+				
+				I tre array "utili" sono separati da altri array \emph{unused} per essere sicuri che vengano distanziati in memoria. Questo fa sì che non si sovrappongano all'interno di una stessa line.
+				
+				\subsubsection{Main - definizione parametri}
+				\codspark{24}{52}
+				
+				In questa parte vengono definiti i parametri che verranno utilizzati nel resto del programma:
+				\begin{description}
+					\item [CACHELINE] - La dimensione in bit di una singola cache line. Come già detto, questa dimensione è ormai standardizzata a 512 bit su tutti i processori moderni.
+					\item [\emph{blocks}] - La dimensione in bit di un singolo elemento dell'array. In questo caso 32 bit.
+					\item [\emph{delta}] - Il numero di elementi dell'array che sono contenuti in una cache line.
+					\item [\emph{class}] - Il numero di classi di risultati \emph{mod} $\delta$ ottenute.
+					\item [\emph{number}O\emph{f}R\emph{uns}] - Il numero di volte che viene eseguito l'attacco.
+					\item [\emph{number}O\emph{f}T\emph{ests}] - Il numero di esperimenti che vengono eseguiti.
+					\item [\emph{cache}H\emph{it}T\emph{hreshold}] - Il valore di soglia entro il quale si considera una cache hit. Sperimentalmente questo valore si aggira tra i 30 e i 40 cicli di clock.
+					\item [\emph{precision}L\emph{oss}] - Con questo valore si regola la precisione che si vuole ottenere. Se lasciato a zero verrà restituito l'intervallo ($x-\delta, x+\delta$) che dovrebbe contenere il segreto. A volte però può succedere che venga fornito un intervallo che non contiene il segreto a causa di interferenze con altri processi che utilizzano il processore. Aumentando questo valore si aumenta l'intervallo proporzionalmente a $\delta$ perdendo un po' in precisione ma guadagnando in correttezza dell'intervallo.
+					
+					Questo e i tre precedenti sono i quattro parametri richiesti all'avvio del programma.
+					\item[\emph{results}] - L'array nel quale verranno salvati i risultati.
+					\item[\emph{ok, error e no-hit}] - Tre contatori utilizzati per sapere quante volte il programma trova il segreto, quante volte lo sbaglia e quante volte non rileva nessun cache hit.
+					\item[\emph{timeReg, time1 e time2}] -  Le tre variabili per calcolare i tempi di accesso alle posizioni di \emph{array2}.
+				\end{description}
+			
+				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore di numeri casuali.
+				
+				\subsubsection{Main - inizializzazione dell'esperimento}
+				\codspark{54}{68}
 		
 	
 		
