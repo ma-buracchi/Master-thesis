@@ -3,7 +3,7 @@
 	
 	L'idea di base che sta sotto i timing attacks si basa sul fatto che l'esecuzione di un determinato programma, al variare delle operazioni che vengono eseguite e al variare degli input, impiega tempi diversi per portare a termine il proprio compito.
 	
-	\lstinputlisting[language={Java},caption={Esempio di funzione vulnerabile ad un timing attack},label={list:timingBase}]{code/timingBase.txt}
+	\lstinputlisting[language={Java}, caption={Esempio di funzione vulnerabile ad un timing attack}, label={list:timingBase}, frame={none},basicstyle={\small\ttfamily}]{code/timingBase.txt}
 		
 	Ad esempio il \cref{list:timingBase} se fatto girare con la stringa ("passwordToBeStolen") impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa ("foo"). Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante che, procedendo per tentativi, può arrivare a ricavare la stringa esatta. Per portare questo concetto al livello che ci interessa vediamo prima delle nozioni fondamentali sulla cache del processore. 
 	
