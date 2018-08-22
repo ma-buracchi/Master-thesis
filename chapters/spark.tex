@@ -97,4 +97,10 @@
 				\subsubsection{Main - i risultati}
 				\codspark{101}{138}{Main - i risultati}
 				
-				Nell'ultima parte del programma viene cercato l'indice \emph{index} con il valore più alto nell'array \emph{results} e viene calcolato il range nel quale si suppone stia il segreto. Tale range non è altro che $((index - 1 * \delta),(index + 1 * \delta))$ limitato in basso da $0$ ed in alto da \emph{SIZE}.
+				Nell'ultima parte del programma viene cercato l'indice \emph{index} con il valore più alto nell'array \emph{results} e viene calcolato il range nel quale si suppone stia il segreto limitato in basso da $0$ ed in alto da \emph{SIZE}. Tale range non è altro che: $$((index - 1 - precisionLoss) * \delta\ ,\ (index + 1 + precisionLoss) * \delta).$$ Il risultato così ottenuto viene infine comparato con \arr{secret}{userUnderAttack} e viene stabilito il risultato dell'attacco:
+				
+				\begin{itemize}
+					\item \texttt{OK} - se il segreto ricade nel range calcolato.
+					\item \texttt{ERROR} - se il segreto non ricade nel range calcolato.
+					\item \texttt{NO-HIT} - se non si è rilevata alcuna hit.
+				\end{itemize}

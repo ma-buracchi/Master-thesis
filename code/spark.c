@@ -108,11 +108,11 @@ int main(int argn, char *argv[]) {
 		}
 
 		int rangeMax =
-				((index + 1) * delta + (precisionLoss * delta) >= SIZE) ?
-						SIZE : (index + 1) * delta + (precisionLoss * delta);
-		int rangeMin =
-				((index - 1) * delta - (precisionLoss * delta) <= 0) ?
-						0 : (index - 1) * delta - (precisionLoss * delta);
+						((index + 1 + precisionLoss) * delta >= SIZE) ?
+								SIZE : (index + 1 + precisionLoss) * delta;
+				int rangeMin =
+						((index - 1 + precisionLoss) * delta <= 0) ?
+								0 : (index - 1 + precisionLoss) * delta;
 
 		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
 				&& rangeMax >= secret[userUnderAttack]) {
