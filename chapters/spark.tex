@@ -49,23 +49,34 @@
 				\codspark{24}{52}
 				
 				In questa parte vengono definiti i parametri che verranno utilizzati nel resto del programma:
-				\begin{description}
-					\item [CACHELINE] - La dimensione in bit di una singola cache line. Come già detto, questa dimensione è ormai standardizzata a 512 bit su tutti i processori moderni.
-					\item [\emph{blocks}] - La dimensione in bit di un singolo elemento dell'array. In questo caso 32 bit.
-					\item [\emph{delta}] - Il numero di elementi dell'array che sono contenuti in una cache line.
-					\item [\emph{class}] - Il numero di classi di risultati \emph{mod} $\delta$ ottenute.
-					\item [\emph{number}O\emph{f}R\emph{uns}] - Il numero di volte che viene eseguito l'attacco.
-					\item [\emph{number}O\emph{f}T\emph{ests}] - Il numero di esperimenti che vengono eseguiti.
-					\item [\emph{cache}H\emph{it}T\emph{hreshold}] - Il valore di soglia entro il quale si considera una cache hit. Sperimentalmente questo valore si aggira tra i 30 e i 40 cicli di clock.
-					\item [\emph{precision}L\emph{oss}] - Con questo valore si regola la precisione che si vuole ottenere. Se lasciato a zero verrà restituito l'intervallo ($x-\delta, x+\delta$) che dovrebbe contenere il segreto. A volte però può succedere che venga fornito un intervallo che non contiene il segreto a causa di interferenze con altri processi che utilizzano il processore. Aumentando questo valore si aumenta l'intervallo proporzionalmente a $\delta$ perdendo un po' in precisione ma guadagnando in correttezza dell'intervallo.
+
+					\emph{CACHELINE}: La dimensione in bit di una singola cache line. Come già detto, questa dimensione è ormai standardizzata a 512 bit su tutti i processori moderni.
+					
+					\emph{blocks}: La dimensione in bit di un singolo elemento dell'array. In questo caso 32 bit.
+					
+					\emph{delta}: Il numero di elementi dell'array che sono contenuti in una cache line.
+					
+					\emph{class}: Il numero di classi di risultati \emph{mod} $\delta$ ottenute.
+					
+					\emph{numberOfRuns}: Il numero di volte che viene eseguito l'attacco per ogni esperimento.
+					
+					\emph{numberOfTests}: Il numero di esperimenti che vengono eseguiti.
+					
+					\emph{cacheHitThreshold}: Il valore di soglia entro il quale si considera una cache hit. Sperimentalmente questo valore si aggira tra i 30 e i 40 cicli di clock.
+					
+					\emph{precisionLoss}: Con questo valore si regola la precisione che si vuole ottenere. Se lasciato a zero verrà restituito l'intervallo ($x-\delta, x+\delta$) che dovrebbe contenere il segreto. A volte però può succedere che venga fornito un intervallo che non contiene il segreto a causa di interferenze con altri processi che utilizzano il processore. Aumentando questo valore si aumenta l'intervallo proporzionalmente a $\delta$ perdendo un po' in precisione ma guadagnando in correttezza dell'intervallo.
 					
 					Questo e i tre precedenti sono i quattro parametri richiesti all'avvio del programma.
-					\item[\emph{results}] - L'array nel quale verranno salvati i risultati.
-					\item[\emph{ok, error e no-hit}] - Tre contatori utilizzati per sapere quante volte il programma trova il segreto, quante volte lo sbaglia e quante volte non rileva nessun cache hit.
-					\item[\emph{timeReg, time1 e time2}] -  Le tre variabili per calcolare i tempi di accesso alle posizioni di \emph{array2}.
-				\end{description}
+					
+					\emph{results}: L'array nel quale verranno salvati i risultati.
+					
+					\emph{ok, error e no-hit}: Tre contatori utilizzati per sapere quante volte il programma trova il segreto, quante volte lo sbaglia e quante volte non rileva nessun cache hit.
+					
+					\emph{timeReg, time1 e time2}: Le tre variabili per calcolare i tempi di accesso alle posizioni di \emph{array2}.
 			
-				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore di numeri casuali.
+				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore \emph{srand} di numeri casuali.
 				
 				\subsubsection{Main - inizializzazione dell'esperimento}
 				\codspark{54}{68}
+				
+				All'inizio di ogni test viene scelto casualmente lo \emph{userUnderAttack} e vengono inizializzati casualmente i tre array principali \emph{passwordDigest, array2} e \emph{secret}. Infine si prepara l'array \emph{result} alla ricezione dei risultati settandolo a zero.
