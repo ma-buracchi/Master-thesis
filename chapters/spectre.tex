@@ -25,7 +25,7 @@
 	\section{Esecuzione speculativa}
 		\index{Esecuzione speculativa}L'esecuzione speculativa è una tecnica utilizzata dai processori per ottenere un miglioramento delle prestazioni; essa consiste nel cercare di "indovinare" il risultato di un branch basandosi sui risultati ottenuti in precedenza, per poter eseguire anticipatamente alcune istruzioni.
 		
-		Immaginiamo di essere in campo durante la finale del mondiale di calcio. Stiamo battendo il rigore decisivo. Abbiamo studiato bene il portiere avversario nell'ultimo anno e sappiamo che le 10 volte in cui gli si è presentato davanti un tiratore mancino (come lo siamo noi) si è sempre tuffato alla sua sinistra ed ha sempre parato il rigore. Avendo fiducia nel nostro studio decidiamo di calciare alla sua destra in maniera non troppo angolata, per non rischiare di sbagliare, certi comunque di spiazzarlo. Sfortunatamente però, questa volta il portiere decide di cambiare angolo e para facilmente il nostro rigore facendoci perdere il mondiale.
+		Immaginiamo di essere in campo durante la finale del mondiale di calcio. Stiamo battendo il rigore decisivo. Abbiamo studiato bene il portiere avversario nell'ultimo anno e sappiamo che le dieci volte in cui gli si è presentato davanti un tiratore mancino (come lo siamo noi) si è sempre tuffato alla sua sinistra ed ha sempre parato il rigore. Avendo fiducia nel nostro studio decidiamo di calciare alla sua destra in maniera non troppo angolata, per non rischiare di sbagliare, certi comunque di spiazzarlo. Sfortunatamente però, questa volta il portiere decide di cambiare angolo e para facilmente il nostro rigore facendoci perdere il mondiale.
 		
 		Quale è stata la cosa che ci ha fatto sbagliare? L'aver speculato sul comportamento del portiere ed aver pensato che il fatto che si fosse sempre tuffato a sinistra nelle occasioni precedenti ed avesse sempre parato il rigore, lo avrebbe portato a farlo di nuovo. Vediamo come riportare questo esempio nel nostro ambito. 
 		
@@ -36,23 +36,23 @@
 		Il responsabile di questa scelta è una piccola unità all'interno del processore chiamata \ac{BP}.
 		
 		\subsection{Branch predictor}
-			\index{Branch Predictor}Esistono svariati tipi di branch predictor; analizziamo il funzionamento di uno dei più semplici, il \emph{one-level branch predictor}\index{One-level branch predictor} a 2 bit.
+			\index{Branch Predictor}Esistono svariati tipi di branch predictor; analizziamo il funzionamento di uno dei più semplici, il \emph{one-level branch predictor}\index{One-level branch predictor} a due bit.
 			
 			\begin{figure}
 				\begin{center}
 					\includegraphics[scale=.35]{bp2bit}
-					\caption{Automa di decisione di un one-level branch predictor a 2 bit}
+					\caption{Automa di decisione di un one-level branch predictor a due bit}
 					\label{fig:bp2bits}
 				\end{center}
 			\end{figure}
 		
-			Come da schema in \cref{fig:bp2bits} un one-level branch predictor può essere descritto con un semplice automa a 4 stati.
+			Come da schema in \cref{fig:bp2bits} un one-level branch predictor può essere descritto con un semplice automa a quattro stati.
 			
 			\begin{enumerate}
-				\item \emph{Strongly not taken:} in questo stato il \ac{BP} sceglierà il ramo else del branch. In caso di conferma negativa del controllo resterà in questo stato altrimenti passerà allo stato 2.
-				\item \emph{Weakly not taken:} in questo stato il \ac{BP} ha già osservato una esecuzione then ma la sua scelta resterà ancora il ramo else. Se il controllo si rivelerà false, il \ac{BP} tornerà allo stato 1 ma se si rivelerà true andrà allo stato 3 dal quale inizierà a scegliere il ramo then.
-				\item \emph{Weakly taken:} come detto in precedenza, in questo stato il \ac{BP} inizierà a scegliere il ramo then. Se da questo stato si ottiene un false, torneremo allo stato 2, altrimenti passeremo al 4.
-				\item \emph{Strongly taken:} questo stato è il duale dello stato 1. In questa situazione il \ac{BP} sceglierà il ramo then rimanendo in questo stato se otterrà un true e tornando allo stato 3 se otterrà un false (continuando comunque ad eseguire il ramo then).
+				\item \emph{Strongly not taken:} in questo stato il \ac{BP} sceglierà il ramo else del branch. In caso di conferma negativa del controllo resterà in questo stato altrimenti passerà allo stato due.
+				\item \emph{Weakly not taken:} in questo stato il \ac{BP} ha già osservato una esecuzione then ma la sua scelta resterà ancora il ramo else. Se il controllo si rivelerà false, il \ac{BP} tornerà allo stato uno ma se si rivelerà true andrà allo stato tre dal quale inizierà a scegliere il ramo then.
+				\item \emph{Weakly taken:} come detto in precedenza, in questo stato il \ac{BP} inizierà a scegliere il ramo then. Se da questo stato si ottiene un false, torneremo allo stato due, altrimenti passeremo al quattro.
+				\item \emph{Strongly taken:} questo stato è il duale dello stato uno. In questa situazione il \ac{BP} sceglierà il ramo then rimanendo in questo stato se otterrà un true e tornando allo stato tre se otterrà un false (continuando comunque ad eseguire il ramo then).
 			\end{enumerate}
 		
 			In questo caso vediamo come l'esecuzione consecutiva di al più due rami then ci porta sicuramente in uno stato in cui la prossima scelta del \ac{BP} sarà sicuramente il ramo then. Questa informazione sarà molto utile quando dovremo effettuare un training sul \ac{BP} per convincerlo a prendere una certa decisione quando si troverà davanti ad un certo branch.
@@ -80,19 +80,19 @@
 				}
 			\end{lstlisting}
 			
-			Il processo che la esegue ha accesso ad un array di bytes \emph{array1} di dimensione \emph{array1\_size} ed un secondo array, \emph{array2}, di dimensione pari a 64KB.
+			Il processo che la esegue ha accesso ad un array di bytes \emph{array1} di dimensione \emph{array1\_size} ed un secondo array, \emph{array2}, di dimensione pari a $64$KB.
 			
-			La funzione inizia con un controllo su x, necessario per essere sicuri di non permettere la lettura di porzioni di memoria al di fuori di array1. Durante l'esecuzione speculativa di questo codice però, il \ac{BP} può selezionare il ramo then relativo a questo controllo ad esempio nel seguente caso:
+			La funzione inizia con un controllo su x, necessario per essere sicuri di non permettere la lettura di porzioni di memoria al di fuori di \emph{array1}. Durante l'esecuzione speculativa di questo codice però, il \ac{BP} può selezionare il ramo then relativo a questo controllo ad esempio nel seguente caso:
 			
 			\begin{itemize}
-				\item il valore di x viene scelto in maniera malevola in maniera tale da far puntare array1[x] ad un byte segreto \emph{k} che risiede da qualche parte nella memoria della vittima al di fuori di \emph{array1}(\cref{fig:array}).
+				\item il valore di x viene scelto in maniera malevola in maniera tale da far puntare \arr{array1}{x} ad un byte segreto \emph{k} che risiede da qualche parte nella memoria della vittima al di fuori di \emph{array1}(\cref{fig:array}).
 				\item \emph{array1\_size} e \emph{array2} non sono presenti nella cache ma \emph{k} lo è.
 				\item operazioni precedenti hanno restituito un valore di x corretto, addestrando il \ac{BP} a scegliere il ramo then.
 			\end{itemize}
 		
 			Questa situazione può presentarsi in maniera normale o può essere creata dall'attaccante ad esempio leggendo grandi quantità di memoria per riempire la cache di valori completamente scorrelati ed effettuando una chiamata legittima ad una funzione che utilizzi \emph{k}.
 			
-			A questo punto, quando il programma inizia a girare il processore esegue il confronto tra x e \emph{array1\_size}. La lettura di \emph{array1\_size} si traduce in un cache miss ed il processore richiede il dato dalla memoria principale. Durante l'attesa il \ac{BP} assume che il risultato dell' \emph{if} sarà \emph{true}, eseguirà speculativamente la somma di x all'indirizzo base di \emph{array1} e richiederà il dato presente all'indirizzo appena calcolato. Questa operazione si tradurrà in una cache hit e verrà restituito molto velocemente il valore del byte segreto \emph{k}. L'esecuzione speculativa continua il suo percorso e verrà calcolato l'indirizzo di \emph{array2[k*256]}. La richiesta del dato contenuto a questo indirizzo si tradurrà in una cache miss e verrà richiesta una lettura dalla memoria principale. Durante questa seconda attesa, al processore arriva finalmente il valore di \emph{array1\_size}. Dopo aver eseguito il confronto il processore si accorge che l'esecuzione speculativa era errata ed esegue un rollback allo stato precedente al branch. Il problema sorge in questo momento. La richiesta di lettura rimasta sospesa viene comunque portata a termine e il valore relativo non viene rimosso dalla cache.
+			A questo punto, quando il programma inizia a girare il processore esegue il confronto tra x e \emph{array1\_size}. La lettura di \emph{array1\_size} si traduce in un cache miss ed il processore richiede il dato dalla memoria principale. Durante l'attesa il \ac{BP} assume che il risultato dell' \emph{if} sarà \emph{true}, eseguirà speculativamente la somma di x all'indirizzo base di \emph{array1} e richiederà il dato presente all'indirizzo appena calcolato. Questa operazione si tradurrà in una cache hit e verrà restituito molto velocemente il valore del byte segreto \emph{k}. L'esecuzione speculativa continua il suo percorso e verrà calcolato l'indirizzo di \arr{array2}{k*256}. La richiesta del dato contenuto a questo indirizzo si tradurrà in una cache miss e verrà richiesta una lettura dalla memoria principale. Durante questa seconda attesa, al processore arriva finalmente il valore di \emph{array1\_size}. Dopo aver eseguito il confronto il processore si accorge che l'esecuzione speculativa era errata ed esegue un rollback allo stato precedente al branch. Il problema sorge in questo momento. La richiesta di lettura rimasta sospesa viene comunque portata a termine e il valore relativo non viene rimosso dalla cache.
 			
 			\begin{figure}
 				\begin{center}
@@ -104,7 +104,7 @@
 			
 			Per completare l'attacco l'attaccante non deve fare altro che rilevare questo cambiamento nello stato della cache per recuperare il byte segreto \emph{k}.
 			
-			Nel caso più semplice, quello cioè in cui l'attaccante ha accesso diretto ad \emph{array2}, egli non dovrà fare altro che provare  a leggere tutte le posizioni di \emph{array2[n*256]} per tutti i valori di $n \in (0\dots255)$. Solamente uno di questi sarà presente in cache (quello per \emph{n} = \emph{k}) e verrà restituito velocemente mentre tutti gli altri verranno restituiti in tempi molto lunghi. Prendendo l'unico valore restituito in tempo breve, l'attaccante avrà trovato il byte segreto \emph{k}.
+			Nel caso più semplice, quello cioè in cui l'attaccante ha accesso diretto ad \emph{array2}, egli non dovrà fare altro che provare  a leggere tutte le posizioni di \arr{array2}{n*256} per tutti i valori di $n \in (0\dots255)$. Solamente uno di questi sarà presente in cache (quello per \emph{n} = \emph{k}) e verrà restituito velocemente mentre tutti gli altri verranno restituiti in tempi molto lunghi. Prendendo l'unico valore restituito in tempo breve, l'attaccante avrà trovato il byte segreto \emph{k}.
 			
 			Questo attacco può ovviamente essere eseguito un numero indeterminato di volte e può portare alla completa lettura della memoria della vittima un byte alla volta.
 			
@@ -127,9 +127,9 @@
 			node = entry[x];
 		\end{lstlisting}
 		
-		In questo caso, la riga 4 può essere eseguita speculativamente con il valore \emph{user\_value} fornito dall'attaccante mentre si attende il risultato del controllo presente alla riga 1, ritardato perché il valore di \emph{LIMIT} non è presente in cache. 
+		In questo caso, la riga $4$ può essere eseguita speculativamente con il valore \emph{user\_value} fornito dall'attaccante mentre si attende il risultato del controllo presente alla riga $1$, ritardato perché il valore di \emph{LIMIT} non è presente in cache. 
 		
-		L'istruzione \emph{lfence()} alla riga 4 del \cref{list:lfence} scongiura questa eventualità impedendo l'accesso alla memoria prima che sia terminato l'accesso precedente.
+		L'istruzione \emph{lfence()} alla riga $4$ del \cref{list:lfence} scongiura questa eventualità impedendo l'accesso alla memoria prima che sia terminato l'accesso precedente.
 		
 		\begin{lstlisting}[caption={Utilizzo di lfence},label={list:lfence}]
 		if (user_value >= LIMIT) {
@@ -184,4 +184,4 @@
 			\item \emph{user\_value} non è minore di \emph{LIMIT} ma \emph{user\_value \% LIMIT} lo riporta entro i limiti e non può essere utilizzato per leggere memoria esterna all'array.
 		\end{enumerate}
 	
-		Come le precedenti, anche questa soluzione funziona ma comporta un calo delle prestazioni dovuto al fatto che se la variabile \emph{LIMIT} non è in cache al momento del controllo, non lo sarà neanche quando verrà eseguita speculativamente l'istruzione della riga 4 che quindi dovrà comunque aspettare il valore corretto. 
+		Come le precedenti, anche questa soluzione funziona ma comporta un calo delle prestazioni dovuto al fatto che se la variabile \emph{LIMIT} non è in cache al momento del controllo, non lo sarà neanche quando verrà eseguita speculativamente l'istruzione della riga $4$ che quindi dovrà comunque aspettare il valore corretto. 

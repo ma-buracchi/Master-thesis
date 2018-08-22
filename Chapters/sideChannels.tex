@@ -33,7 +33,7 @@
 		\subsection*{Grandezza fisica osservata}		
 			Una caratteristica molto importante di questi attacchi è sicuramente la grandezza fisica che viene osservata per montare l'attacco. Teoricamente, qualunque grandezza fisica misurabile può essere sfruttata ma alcune si prestano maggiormente rispetto ad altre. 
 			
-			Il tempo e il consumo energetico sono le più comunemente utilizzate ma non sono di certo le uniche. \emph{Genkin, Shamir e Tromer} nel loro lavoro \cite{genkin2014rsa} vanno ad ascoltare i rumori prodotti dal processore. \emph{Ferrigno e Hlavac}\cite{ferrigno2008aes} osservano la luce (qualche fotone) emessa dai transistor nel passaggio di stato da 0 a 1. \emph{Martinasek, Zeman e Trasy}\cite{martinasek2012simple} sfruttano i campi elettromagnetici creati dai chip. \emph{Murdoch}, attraverso le variazioni delle frequenze del clock, ricava informazioni sulla temperatura ambientale e cerca di localizzare geograficamente il dispositivo della vittima.
+			Il tempo e il consumo energetico sono le più comunemente utilizzate ma non sono di certo le uniche. \emph{Genkin, Shamir e Tromer} nel loro lavoro \cite{genkin2014rsa} vanno ad ascoltare i rumori prodotti dal processore. \emph{Ferrigno e Hlavac}\cite{ferrigno2008aes} osservano la luce (qualche fotone) emessa dai transistor nel passaggio di stato da $0$ a $1$. \emph{Martinasek, Zeman e Trasy}\cite{martinasek2012simple} sfruttano i campi elettromagnetici creati dai chip. \emph{Murdoch}, attraverso le variazioni delle frequenze del clock, ricava informazioni sulla temperatura ambientale e cerca di localizzare geograficamente il dispositivo della vittima.
 			
 			Questo elenco assolutamente non esaustivo delle tecniche utilizzate può far capire quanto variegato ed eterogeneo (nonché in continua evoluzione) sia questo settore.
 			
@@ -46,22 +46,22 @@
 				\scriptsize
 				\centering
 				\begin{tabular}{|c|c|c|c|c|c|c|c|} \hline
-					Fonte						& Grandezza					& Componente	& Algoritmo			& Invasivo	& Attivo	& Canale	& Anno	\\ \hline \hline
-					\cite{genkin2014rsa}		& Suono						& CPU			& RSA				& No		& No		& -			& 2014	\\ \hline
-					\cite{ferrigno2008aes}		& Luce						& Transistor	& AES				& Sì		& No		& -			& 2008	\\ \hline
-					\cite{van1985electromagn}	& Campo elettromagnetico	& Monitor    	& -					& No		& No		& -			& 1985	\\ \hline
-					\cite{kocher2018spectre}	& Tempo						& Cache			& RSA				& No		& No		& Timing	& 2018	\\ \hline
-					\cite{giraud2004dfa}		& -							& -				& AES				& No		& Sì		& Storage	& 2004	\\ \hline
-					\cite{mangard2002simple}	& Consumo elettrico			& Smartcard		& AES				& No		& No		& -			& 2002	\\ \hline
-					\cite{asonov2004keyboard}	& Suono						& Tastiere		& -					& No		& No		& -			& 2004	\\ \hline
-					\cite{zhou2018efficient}	& Tempo						& Cache			& OpenSSL			& No		& No		& Timing	& 2018	\\ \hline
-					\cite{martinasek2012simple}	& Campo elettromagnetico	& Chip			& AES				& No		& No		& -			& 2012	\\ \hline
-					\cite{yarom2014flush+}		& Tempo						& Cache			& RSA				& No		& No		& Timing	& 2014	\\ \hline
-					\cite{karri2001fault}		& -							& -				& AES				& No		& Sì		& Storage	& 2001	\\ \hline
-					\cite{backes2010acoustic}	& Suono						& Stampanti		& -					& No		& No		& -			& 2010	\\ \hline
-					\cite{lipp2016armageddon}	& Tempo						& Cache			& AES				& No		& No		& Timing	& 2016	\\ \hline
-					\cite{murdoch2006hot}		& Temperatura				& Clock			& -					& No		& No		& -			& 2006	\\ \hline
-					\cite{genkin2018drive}		& Tempo						& Browser		& Curve ellittiche	& No		& No		& Timing	& 2018	\\ \hline
+					Fonte						& Grandezza					& Componente	& Algoritmo			& Invasivo	& Attivo	& Canale	& Anno		\\ \hline \hline
+					\cite{genkin2014rsa}		& Suono						& CPU			& RSA				& No		& No		& -			& $2014$	\\ \hline
+					\cite{ferrigno2008aes}		& Luce						& Transistor	& AES				& Sì		& No		& -			& $2008$	\\ \hline
+					\cite{van1985electromagn}	& Campo elettromagnetico	& Monitor    	& -					& No		& No		& -			& $1985$	\\ \hline
+					\cite{kocher2018spectre}	& Tempo						& Cache			& RSA				& No		& No		& Timing	& $2018$	\\ \hline
+					\cite{giraud2004dfa}		& -							& -				& AES				& No		& Sì		& Storage	& $2004$	\\ \hline
+					\cite{mangard2002simple}	& Consumo elettrico			& Smartcard		& AES				& No		& No		& -			& $2002$	\\ \hline
+					\cite{asonov2004keyboard}	& Suono						& Tastiere		& -					& No		& No		& -			& $2004$	\\ \hline
+					\cite{zhou2018efficient}	& Tempo						& Cache			& OpenSSL			& No		& No		& Timing	& $2018$	\\ \hline
+					\cite{martinasek2012simple}	& Campo elettromagnetico	& Chip			& AES				& No		& No		& -			& $2012$	\\ \hline
+					\cite{yarom2014flush+}		& Tempo						& Cache			& RSA				& No		& No		& Timing	& $2014$	\\ \hline
+					\cite{karri2001fault}		& -							& -				& AES				& No		& Sì		& Storage	& $2001$	\\ \hline
+					\cite{backes2010acoustic}	& Suono						& Stampanti		& -					& No		& No		& -			& $2010$	\\ \hline
+					\cite{lipp2016armageddon}	& Tempo						& Cache			& AES				& No		& No		& Timing	& $2016$	\\ \hline
+					\cite{murdoch2006hot}		& Temperatura				& Clock			& -					& No		& No		& -			& $2006$	\\ \hline
+					\cite{genkin2018drive}		& Tempo						& Browser		& Curve ellittiche	& No		& No		& Timing	& $2018$	\\ \hline
 				\end{tabular}
 				\caption{Classificazione dei principali attacchi conosciuti}
 				\label{tab:attacchi}
@@ -71,13 +71,13 @@
 			Passiamo adesso ad una breve panoramica sui maggiori attacchi per ogni tipo di grandezza fisica attaccata. Si ricorda che gli attacchi basati sul tempo, categoria nella quale ricadono la maggior parte degli attacchi eseguiti contro le cache, verranno approfonditi nel prossimo capitolo.
 			
 	\section{Attacchi basati sul campo elettromagnetico}\index{Electromagnetic attacks}
-		Fin dalla metà del '900, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer producessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) ad esse associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
+		Fin dalla metà del '$900$, il governo degli Stati Uniti d'America era a conoscenza del fatto che i computer producessero "emanazioni compromettenti" e che queste potessero essere catturate ed utilizzate. I ricercatori dell'esercito dimostrarono che era possibile catturare queste emanazioni a distanza e rivelare le informazioni (classificate) ad esse associate. In relazione a questo problema fu attivato il progetto \ac{TEMPEST}.\index{TEMPEST}
 		
-		TEMPEST è uno standard creato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-compliant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-27.
+		TEMPEST è uno standard creato dal \ac{NCSCD4} ed i requisiti richiesti alle periferiche TEMPEST-compliant sono specificati nel documento riservato NACSIM5100A. Anche la \ac{NATO} possiede uno standard di protezione simile chiamato SDIP-$27$.
 		
-		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI5), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti. I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
+		Nel suo libro\cite{wright1987spycatcher}, \emph{Peter Wright}, ex ricercatore dei servizi segreti inglesi (MI$5$), rivela l'origine degli attacchi di tipo TEMPEST su macchine cifranti. I principali enti governativi utilizzano, sui sistemi ritenuti sensibili, speciali protezioni come scudi metallici molto costosi su singoli dispositivi, stanze o interi edifici\cite{herndon1990electromagnetic}.
 		
-		Il primo documento pubblico riguardante le minacce alla sicurezza prodotte dalle emanazioni dei computer (primo esempio pubblico di side-channel attack) risale al 1985 ed è opera di \emph{Wim van Eck}\cite{van1985electromagn}. Nel suo lavoro dimostrò come fosse possibile ricostruire l'immagine prodotta da un monitor attraverso l'analisi a distanza del campo elettromagnetico emesso, riproducendola su un altro schermo. La comunità scientifica specializzata nella sicurezza era già a conoscenza di questo fenomeno che veniva però ritenuto di poco interesse perché si pensava che servissero attrezzature molto costose disponibili soltanto per uso militare. Van Eck li smentì ricostruendo l'immagine di un monitor posto a centinaia di metri di distanza usando solamente una televisione modificata con 15 dollari di accessori (al cambio attuale corrisponderebbero a meno di 40 euro).
+		Il primo documento pubblico riguardante le minacce alla sicurezza prodotte dalle emanazioni dei computer (primo esempio pubblico di side-channel attack) risale al $1985$ ed è opera di \emph{Wim van Eck}\cite{van1985electromagn}. Nel suo lavoro dimostrò come fosse possibile ricostruire l'immagine prodotta da un monitor attraverso l'analisi a distanza del campo elettromagnetico emesso, riproducendola su un altro schermo. La comunità scientifica specializzata nella sicurezza era già a conoscenza di questo fenomeno che veniva però ritenuto di poco interesse perché si pensava che servissero attrezzature molto costose disponibili soltanto per uso militare. Van Eck li smentì ricostruendo l'immagine di un monitor posto a centinaia di metri di distanza usando solamente una televisione modificata con quindici dollari di accessori (al cambio attuale corrisponderebbero a meno di quaranta euro).
 		
 		Nel corso degli anni tali tipi di attacco si sono evoluti andando a colpire schermi piatti\cite{kuhn2006eavesdropping}, chip\cite{martinasek2012simple}, tastiere\cite{vuagnoux2009compromising} e in generale qualunque dispositivo contenente componenti elettronici in grado quindi di produrre onde elettromagnetiche.
 			
@@ -89,7 +89,7 @@
 		Per approfondire il livello di informazione ricevuto le strade più percorse sono due. Aumentare la sensibilità dell'ascoltatore cercando di trovare differenze tra rumori che sembrano uguali o ascoltare rumori più particolari.
 	
 		\subsection{Differenziazione dei rumori}	
-			Uno degli esempi più importanti di questo tipo di attacco è quello eseguito sulle stampanti a matrice di aghi nel 2010\cite{backes2010acoustic}. Il fatto che questo tipo di stampanti sia ormai sparito dall'utilizzo del privato cittadino non deve far pensare ad un attacco anacronistico. Questa scelta è infatti dovuta al fatto che in quell'anno circa il $60\%$ dei medici in Germania e il $30\%$ delle banche utilizzavano ancora quel tipo di stampanti. Alcuni stati europei richiedono per legge l'utilizzo di stampanti a matrici di aghi per la prescrizione di particolari medicine\cite{bernatzky2011schmerzbehandlung}.
+			Uno degli esempi più importanti di questo tipo di attacco è quello eseguito sulle stampanti a matrice di aghi nel $2010$\cite{backes2010acoustic}. Il fatto che questo tipo di stampanti sia ormai sparito dall'utilizzo del privato cittadino non deve far pensare ad un attacco anacronistico. Questa scelta è infatti dovuta al fatto che in quell'anno circa il $60\%$ dei medici in Germania e il $30\%$ delle banche utilizzavano ancora quel tipo di stampanti. Alcuni stati europei richiedono per legge l'utilizzo di stampanti a matrici di aghi per la prescrizione di particolari medicine\cite{bernatzky2011schmerzbehandlung}.
 			
 			\begin{figure}
 				\begin{center}
@@ -101,14 +101,14 @@
 			
 			Come si vede in \cref{fig:matrixHead}, una stampante ad aghi scompone ogni lettera in colonne di punti ed utilizza gli aghi necessari per incidere la traccia corretta sulla carta. Lo studio dimostra come sia possibile addestrare una rete neurale per riconoscere il rumore emesso ad ogni singolo passo che cambia in base a quanti e quali aghi vengono utilizzati. Tale rete neurale riconosce il $72\%$ delle parole stampate senza alcuna ulteriore assunzione ed arriva al $95\%$ se si assume una conoscenza del contesto.
 			
-			L'idea di base è la stessa utilizzata anche in \cite{asonov2004keyboard} nel 2004 per riconoscere i rumori prodotti dai tasti premuti su di una tastiera.
+			L'idea di base è la stessa utilizzata anche in \cite{asonov2004keyboard} nel $2004$ per riconoscere i rumori prodotti dai tasti premuti su di una tastiera.
 		
 		\subsection{Cogliere rumori impercettibili}	
-			In questa seconda categoria uno dei principali rappresentati è sicuramente l'attacco\cite{genkin2014rsa} del 2014 portato contro il circuito di regolazione del voltaggio dei computer. Tale circuito è composto da bobine e condensatori che vibrano nel tentativo di fornire un voltaggio costante alla CPU.
+			In questa seconda categoria uno dei principali rappresentati è sicuramente l'attacco\cite{genkin2014rsa} del $2014$ portato contro il circuito di regolazione del voltaggio dei computer. Tale circuito è composto da bobine e condensatori che vibrano nel tentativo di fornire un voltaggio costante alla CPU.
 			
 			Eseguire ad esempio RSA con chiavi differenti provoca pattern di esecuzione di operazioni della CPU diversi che portano all'utilizzo di quantità di energia elettrica differente. Il regolatore di voltaggio reagisce di conseguenza causando fluttuazioni di elettricità che provocano vibrazioni meccaniche nei componenti elettronici e queste vibrazioni vengono trasmesse attraverso l'aria come onde sonore. Il riconoscimento di questi pattern differenti permette agli autori di recuperare la chiave RSA utilizzata.
 			
-			La particolarità interessante di questo attacco è che non richiede un'attrezzatura complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di 4 metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a 30 cm dallo stesso computer.
+			La particolarità interessante di questo attacco è che non richiede un'attrezzatura complessa ed avanzata. Il risultato migliore viene ovviamente ottenuto con un microfono direzionale professionale posizionato ad una distanza di quattro metri dal computer attaccato ma lo stesso risultato viene ottenuto anche con l'utilizzo di un semplice smartphone posto a trenta cm dallo stesso computer.
 			
 	\section{Attacchi basati sulla luce}\index{Optical attacks}
 		Le emissioni ottiche sono un'altra possibile fonte di informazioni. Alcune, banali, possono ad esempio essere ricavate dalla semplice osservazione dei \acs{LED} presenti su ogni dispositivo che informano sullo stato del dispositivo stesso. Si può capire se un dispositivo è acceso o spento, se sta eseguendo computazioni o è inattivo, se sta recuperando informazioni in memoria o se sta utilizzando la connessione Wi-Fi. Simili informazioni sono tutte facilmente osservabili ma, nella maggior parte dei casi, poco utili.
@@ -155,7 +155,7 @@
 		Gli attacchi basati sui fault si ottengono modificando maliziosamente la normale esecuzione di un algoritmo crittografico. Tale esecuzione errata può far trapelare informazioni che possono essere utilizzate per recuperare la chiave. In generale gli attacchi fault-based si dividono nelle seguenti quattro categorie\cite{patranabis2018fault}.
 		
 		\subsection*{\ac{DFA}}
-			La \ac{DFA}\index{Differential fault analysis} è una tecnica nella quale l'attaccante inserisce un errore durante la computazione in un fissato punto spazio-temporale dell'algoritmo e successivamente analizza le differenze tra il ciphertext esatto e quello errato per recuperare la chiave segreta. Tecniche di \ac{DFA} sono state applicate ai principali algoritmi crittografici, soprattutto su \ac{AES}-128. Lo stato dell'arte degli attacchi \ac{DFA} permette di recuperare l'intera chiave a 128 bit di \ac{AES} con l'inserimento di un singolo fault\cite{tunstall2011differential}.
+			La \ac{DFA}\index{Differential fault analysis} è una tecnica nella quale l'attaccante inserisce un errore durante la computazione in un fissato punto spazio-temporale dell'algoritmo e successivamente analizza le differenze tra il ciphertext esatto e quello errato per recuperare la chiave segreta. Tecniche di \ac{DFA} sono state applicate ai principali algoritmi crittografici, soprattutto su \ac{AES}-$128$. Lo stato dell'arte degli attacchi \ac{DFA} permette di recuperare l'intera chiave a $128$ bit di \ac{AES} con l'inserimento di un singolo fault\cite{tunstall2011differential}.
 			
 		\subsection*{\ac{FSA}}
 			La \ac{FSA}\index{Fault sensitivity analysis} è stata introdotta da \emph{Li et al.}\cite{li2010fault} ed è una tecnica che non utilizza direttamente i ciphertext ottenuti tramite una computazione in presenza di fault. Nel loro lavoro gli autori cercano di trovare delle condizioni critiche che fanno assumere al ciphertext alcune caratteristiche riconoscibili (ad esempio la frequenza di clock al momento dell'esecuzione dell'istruzione difettosa) chiamate \emph{fault sensitivity}. La \ac{FSA} sfrutta poi le relazioni tra queste caratteristiche e i dati processati per recuperare informazioni segrete dal \disps.
