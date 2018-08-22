@@ -34,19 +34,19 @@
 			L'attacco funziona sfruttando l'esecuzione speculativa del processore sul controllo della password. Avendo eseguito il \emph{flush} di \emph{passwordDigest} al punto 2, \arr{passwordDigest}{userUnderAttack} non sarà presente in cache al momento del controllo al punto 3. Nell'attesa del suo recupero dalla memoria principale, il \ac{BP} eseguirà il ramo \emph{then} della computazione a causa dell'addestramento ottenuto al punto 1. Verrà richiesto dalla memoria \emph{y} che verrà caricato in cache. Quando sarà disponibile \arr{passwordDigest}{userUnderAttack}, il controllo fallirà e non verrà permesso l'accesso ai dati ma \emph{y} resterà in cache. A questo punto, accedendo a tutte le posizioni \arr{array2}{l} con \emph{l} $\in (0,\dots,\text{\emph{size(array2)}}-1)$ , l'unica che ci darà una risposta veloce sarà \emph{l} = \arr{secret}{userUnderAttack} e avremo così scoperto il valore segreto.
 			
 			\subsection{Implementazione}
-				Passiamo adesso all'analisi dettagliata del codice C che implementa l'attacco.
+				Passiamo adesso all'analisi dettagliata del nostro programma che implementa l'attacco.
 				
 				\subsubsection{Inizializzazione}
-				\codspark{1}{22}
+				\codspark{1}{22}{Inizializzazione}
 				
-				Nella primissima parte del nostro programma vengono semplicemente caricate le librerie necessarie alla compilazione, viene definito il numero di utenti (tremila), vengono creati i tre array principali \emph{secret},\emph{array2} e \emph{passwordDigest} e viene definita la funzione vittima, esattamente la stessa proposta nello scenario.
+				Nella primissima parte vengono semplicemente caricate le librerie necessarie alla compilazione, viene definito il numero di utenti (tremila), vengono creati i tre array principali \emph{secret},\emph{array2} e \emph{passwordDigest} e viene definita la funzione vittima, esattamente la stessa proposta nello scenario.
 				
  				La libreria \emph{x86intrin} fornisce le istruzioni \emph{rdtscp} e \emph{\_\_mm\_clflush} necessarie al calcolo dei tempi di hit e al flush della cache. In particolare l'istruzione \emph{\_\_mm\_clflush} prende come argomento un indirizzo di memoria ed invalida, su tutti i livelli della cache, tutte le line che contengono quell'indirizzo.
 				
 				I tre array "utili" sono separati da altri array \emph{unused} per essere sicuri che vengano distanziati in memoria. Questo fa sì che non si sovrappongano all'interno di una stessa line.
 				
 				\subsubsection{Main - definizione parametri}
-				\codspark{24}{52}
+				\codspark{24}{52}{Main - definizione parametri}
 				
 				In questa parte vengono definiti i parametri che verranno utilizzati nel resto del programma:
 
@@ -77,12 +77,12 @@
 				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore \emph{srand} di numeri casuali.
 				
 				\subsubsection{Main - inizializzazione dell'esperimento}
-				\codspark{54}{70}
+				\codspark{54}{70}{Main - inizializzazione dell'esperimento}
 				
 				All'inizio di ogni test viene scelto casualmente lo \emph{userUnderAttack} e vengono inizializzati casualmente i tre array principali \emph{passwordDigest, array2} e \emph{secret}. Successivamente si sceglie una password sicuramente sbagliata ed infine si prepara l'array \emph{result} alla ricezione dei risultati settandolo a zero.
 				
 				\subsubsection{Main - l'attacco}
-				\codspark{72}{99}
+				\codspark{72}{99}{Main - l'attacco}
 				
 				Come descritto nello scenario, l'attacco si divide in quattro parti. Nella prima parte viene addestrato il \ac{BP} ad eseguire speculativamente il ramo then della funzione vittima richiamandola per tre volte con \emph{userID} e password corretta.
 				
@@ -93,3 +93,8 @@
 				Terminato il flush della cache, viene richiamata la funzione vittima e vengono calcolati i tempi di accesso alle varie posizioni di \emph{array2}. Come si può notare, non si effettua l'accesso a tutte le posizioni di \emph{array2} ma si procede con un passo $\delta$ visto che comunque una qualunque delle $\delta$ posizioni all'interno della line restituirà una hit.
 				
 				Con un'altra \emph{\_mm\_lfence} ci assicuriamo che il tempo venga effettivamente salvato in \emph{time2} ed effettuiamo il controllo. Se il risultato del calcolo del tempo di accesso è minore della soglia che abbiamo impostato, aumentiamo di uno nell'array \emph{results} il valore  contenuto all'indice che stiamo analizzando.
+				
+				\subsubsection{Main - i risultati}
+				\codspark{101}{138}{Main - i risultati}
+				
+				Nell'ultima parte del programma viene cercato l'indice \emph{index} con il valore più alto nell'array \emph{results} e viene calcolato il range nel quale si suppone stia il segreto. Tale range non è altro che $((index - 1 * \delta),(index + 1 * \delta))$ limitato in basso da $0$ ed in alto da \emph{SIZE}.
