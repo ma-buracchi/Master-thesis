@@ -44,9 +44,9 @@ parts,dottedtoc]{classicthesis}
 \newcommand{\disps}{dispositivo crittografico }
 \newcommand{\dispp}{dispositivi crittografici }
 \newcommand{\codice}[4]{\lstinputlisting[language={C},firstline={#1}, lastline={#2},caption={#3},label={#4},frame = none]{"D:/UNIFI/Magistrale/Tesi/spectre/primeProbe/spark.c"}}
-\newcommand{\codspark}[2]{
+\newcommand{\codspark}[3]{
 	\begin{center}
-		\lstinputlisting[language={C},firstline={#1},lastline={#2},firstnumber={#1},frame = none]{code/spark.c}
+		\lstinputlisting[language={C},firstline={#1},lastline={#2},firstnumber={#1},frame={none},caption={[#3]}]{code/spark.c}
 	\end{center}}
 \newcommand{\arr}[2]{$\text{\emph{#1}}\left[ \text{\emph{#2}}\right]$}
 \newcommand{\arrdoppio}[3]{$\text{\emph{#1}}\left[ \text{\emph{#2}} \left[\text{\emph{#3}}\right]\right]$}
@@ -78,16 +78,16 @@ parts,dottedtoc]{classicthesis}
 
 \lstset{ %
 	%backgroundcolor=\color{back},	% choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
-	basicstyle=\footnotesize,  		% the size of the fonts that are used for the code
+	basicstyle=\footnotesize\ttfamily,  % the size of the fonts that are used for the code
 	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
 	breaklines=true,                % sets automatic line breaking
 	captionpos=b,                   % sets the caption-position to bottom
 	commentstyle=\color{gray},   	% comment style
-	frame=none %rlbt,	         	        % adds a frame around the code
+	frame=none %rlbt,	         	% adds a frame around the code
 	frameround=fttt					% round corner (use f instead t to edge corner)
 	keepspaces=true,                % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
 	keywordstyle=\color{blue},      % keyword style
-	language=C,               % the language of the code
+	language=C,               		% the language of the code
 	numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
 	numbersep=5pt,                  % how far the line-numbers are from the code
 	numberstyle=\scriptsize\color{black}, % the style that is used for the line-numbers
@@ -119,11 +119,24 @@ parts,dottedtoc]{classicthesis}
 \tableofcontents
 \listoffigures
 \lstlistoflistings
+
+\begingroup
+\let\clearpage\relax
+\let\cleardoublepage\relax
+\let\cleardoublepage\relax
+
+\vspace*{8ex}
+
 \listoftables
+\endgroup 
+
 \cleardoublepage
 \thispagestyle{empty}
+
 \begin{flushright}
 \null\vspace{\stretch {1}}
+\emph{"From camp to camp, through the foul womb of night,\\The hum of either army stilly sounds,\\That the fixed sentinels almost receive\\The secret whispers of each other’s watch." \break --- Henry V, William Shakespear\\} 
+\null\vspace{10mm}
 \emph{"Da campo a campo, nel tetro grembo della notte,\\s’avverte appena il brusio di entrambe le armate,\\sicché le sentinelle appostate quasi possono udire\\i mormorii furtivi delle sentinelle nemiche" \break --- Enrico V, William Shakespear} \vspace{\stretch{2}}\null
 \end{flushright}
 \cleardoublepage
