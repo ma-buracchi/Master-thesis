@@ -77,6 +77,19 @@
 				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore \emph{srand} di numeri casuali.
 				
 				\subsubsection{Main - inizializzazione dell'esperimento}
-				\codspark{54}{68}
+				\codspark{54}{70}
 				
-				All'inizio di ogni test viene scelto casualmente lo \emph{userUnderAttack} e vengono inizializzati casualmente i tre array principali \emph{passwordDigest, array2} e \emph{secret}. Infine si prepara l'array \emph{result} alla ricezione dei risultati settandolo a zero.
+				All'inizio di ogni test viene scelto casualmente lo \emph{userUnderAttack} e vengono inizializzati casualmente i tre array principali \emph{passwordDigest, array2} e \emph{secret}. Successivamente si sceglie una password sicuramente sbagliata ed infine si prepara l'array \emph{result} alla ricezione dei risultati settandolo a zero.
+				
+				\subsubsection{Main - l'attacco}
+				\codspark{72}{99}
+				
+				Come descritto nello scenario, l'attacco si divide in quattro parti. Nella prima parte viene addestrato il \ac{BP} ad eseguire speculativamente il ramo then della funzione vittima richiamandola per tre volte con \emph{userID} e password corretta.
+				
+				Successivamente si esegue il flush dalla cache di tutte le posizioni degli array \emph{array2} e \emph{passwordDigest}.
+				
+				Prima di richiamare la funzione vittima abbiamo messo l'istruzione \emph{\_mm\_lfence}. Tale istruzione è una barriera sulla memoria che non permette l'esecuzione delle istruzioni successive prima che siano terminate tutte le scritture in memoria delle istruzioni precedenti. Questo evita ad esempio che l'istruzione a riga 90 venga eseguita prima del flush di \emph{array2} a causa di un riordinamento del codice. Se accadesse questo, il risultato del calcolo del tempo di accesso sarebbe ovviamente falsato.
+				
+				Terminato il flush della cache, viene richiamata la funzione vittima e vengono calcolati i tempi di accesso alle varie posizioni di \emph{array2}. Come si può notare, non si effettua l'accesso a tutte le posizioni di \emph{array2} ma si procede con un passo $\delta$ visto che comunque una qualunque delle $\delta$ posizioni all'interno della line restituirà una hit.
+				
+				Con un'altra \emph{\_mm\_lfence} ci assicuriamo che il tempo venga effettivamente salvato in \emph{time2} ed effettuiamo il controllo. Se il risultato del calcolo del tempo di accesso è minore della soglia che abbiamo impostato, aumentiamo di uno nell'array \emph{results} il valore  contenuto all'indice che stiamo analizzando.
