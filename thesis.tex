@@ -43,13 +43,16 @@ parts,dottedtoc]{classicthesis}
 
 \newcommand{\disps}{dispositivo crittografico }
 \newcommand{\dispp}{dispositivi crittografici }
-\newcommand{\codice}[4]{\lstinputlisting[language={C},firstline={#1}, lastline={#2},caption={#3},label={#4},frame = none]{"D:/UNIFI/Magistrale/Tesi/spectre/primeProbe/spark.c"}}
+\newcommand{\codice}[4]
+	{\begin{center}
+		\lstinputlisting[language={C},firstline={#1}, lastline={#2},caption={#3},label={#4},frame = none]{"D:/UNIFI/Magistrale/Tesi/spectre/primeProbe/spark.c"}
+	\end{center}}
 \newcommand{\codspark}[3]{
 	\begin{center}
 		\lstinputlisting[language={C},firstline={#1},lastline={#2},firstnumber={#1},frame={none},caption={[#3]}]{code/spark.c}
 	\end{center}}
-\newcommand{\arr}[2]{$\text{\emph{#1}}\left[ \text{\emph{#2}}\right]$}
-\newcommand{\arrdoppio}[3]{$\text{\emph{#1}}\left[ \text{\emph{#2}} \left[\text{\emph{#3}}\right]\right]$}
+\newcommand{\arr}[2]{$\text{\texttt{#1}}\left[ \text{\texttt{#2}}\right]$}
+\newcommand{\arrdoppio}[3]{$\text{\texttt{#1}}\left[ \text{\texttt{#2}} \left[\text{\texttt{#3}}\right]\right]$}
 
 \newcommand{\myfloatalign}{\centering} 
 
