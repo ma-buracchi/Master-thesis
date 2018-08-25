@@ -97,7 +97,15 @@
 				\subsubsection{Main - i risultati}
 				\codspark{71}{105}{Main - i risultati}
 				
-				Nell'ultima parte del programma viene cercato l'indice \texttt{index} con il valore più alto nell'array \texttt{results}. Questo indice rappresenta la porzione di \texttt{array2} che dovrebbe contenere il segreto. Da questo indice viene calcolato il range da restituire limitato in basso da $0$ ed in alto da \texttt{SIZE}che non è altro che: $$((index - precisionLoss) * \delta\ ,\ (index + 1 + precisionLoss) * \delta).$$ Il risultato così ottenuto viene infine comparato con \arr{secret}{userUnderAttack} e viene stabilito il risultato dell'attacco:
+				\begin{figure}[b]
+					\begin{center}
+						\includegraphics[width=\textwidth]{range}
+						\caption[Schermata di SPARK]{Calcolo del range.}
+						\label{fig:range}
+					\end{center}
+				\end{figure}
+				
+				Nell'ultima parte del programma viene cercato l'indice \texttt{index} con il valore più alto nell'array \texttt{results}. Questo indice rappresenta la porzione di \texttt{array2} che dovrebbe contenere il segreto. Da questo indice viene calcolato il range da restituire (\cref{fig:range}) limitato in basso da $0$ ed in alto da \texttt{SIZE} che non è altro che: $$((index - precisionLoss) * \delta\ ,\ (index + 1 + precisionLoss) * \delta).$$ Il risultato così ottenuto viene infine comparato con \arr{secret}{userUnderAttack} e viene stabilito il risultato dell'attacco:
 				
 				\begin{itemize}
 					\item \texttt{OK} - se il segreto ricade nel range calcolato.
@@ -113,7 +121,7 @@
 					\end{center}
 				\end{figure}
 				
-				Come ultima cosa viene stampato a video un resoconto sui risultati ottenuti. Nella \cref{fig:schermata} si può vedere la schermata del programma.
+				Come ultima cosa viene visualizzato sullo schermo un resoconto dei risultati ottenuti. Nella \cref{fig:schermata} si può vedere la schermata del programma.
 			
 			\subsection{Prove sperimentali}
 				Abbiamo testato il programma su un notebook SAMSUNG-R$580$ che monta un processore INTEL CORE i$3$-$330$M la cui cache è divisa in:
