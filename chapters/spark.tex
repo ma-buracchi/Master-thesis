@@ -2,42 +2,42 @@
 	In questo capitolo verrà analizzato \ac{SPARK}\index{SPARK}, il nostro attacco basato sul progetto SPECTRE capace di recuperare chiavi (o più in generale "segreti") evitando il controllo della password.
 	
 	\section{Scenario}
-		Immaginiamo di partire dalla funzione attaccata da SPECTRE (\cref{list:vulnerabile}). Nello scenario più semplice si può pensare che \texttt{array1} (da adesso sarà chiamato \texttt{secret}) contenga delle chiavi predefinite assegnate ad ogni utente. Queste chiavi vengono utilizzate come indici  per accedere ad \texttt{array2} che contiene le informazioni riservate di tutti gli utenti (ad esempio il saldo del conto corrente). Data la riservatezza di queste informazioni, l'accesso a questo array è protetto da una password. 
+		Immaginiamo di partire dalla funzione attaccata da SPECTRE (\cref{list:vulnerabile}). Nello scenario più semplice si può pensare che \texttt{array1} (che d'ora in poi chiameremo \texttt{secret}) contenga delle chiavi predefinite assegnate ad ogni utente. Queste chiavi vengono utilizzate come indici  per accedere ad \texttt{array2}, che contiene le informazioni riservate di tutti gli utenti (ad esempio il saldo del conto corrente). Data la riservatezza di queste informazioni, l'accesso a questo array è protetto da una password. 
 		
-		L'utente \emph{x}, identificato tramite il proprio \texttt{userID}, che vuole consultare i propri dati dovrà inserire ID e password (salvate nell'array delle password \texttt{passwordDigest}). In caso di esito positivo del controllo, si utilizzerà l'indice contenuto in \arr{secret}{userID} per andare a recuperare l'informazione che si riferisce ad \emph{x}. In caso di esito negativo verrà ovviamente negato l'accesso ai dati.
+		L'utente \emph{x} che vorrà consultare i propri dati dovrà autenticarsi inserendo il proprio \texttt{userID} ed una password (salvata insieme alle password degli altri utenti nell'array \texttt{passwordDigest}). In caso di esito positivo del controllo, si utilizzerà il valore contenuto in \arr{secret}{userID} come indice di \texttt{array2} per andare a recuperare il dato sensibile riguardante x. In caso di esito negativo verrà ovviamente negato l'accesso ai dati.
 		
 		Tale funzione potrebbe essere implementata dal \cref{list:spark}:
-		\codice{28}{32}{Funzione attaccata da SPARK}{list:spark}
+		\codice{28}{32}{funzione attaccata da SPARK}{list:spark}
 		
-		Supponiamo adesso che l'attaccante abbia accesso ad \texttt{array2} (come supposto anche dall'attacco SPECTRE) ma che non abbia accesso a \texttt{secret} ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il rispettivo \arr{secret}{x}, per poter successivamente avere accesso all'informazione riservata, il tutto senza conoscere la password.
+		Supponiamo adesso che l'attaccante abbia accesso ad \texttt{array2} (come supposto anche dall'attacco SPECTRE), ma che non abbia accesso all'array \texttt{secret} ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il relativo \arr{secret}{userID}, per poter successivamente avere accesso all'informazione riservata, il tutto senza conoscere la password.
 		
-		La precisione del risultato ottenuto dipende molto dal processore e dal tipo di dati utilizzato per rappresentare i vari valori. Nella nostra implementazione abbiamo utilizzato il tipo di dato \texttt{int} grande trentadue bit; questo, in una cache con dimensione delle line pari a $512$ bit (un valore considerato standard nei processori più moderni) non ci permette di recuperare esattamente \arr{secret}{x} (\cref{fig:lineSize}) ma di localizzarlo in un intervallo di ampiezza $\delta$ con: $$\delta = \frac{\text{dimensione di una line}}{\text{dimensione del tipo di dato}} = \frac{512}{32} = 16.$$
+		La precisione del risultato ottenuto dipende molto dal processore e dal tipo di dati utilizzato per rappresentare i diversi valori. Nella nostra implementazione abbiamo utilizzato il tipo primitivo \texttt{int} (dimensione 32 bit); questo, in una cache con dimensione delle line pari a $512$ bit (un valore considerato standard nei processori più moderni) non ci permette di recuperare esattamente \arr{secret}{x} (\cref{fig:lineSize}), tuttavia ci consente di localizzarlo in un intervallo di ampiezza $\delta$ con: $$\delta = \frac{\text{dimensione di una line}}{\text{dimensione del tipo di dato}} = \frac{512}{32} = 16.$$
 		
 		\begin{figure}
 			\begin{center}
 				\includegraphics[width=.8\textwidth]{lineSize}
-				\caption{Contenuto di una cache line nel nostro setup}
+				\caption{contenuto di una cache line nel nostro setup}
 				\label{fig:lineSize}
 			\end{center}
 		\end{figure}
 		
 		\section{L'attacco}
-			Prima di analizzare l'effettiva implementazione, vediamo l'idea generale dell'attacco che può essere suddiviso in quattro parti:
+			Prima di analizzare l'effettiva implementazione, vediamo l'idea generale dell'attacco, che può essere schematizzato in quattro punti:
 			
 			\begin{enumerate}
-				\item Il \ac{BP} viene addestrato richiamando la funzione vittima per tre volte con uno \texttt{userID} e la relativa password corretta. Questo risultato è facilmente ottenibile dall'attaccante utilizzando i propri dati di accesso.
+				\item Il \ac{BP} viene addestrato richiamando la funzione vittima per tre volte con uno \texttt{userID} e la relativa password corretta. Per addestrare il BP, all'attaccante basterà semplicemente autenticarsi con i propri dati.
 				\item Viene eseguito il \emph{flush} dalla cache di tutti i dati relativi ad \texttt{array2} e \texttt{passwordDigest}. Ricordiamo che l'istruzione \texttt{clflush} non richiede alcun privilegio per essere eseguita.
-				\item Viene richiamata la funzione vittima con lo \texttt{userID} di cui vogliamo scoprire il segreto (chiamato \texttt{userUnderAttack}) ed una password casuale.
-				\item Viene calcolato il tempo necessario ad accedere ad alcune posizioni di \texttt{array2}. Considerato che, data l'esecuzione speculativa dovuta alla chiamata precedente, l'unico dato relativo ad \texttt{array2} presente in cache in questo momento è \emph{y} = \arrdoppio{array2}{secret}{userUnderAttack}, otterremo un tempo basso solamente per una posizione presente nella stessa line che contiene \emph{y}. Per tutte le altre invece sarà alto perché dovranno essere recuperate dalla memoria principale.
+				\item Viene richiamata la funzione vittima con lo \texttt{userID} di cui vogliamo scoprire il segreto (che nel codice chiameremo \texttt{userUnderAttack}) ed una password casuale.
+				\item Viene calcolato il tempo necessario ad accedere ad alcune posizioni di \texttt{array2}. Considerato che, data l'esecuzione speculativa dovuta alla chiamata precedente, l'unico dato relativo ad \texttt{array2} presente in cache in questo momento è \emph{y} = \arrdoppio{array2}{secret}{userUnderAttack}, otterremo un tempo basso solamente per una posizione presente nella stessa line che contiene \emph{y}. Per tutte le altre invece sarà alto in quanto il dato dovrà essere recuperato dalla memoria principale.
 			\end{enumerate}
 		
-			Questo attacco sfrutta l'esecuzione speculativa del processore sul controllo della password. Infatti, avendo eseguito il \emph{flush} di \texttt{passwordDigest} al punto due, \emph{z} = \arr{passwordDigest}{userUnderAttack} non sarà presente in cache al momento del controllo al punto tre e, nell'attesa del suo recupero dalla memoria principale, il \ac{BP} eseguirà il ramo then della computazione a causa dell'addestramento ottenuto al punto uno. Verrà richiesto dalla memoria \emph{y} che verrà caricato in cache. Quando sarà disponibile \emph{z}, il controllo fallirà e non verrà permesso l'accesso ai dati ma \emph{y} resterà in cache. A questo punto, accedendo a varie posizioni di \arr{array2}{l}, l'unica che ci darà una risposta veloce ci dirà quale line contiene il segreto. La scelta delle posizioni da accedere e il calcolo del range viene spiegato più in dettaglio nella prossima sezione.
+			Questo attacco sfrutta l'esecuzione speculativa del processore sul controllo della password. Infatti, avendo eseguito il \emph{flush} di \texttt{passwordDigest} al punto due, \emph{z} = \arr{passwordDigest}{userUnderAttack} non sarà presente in cache al momento del controllo al punto tre. Nell'attesa del suo recupero dalla memoria principale, il \ac{BP} eseguirà il ramo then della computazione a causa dell'addestramento ottenuto al punto uno. Il valore di \emph{y} verrà quindi prelevato dalla memoria e messo nella cache. Quando sarà disponibile \emph{z}, il controllo fallirà e non verrà permesso l'accesso ai dati, ma \emph{y} resterà in cache. A questo punto, accedendo a varie posizioni di \texttt{array2}, l'unica ad avere un tempo di accesso veloce sarà quella che ci dirà quale line contiene il segreto. La scelta delle posizioni da accedere e il calcolo del range viene spiegato più dettagliatamente nella prossima sezione.
 			
 			\subsection{Implementazione}
-				Passiamo adesso all'analisi dettagliata del nostro programma che implementa l'attacco.
+				Passiamo adesso all'analisi vera e propria del nostro programma che implementa l'attacco.
 				
 				\subsubsection{Inizializzazione}
-				\codspark{1}{18}{Inizializzazione}
+				\codspark{1}{18}{inizializzazione}
 				
 				Nella primissima parte vengono semplicemente caricate le librerie necessarie alla compilazione, viene definito il numero di utenti (tremila), vengono creati i tre array principali (\texttt{secret}, \texttt{array2} e \texttt{passwordDigest}) e viene definita la funzione vittima, esattamente la stessa proposta nello scenario.
 				
@@ -46,61 +46,60 @@
 				I tre array "utili" sono separati da altri array \texttt{unused} per essere sicuri che vengano distanziati in memoria. Questo fa sì che non si sovrappongano all'interno di una stessa line.
 				
 				\subsubsection{Main - definizione parametri}
-				\codspark{19}{39}{Main - definizione parametri}
+				\codspark{19}{39}{main - definizione parametri}
 				
 				In questa parte vengono definiti i parametri che verranno utilizzati nel resto del programma:
-
-					\texttt{CACHELINE}: La dimensione in bit di una singola cache line. Come già detto, questa dimensione è ormai standardizzata a $512$ bit su tutti i processori moderni.
+				
+				\begin{itemize}
+					\item \texttt{CACHELINE}: la dimensione in bit di una singola cache line. Come già detto, questa dimensione è ormai standardizzata a $512$ bit su tutti i processori moderni.
 					
-					\texttt{blocks}: La dimensione in bit di un singolo elemento dell'array. In questo caso trentadue bit.
+					\item \texttt{blocks}: la dimensione in bit di un singolo elemento dell'array. In questo caso 32 bit.
 					
-					\texttt{delta}: Il numero di elementi dell'array contenuti in una cache line.
+					\item \texttt{delta}: il numero di elementi dell'array contenuti in una cache line.
 					
-					\texttt{class}: Il numero di posizioni da controllare per coprire tutto \texttt{array2} con uno step pari a $\delta$. Questo valore fornisce anche il numero di line occupate in cache da \texttt{array2}.
+					\item \texttt{class}: il numero di posizioni da controllare per coprire tutto \texttt{array2} con uno step pari a $\delta$. Questo valore fornisce anche il numero di line occupate in cache da \texttt{array2}.
 					
-					\texttt{numberOfRuns}: Il numero di volte che viene eseguito l'attacco per ogni esperimento.
+					\item \texttt{numberOfRuns}: il numero di volte che viene eseguito l'attacco per ogni esperimento.
 					
-					\texttt{numberOfTests}: Il numero di esperimenti che vengono eseguiti.
+					\item \texttt{numberOfTests}: il numero di esperimenti che vengono eseguiti.
 					
-					\texttt{cacheHitThreshold}: Il valore di soglia entro il quale il tempo calcolato viene considerato una cache hit. Sperimentalmente questo valore si aggira tra i trenta e i quaranta cicli di clock ma dipende dalla latenza della particolare cache attaccata.
+					\item \texttt{cacheHitThreshold}: la soglia entro la quale il tempo calcolato viene considerato una cache hit. Sperimentalmente questo valore si aggira tra i trenta e i quaranta cicli di clock, ma dipende dalla latenza della particolare cache attaccata.
 					
-					\texttt{precisionLoss}: Con questo valore si regola la precisione che si vuole ottenere. Se lasciato a zero verrà restituito un intervallo di ampiezza $\delta$ che dovrebbe contenere il segreto. A volte però può succedere che venga l'intervallo calcolato non contenga il segreto a causa di interferenze con altri processi che utilizzano il processore o di diverso allineamento delle cache. Aumentando questo valore si aumenta l'ampiezza dell'intervallo proporzionalmente a $\delta$ perdendo un po' in localizzazione ma guadagnando in correttezza dell'intervallo.
+					\item \texttt{precisionLoss}: con questo valore si regola la precisione che si vuole ottenere. Se lasciato a zero verrà restituito un intervallo di ampiezza $\delta$ che dovrebbe contenere il segreto. A volte però può succedere che l'intervallo calcolato non contenga il segreto a causa di interferenze con altri processi che utilizzano il processore, o a causa di un diverso allineamento delle cache. Aumentando questo valore si aumenta l'ampiezza dell'intervallo proporzionalmente a $\delta$, perdendo un po' in localizzazione, ma guadagnando in correttezza dell'intervallo (questo, insieme a \texttt{numberOfRuns}, \texttt{numberOfTests} e \texttt{cacheHitThreshold} sono i quattro parametri richiesti all'avvio del programma).		
+								
+					\item \texttt{results}: l'array nel quale verrà salvato il numero di hit rilevate per ogni line di cache.
 					
-					Questo e i tre precedenti sono i quattro parametri richiesti all'avvio del programma.
+					\item \texttt{ok}, \texttt{error} e \texttt{no-hit}: tre contatori utilizzati rispettivamente per sapere quante volte il programma restituisce l'intervallo che contiene il segreto, quante volte lo restituisce sbagliato e quante volte non rileva nessun cache hit.
 					
-					\texttt{results}: L'array nel quale verrà salvato il numero di hit rilevate per ogni line di cache.
-					
-					\texttt{ok}, \texttt{error} e \texttt{no-hit}: Tre contatori utilizzati per sapere quante volte il programma restituisce l'intervallo che contiene il segreto, quante volte lo restituisce sbagliato e quante volte non rileva nessun cache hit.
-					
-					\texttt{timeReg}, \texttt{time1} e \texttt{time2}: Le tre variabili per calcolare i tempi di accesso alle posizioni di \texttt{array2}.
-			
-				Dopo aver definito tutti i parametri si procede con l'inizializzazione del generatore \texttt{srand()} di numeri casuali.
+					\item \texttt{timeReg}, \texttt{time1} e \texttt{time2}: le tre variabili per calcolare i tempi di accesso alle posizioni di \texttt{array2}.
+				\end{itemize}			
+				Dopo aver definito tutti i parametri, si procede con l'inizializzazione del generatore \texttt{srand()} di numeri casuali.
 				
 				\subsubsection{Main - inizializzazione dell'esperimento}
-				\codspark{40}{51}{Main - inizializzazione dell'esperimento}
+				\codspark{40}{51}{main - inizializzazione dell'esperimento}
 				
 				All'inizio di ogni test viene scelto casualmente lo \texttt{userUnderAttack} e vengono inizializzati casualmente i tre array principali \texttt{passwordDigest}, \texttt{array2} e \texttt{secret}. Successivamente si sceglie una password sicuramente sbagliata ed infine si prepara l'array \texttt{results} al conteggio delle hit settandolo a zero.
 				
 				\subsubsection{Main - l'attacco}
-				\codspark{52}{70}{Main - l'attacco}
+				\codspark{52}{70}{main - l'attacco}
 				
-				Come descritto nello scenario, l'attacco si divide in quattro parti. Nella prima parte viene addestrato il \ac{BP} ad eseguire speculativamente il ramo then della funzione vittima richiamandola per tre volte con \texttt{userID} e password corretta.
+				Come descritto nello scenario, l'attacco si divide in quattro parti. Nella prima parte viene addestrato il \ac{BP} ad eseguire speculativamente il ramo then della funzione vittima, richiamandola per tre volte con \texttt{userID} e password corretta.
 				
 				Successivamente si esegue il flush dalla cache di tutte le posizioni degli array \texttt{array2} e \texttt{passwordDigest}.
 				
 				Prima di richiamare la funzione vittima facciamo eseguire l'istruzione \texttt{\_mm\_lfence}. Tale istruzione è una barriera sulla memoria che non permette l'esecuzione delle istruzioni successive prima che siano terminate tutte le scritture in memoria delle istruzioni precedenti. Questo evita ad esempio che l'istruzione a riga $90$ venga eseguita prima del flush di \texttt{array2} a causa di un riordinamento del codice. Se accadesse questo, il risultato del calcolo del tempo di accesso sarebbe ovviamente falsato.
 				
-				Terminato il flush della cache, viene richiamata la funzione vittima e vengono calcolati i tempi di accesso alle varie posizioni di \texttt{array2}. Come si può notare, non si effettua l'accesso a tutte le posizioni di \texttt{array2} ma si procede con un passo $\delta$ visto che comunque una qualunque delle $\delta$ posizioni all'interno della line che contiene il segreto restituirà una hit.
+				Terminato il flush della cache, viene richiamata la funzione vittima e vengono calcolati i tempi di accesso alle varie posizioni di \texttt{array2}. Come si può notare, non si effettua l'accesso a tutte le posizioni di \texttt{array2} ma si procede con un passo $\delta$ visto che una qualunque delle $\delta$ posizioni all'interno della line che contiene il segreto restituirà comunque una hit.
 				
 				Con un'altra \texttt{\_mm\_lfence} ci assicuriamo che il tempo venga effettivamente salvato in \texttt{time2} ed effettuiamo il controllo. Se il risultato del calcolo del tempo di accesso è minore della soglia che abbiamo impostato, aumentiamo di uno nell'array \texttt{results} il valore  contenuto all'indice che stiamo analizzando.
 				
 				\subsubsection{Main - i risultati}
-				\codspark{71}{105}{Main - i risultati}
+				\codspark{71}{105}{main - i risultati}
 				
 				\begin{figure}[b]
 					\begin{center}
 						\includegraphics[width=\textwidth]{range}
-						\caption[Schermata di SPARK]{Calcolo del range.}
+						\caption[Schermata di SPARK]{calcolo del range.}
 						\label{fig:range}
 					\end{center}
 				\end{figure}
@@ -116,7 +115,7 @@
 				\begin{figure}
 					\begin{center}
 						\includegraphics[width=.6\textwidth]{risultati}
-						\caption[Schermata di SPARK]{Schermata del programma.}
+						\caption[schermata di SPARK]{schermata del programma lanciato con i parametri $50,100,38,0$.}
 						\label{fig:schermata}
 					\end{center}
 				\end{figure}
@@ -138,7 +137,7 @@
 				\begin{figure}
 					\begin{center}
 						\includegraphics[width=\textwidth]{risultatiTab}
-						\caption[Risultati SPARK]{Risultati ottenuti dal programma.}
+						\caption[Risultati SPARK]{risultati ottenuti dal programma.}
 						\label{fig:risultati}
 					\end{center}
 				\end{figure}
