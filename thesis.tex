@@ -26,6 +26,7 @@ parts,dottedtoc]{classicthesis}
 \usepackage{imakeidx}
 \usepackage{wrapfig}
 \usepackage[italian,noabbrev]{cleveref}
+\usepackage{amssymb}
 %---------------------------------------------------------------
 \newcommand{\myItalianTitle}{Titolo italiano\xspace}
 \newcommand{\myEnglishTitle}{Titolo inglese\xspace}
@@ -43,6 +44,7 @@ parts,dottedtoc]{classicthesis}
 
 \newcommand{\disps}{dispositivo crittografico }
 \newcommand{\dispp}{dispositivi crittografici }
+
 \newcommand{\codice}[4]
 	{\begin{center}
 		\lstinputlisting[language={C},firstline={#1}, lastline={#2},caption={#3},label={#4}]{"D:/UNIFI/Magistrale/Tesi/spectre/primeProbe/spark.c"}
@@ -51,10 +53,16 @@ parts,dottedtoc]{classicthesis}
 	\begin{center}
 		\lstinputlisting[language={C},firstline={#1},lastline={#2},firstnumber={#1},caption={[#3]}]{code/spark.c}
 	\end{center}}
+
 \newcommand{\arr}[2]{$\text{\texttt{#1}}\left[ \text{\texttt{#2}}\right]$}
 \newcommand{\arrdoppio}[3]{$\text{\texttt{#1}}\left[ \text{\texttt{#2}} \left[\text{\texttt{#3}}\right]\right]$}
+
 \newcommand{\kilobyte}{kB}
 \newcommand{\megabyte}{MB}
+
+\newcommand{\tcal}{\mathbb{T}}
+\newcommand{\talfa}{\mathbb{T}_{\alpha}}
+\newcommand{\tbeta}{\mathbb{T}_{\beta}}
 
 \newcommand{\myfloatalign}{\centering} 
 
@@ -149,6 +157,7 @@ parts,dottedtoc]{classicthesis}
 \include{chapters/intro}
 \include{chapters/sideChannels}
 \include{chapters/timing}
+\include{chapters/cache}
 \include{chapters/spectre}
 \include{chapters/spark}
 \include{chapters/conclusioni}
