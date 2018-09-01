@@ -48,30 +48,139 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 	
 	Abbiamo supposto che l'attaccante prenda di mira una specifica istruzione \texttt{if} nel codice, come ad esempio \texttt{if p(h) then c} dove \texttt{p(.)} è un predicato con valore $0/1$ su \texttt{h}, in un contesto \texttt{B[.]}. In questo caso, l'intero programma sarebbe \texttt{B[if p(h) then c]}.
 	
-	Abbiamo assunto che il tempo di esecuzione dipenda da alcuni input forniti al programma che modificano l'esecuzione di \texttt{c}. Considerando i.i.d questi input e fissando il segreto \texttt{h}, abbiamo considerato il tempo di esecuzione dell'intero programma come una variabile aleatoria $\tcal$ che può essere divisa in $$\tcal = \talfa + \text{\texttt{p(h)}}\cdot \tbeta$$ dove $\talfa$ è il tempo di esecuzione dovuto a \texttt{B} e $\tbeta$ quello dovuto a \texttt{c} in una completa esecuzione di \texttt{B[c]}.
+	Abbiamo assunto che il tempo di esecuzione dipenda da alcuni input forniti al programma che modificano l'esecuzione di \texttt{c}. Considerando i.i.d questi input e fissando il segreto \texttt{h}, abbiamo considerato il tempo di esecuzione dell'intero programma come una variabile aleatoria $\tcal$ che può essere divisa in \begin{equation} \label{eq:1}
+		\tcal = \talfa + \text{\texttt{p(h)}}\cdot \tbeta
+	\end{equation} 
+	dove $\talfa$ è il tempo di esecuzione dovuto a \texttt{B} e $\tbeta$ quello dovuto a \texttt{c} in una completa esecuzione di \texttt{B[c]}.
 	
 	Lo scopo dell'attaccante è quello di scoprire il valore di \texttt{p(h)} attraverso misurazioni del tempo di esecuzione dell'intero programma.
 	
-	A questo proposito, abbiamo dimostrato che $$var(\tcal) > var(\talfa) \Leftrightarrow \text{\texttt{p(h)} = 1}$$ 
+	A questo proposito è immediato vedere che $$var(\tcal) > var(\talfa) \Leftrightarrow \text{\texttt{p(h)} = 1}$$ 
 	
 	a condizione che 
-	\begin{equation} \label{eq:1}
+	\begin{equation} \label{eq:2}
 		var(\tbeta) > 2 \cdot |cov(\talfa,\tbeta)|.
 	\end{equation}
 		
-	Questa formulazione però non basta all'attaccante perché, sebbene possa stimare facilmente $var(\tcal)$, non ha modo di stimare $var(\talfa)$ a meno che non sia in grado di eseguire \texttt{B} in isolamento (ipotesi troppo forte e poco realistica). Egli può però simulare \texttt{c}, calcolare $\tbeta$ e confrontare $var(\tcal - \tbeta)$ con $var(\tcal)$. A questo punto si ottiene che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}.$$ Dimostrazione $\Leftarrow$:\\
-	Se $\text{\texttt{p(h)}} = 1$, allora $$\tcal = \talfa + \tbeta \Rightarrow \tcal - \tbeta = \talfa$$
+	Questa formulazione però non è sufficiente per l'attaccante visto che, sebbene possa stimare facilmente $var(\tcal)$, non ha modo di stimare $var(\talfa)$ a meno che non sia in grado di eseguire \texttt{B} in isolamento (ipotesi troppo forte e poco realistica). Abbiamo pertanto pensato che l'attaccante potrebbe però simulare \texttt{c}, calcolare $\tbeta$ e confrontare $var(\tcal - \tbeta)$ con $var(\tcal)$. 
+	
+	Il risultato che abbiamo ottenuto è stato dimostrare che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}$$ tutti valori calcolabili (o perlomeno stimabili).\\ \\Dimostrazione $\Leftarrow$:\\
+	Se $\text{\texttt{p(h)}} = 1$, allora dalla \ref{eq:1} $$\tcal = \talfa + \tbeta \Rightarrow \tcal - \tbeta = \talfa$$
 	da ciò si deduce che $$var(\tcal - \tbeta) = var(\talfa)$$ 
 	e che $$var(\tcal) = var(\talfa) + var(\tbeta) + 2cov(\talfa,\tbeta)$$
-	e quindi per la condizione \ref{eq:1} $$var(\tcal - \tbeta) < var(\tcal).$$Dimostrazione $\Rightarrow$:\\
+	e quindi per la \ref{eq:1} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
 	In questo caso dimostriamo la contronominale $$\text{\texttt{p(h)}} = 0 \Rightarrow var(\tcal - \tbeta) \geq var(\tcal).$$  
 	Procediamo con la dimostrazione:
-	$$\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + \text{\texttt{p(h)}}\cdot \tbeta = \talfa$$
+	dalla \ref{eq:1} sappiamo che
+	\begin{equation} \label{eq:3}
+		\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + \text{\texttt{p(h)}}\cdot \tbeta = \talfa
+	\end{equation}
 	da cui si deduce che $$var(\tcal) = var(\talfa).$$
-	Dal passo precedente 
+	Dalla \ref{eq:3} troviamo che
 	$$\tcal = \talfa \Rightarrow \tcal - \tbeta = \talfa - \tbeta$$
 	e quindi
 	$$var(\tcal - \tbeta) = var(\talfa) + var(\tbeta) - 2\cdot cov (\talfa,\tbeta)$$
-	da cui per la condizione \ref{eq:1}
+	da cui per la \ref{eq:2}
 	$$var(\tcal - \tbeta) > var(\talfa) = var(\tcal).$$
-	$\square$
+	\begin{flushright}
+		$\square$
+	\end{flushright}
+
+	\section{Contromisure ai timing attacks}
+	Illustriamo adesso alcune precauzioni che possono essere prese per difendersi dai timing attacks.
+	
+	\subsection*{Computazione indipendente da input o chiavi}
+		La prima contromisura che può essere applicata è quella di rendere indipendente dagli input o dalla chiave il tempo d'esecuzione delle funzioni più critiche. Nel momento in cui una di queste funzioni dovesse aver bisogno di utilizzare tali dati, quella funzione deve essere implementata in modo tale da restituire un tempo di computazione costante (in termini di cicli di clock).
+		
+		Questa tecnica risolve completamente il problema dei timing attacks, ma diminuisce le prestazioni del programma. Questo è dovuto al fatto che alcune ottimizzazioni proposte nel tempo per velocizzare la computazione di tali funzioni dipendono da una particolare gestione degli input o della chiave e quindi non possono essere applicate.
+		
+	\subsection*{Blinding}
+		Un'altra contromisura, introdotta da \emph{Chaum} in \cite{chaum1983blind}, consiste nel "nascondere" l'utilizzo di input esterni e di chiavi modificandoli in maniera opportuna. Ad ogni esecuzione, ad esempio, potrebbe essere aggiunta una quantità casuale alla chiave o all'esponente utilizzato nell'esponenziazione modulare che, modificandoli, renda sempre diverso il tempo di computazione.
+		
+		Nell'utilizzare questa tecnica è necessario prestare attenzione al fatto che le quantità aggiunte non presentino a loro volta delle regolarità statistiche che potrebbero essere analizzate dall'attaccante, rilevate e compensate.
+		
+	\subsection*{Rimozione delle istruzioni di branch}
+		In \cite{schwabe2016counter}, \emph{Schwabe} propone di implementare funzioni sensibili senza utilizzare istruzioni di branch. Eliminare tali istruzioni permette infatti di uniformare i tempi di esecuzione rendendo molto più difficile l'attuazione dei timing attacks.
+		
+		Se ad esempio prendiamo il \cref{list:timing} ci accorgiamo che il programma ha tempi di esecuzione diversi determinati dal segreto.
+		
+		\begin{center}
+			\begin{lstlisting}[language={C},caption={Codice da proteggere},label={list:timing}]
+				if (secret) {
+					r = doA(); /* long operation*/
+				} else {
+					r = doB(); /*short operation*/
+				}
+			\end{lstlisting}
+		\end{center}
+		
+		Volendo riportare questo problema in pratica, prendiamo un'implementazione di una delle operazioni più critiche di RSA: la \emph{square and multiply} (\cref{list:square1}).
+		
+		\begin{center}
+			\begin{lstlisting}[language={C},caption={RSA, square and multiply v1},label={list:square1}]
+				typedef unsigned long long uint64;
+				typedef uint32_t uint32;
+				uint32 modexp(uint32 a, uint32 mod, unsigned char exp[4]) {
+					int i,j;
+					uint32 r = 1;
+					for(i=3;i>=0;i--) {
+						for(j=7;j>=0;j--) {
+							r = ((uint64)r*r) % mod;
+							if(exp[i] & (1<<j))
+								r = ((uint64)a*r) % mod;
+						}
+					}
+					return r;
+				}
+			\end{lstlisting}
+		\end{center}
+		
+		L'informazione temporale che l'attaccante potrebbe ottenere è dovuta dall'istruzione a riga $9$ che esegue una moltiplicazione ed una riduzione modulare solo se l'i-esimo bit dell'esponente è pari a $1$.
+		
+		La prima modifica che può venire in mente per risolvere questo problema è di far eseguire le stesse operazioni per entrambi i rami della branch modificando la funzione come nel \cref{list:square2}. In questo modo, a prescindere dal risultato del controllo, verranno effettuate comunque una moltiplicazione ed una riduzione modulare uniformando il tempo di esecuzione.
+		
+		\begin{center}
+			\begin{lstlisting}[language={C},caption={RSA, square and multiply v2},label={list:square2}]
+			typedef unsigned long long uint64;
+			typedef uint32_t uint32;
+			uint32 modexp(uint32 a, uint32 mod, unsigned char exp[4]) {
+				int i,j;
+				uint32 r = 1, t;
+				for(i=3;i>=0;i--) {
+					for(j=7;j>=0;j--) {
+						r = ((uint64)r*r) % mod;
+						if(exp[i] & (1<<j)){
+							r = ((uint64)a*r) % mod;
+						} else {
+							t = ((uint64)a*r) % mod;
+						}
+					}
+				}
+				return r;
+			}
+			\end{lstlisting}
+		\end{center}
+	
+		Questa soluzione è purtroppo inefficace perché qualunque compilatore si accorgerebbe del fatto che la variabile \texttt{t} non viene mai utilizzata e quindi ottimizzerebbe il codice rimuovendo quell'istruzione. Se anche rimuovessimo tutte le ottimizzazioni da parte del compilatore (subendo una notevole perdita di prestazioni generali del programma), potremmo comunque non ottenere un tempo costante a causa di altre ottimizzazioni (inevitabili) a livello di processore come ad esempio la \emph{branch prediction}.
+		
+		La soluzione proposta è quella di eliminare completamente l'istruzione di branch come nel \cref{list:square3}.
+		
+		\begin{center}
+			\begin{lstlisting}[language={C},caption={RSA, square and multiply v3},label={list:square3}]
+			uint32 modexp(uint32 a, uint32 mod, const unsigned char exp[4]) {
+				int i,j;
+				uint32 r = 1,t;
+				for(i=3;i>=0;i--) {
+					for(j=7;j>=0;j--) {
+						r = ((uint64)r*r) % mod;
+						t = ((uint64)a*r) % mod;
+						cmov(&r, &t, (exp[i] >> j) & 1);
+					}
+				}
+				return r;
+			}
+			\end{lstlisting}
+		\end{center}
+	
+		In questa implementazione vengono sempre eseguite entrambe le operazioni (sia su \texttt{r} che su \texttt{t}) e si nota l'utilizzo dell'istruzione assembly \texttt{cmov} (\emph{conditional move}). Questa istruzione non fa uso di alcuna predizione sulla branch ed ha bisogno sia del valore di \texttt{r} che del valore \texttt{t} che quindi non possono essere ottimizzati.
+		
