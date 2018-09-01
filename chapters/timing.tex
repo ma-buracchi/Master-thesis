@@ -1,5 +1,5 @@
 \chapter{Timing attacks}
-\index{Timing attacks}Come anticipato nel capitolo precedente, approfondiremo adesso la tipologia di attacchi basati sul tempo. 
+\index{Timing attacks}Come anticipato nel capitolo precedente, approfondiremo adesso la tipologia di attacchi basati sul tempo (timing attacks). 
 
 I timing attacks si basano sulla misurazione del tempo necessario ad un dispositivo per effettuare un'operazione. Tale informazione può portare all'esposizione di alcune informazioni sull'operazione stessa o sui dati da essa manipolati. Questo accade perché molto spesso la durata di un'operazione dipende dagli input che vengono forniti. Le istruzioni che prestano maggiormente il fianco a questo tipo di attacchi sono le istruzioni di branch e i condizionali.
 
@@ -64,16 +64,16 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 		
 	Questa formulazione però non è sufficiente per l'attaccante visto che, sebbene possa stimare facilmente $var(\tcal)$, non ha modo di stimare $var(\talfa)$ a meno che non sia in grado di eseguire \texttt{B} in isolamento (ipotesi troppo forte e poco realistica). Abbiamo pertanto pensato che l'attaccante potrebbe però simulare \texttt{c}, calcolare $\tbeta$ e confrontare $var(\tcal - \tbeta)$ con $var(\tcal)$. 
 	
-	Il risultato che abbiamo ottenuto è stato dimostrare che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}$$ tutti valori calcolabili (o perlomeno stimabili).\\ \\Dimostrazione $\Leftarrow$:\\
+	Il risultato che abbiamo ottenuto è stato dimostrare che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}.$$ Questi sono tutti valori calcolabili (o perlomeno stimabili).\\ \\Dimostrazione $\Leftarrow$:\\
 	Se $\text{\texttt{p(h)}} = 1$, allora dalla \ref{eq:1} $$\tcal = \talfa + \tbeta \Rightarrow \tcal - \tbeta = \talfa$$
 	da ciò si deduce che $$var(\tcal - \tbeta) = var(\talfa)$$ 
 	e che $$var(\tcal) = var(\talfa) + var(\tbeta) + 2cov(\talfa,\tbeta)$$
-	e quindi per la \ref{eq:1} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
+	e quindi per la \ref{eq:2} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
 	In questo caso dimostriamo la contronominale $$\text{\texttt{p(h)}} = 0 \Rightarrow var(\tcal - \tbeta) \geq var(\tcal).$$  
 	Procediamo con la dimostrazione:
 	dalla \ref{eq:1} sappiamo che
 	\begin{equation} \label{eq:3}
-		\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + \text{\texttt{p(h)}}\cdot \tbeta = \talfa
+		\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + 0\cdot \tbeta = \talfa
 	\end{equation}
 	da cui si deduce che $$var(\tcal) = var(\talfa).$$
 	Dalla \ref{eq:3} troviamo che
@@ -114,10 +114,10 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 			\end{lstlisting}
 		\end{center}
 		
-		Volendo riportare questo problema in pratica, prendiamo un'implementazione di una delle operazioni più critiche di RSA: la \emph{square and multiply} (\cref{list:square1}).
+		Volendo riportare questo problema in pratica, prendiamo un'implementazione di una delle operazioni più critiche di RSA: l'esponenziazione modulare. (\cref{list:square1}).
 		
 		\begin{center}
-			\begin{lstlisting}[language={C},caption={RSA, square and multiply v1},label={list:square1}]
+			\begin{lstlisting}[language={C},caption={RSA, esponenziazione modulare v1},label={list:square1}]
 				typedef unsigned long long uint64;
 				typedef uint32_t uint32;
 				uint32 modexp(uint32 a, uint32 mod, unsigned char exp[4]) {
@@ -135,12 +135,12 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 			\end{lstlisting}
 		\end{center}
 		
-		L'informazione temporale che l'attaccante potrebbe ottenere è dovuta dall'istruzione a riga $9$ che esegue una moltiplicazione ed una riduzione modulare solo se l'i-esimo bit dell'esponente è pari a $1$.
+		L'informazione temporale che l'attaccante potrebbe ottenere è dovuta dalle istruzioni a riga $9-10$ che eseguono una moltiplicazione ed una riduzione modulare solo se l'i-esimo bit dell'esponente è pari a $1$.
 		
 		La prima modifica che può venire in mente per risolvere questo problema è di far eseguire le stesse operazioni per entrambi i rami della branch modificando la funzione come nel \cref{list:square2}. In questo modo, a prescindere dal risultato del controllo, verranno effettuate comunque una moltiplicazione ed una riduzione modulare uniformando il tempo di esecuzione.
 		
 		\begin{center}
-			\begin{lstlisting}[language={C},caption={RSA, square and multiply v2},label={list:square2}]
+			\begin{lstlisting}[language={C},caption={RSA, esponenziazione modulare v2},label={list:square2}]
 			typedef unsigned long long uint64;
 			typedef uint32_t uint32;
 			uint32 modexp(uint32 a, uint32 mod, unsigned char exp[4]) {
@@ -166,7 +166,7 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 		La soluzione proposta è quella di eliminare completamente l'istruzione di branch come nel \cref{list:square3}.
 		
 		\begin{center}
-			\begin{lstlisting}[language={C},caption={RSA, square and multiply v3},label={list:square3}]
+			\begin{lstlisting}[language={C},caption={RSA, esponenziazione modulare v3},label={list:square3}]
 			uint32 modexp(uint32 a, uint32 mod, const unsigned char exp[4]) {
 				int i,j;
 				uint32 r = 1,t;
