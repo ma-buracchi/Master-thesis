@@ -1,29 +1,31 @@
 \chapter{Timing attacks}
 \index{Timing attacks}Come anticipato nel capitolo precedente, approfondiremo adesso la tipologia di attacchi basati sul tempo (timing attacks). 
 
-I timing attacks si basano sulla misurazione del tempo necessario ad un dispositivo per effettuare un'operazione. Tale informazione può portare all'esposizione di alcune informazioni sull'operazione stessa o sui dati da essa manipolati. Questo accade perché molto spesso la durata di un'operazione dipende dagli input che vengono forniti. Le istruzioni che prestano maggiormente il fianco a questo tipo di attacchi sono le istruzioni di branch e i condizionali.
+I timing attacks si basano sulla misurazione del tempo necessario ad un dispositivo per effettuare un'operazione. Tale informazione può portare all'esposizione di alcune informazioni sull'operazione stessa o sui dati da essa manipolati. Questo accade perché molto spesso la durata di un'operazione dipende dagli input che vengono forniti dall'esterno.
+
+Le istruzioni che prestano maggiormente il fianco a questo tipo di attacchi sono le istruzioni di branch e i condizionali.
 
 \begin{center}
 	\lstinputlisting[language={Java}, caption={esempio di funzione vulnerabile ad un timing attack}, label={list:timingBase}, frame={none},basicstyle={\small\ttfamily}]{code/timingBase.txt}
 \end{center}
 
-Ad esempio il \cref{list:timingBase} se fatto girare con la stringa "\texttt{passwordToBeStolen}" impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa "\texttt{foo}". Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante che, procedendo per tentativi, può arrivare a ricavare la stringa esatta.
+Ad esempio un programma implementato con il \cref{list:timingBase}, se fatto girare con la stringa "\texttt{passwordToBeStolen}" impiegherà un tempo maggiore rispetto allo stesso programma fatto girare con la stringa "\texttt{foo}". Nel primo caso infatti verrà scansionata tutta la stringa mentre nel secondo caso si interromperà immediatamente. Questa informazione può essere utilizzata dall'attaccante che, procedendo per tentativi, può arrivare a ricavare la stringa esatta.
 
-Questo esempio banale non deve portare a pensare che le caratteristiche temporali di una certa operazione rivelino solamente informazioni su una piccola parte di un intero sistema crittografico. Come dimostrato da \emph{Kocher} in \cite{kocher1996timing}, esistono attacchi che, solamente sfruttando misurazioni di tempi di esecuzione di particolari operazioni, riescono a scoprire l'intera chiave in algoritmi crittografici complessi come \emph{RSA}, \ac{DH} o \ac{DSS}.
+Questo esempio banale non deve portare a pensare che le caratteristiche temporali di una certa operazione rivelino solamente informazioni su una piccola parte di un intero sistema crittografico. Come dimostrato da \emph{Kocher} in \cite{kocher1996timing}, esistono attacchi che, solamente sfruttando misurazioni di tempi di esecuzione di particolari operazioni, riescono a scoprire l'intera chiave in implementazioni diverse di algoritmi crittografici complessi come \emph{RSA}, \ac{DH} o \ac{DSS}.
 
-Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un modello statistico che fornisce, con un certo intervallo di confidenza, la chiave progredendo di un bit alla volta. Il modello deve essere in grado di controllare la correlazione tra le varie misurazioni e stabilire di conseguenza se il successivo bit della chiave debba essere $0$ oppure $1$.
+Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un modello statistico che scopre la chiave, con un certo intervallo di confidenza, progredendo di un bit alla volta. Il modello deve essere in grado di controllare la correlazione tra le varie misurazioni e stabilire di conseguenza se il successivo bit della chiave debba essere $0$ oppure $1$.
 
 	\section{Attacchi reali}
 	
 	Analizziamo tre attacchi reali presi proprio dall'articolo di \emph{Kocher}.
 	
 		\subsection{Esponenziazione modulare}
-		Un operazione comune, utilizzata sia da \ac{DH} che da RSA, è il calcolo di $$R = y^{x} \ mod \ n.$$ In questa operazione, $n$ è pubblico e $y$ può essere trovato tramite una qualche intercettazione di messaggi da parte dell'attaccante. Lo scopo finale dell'attacco è trovare $x$, la chiave segreta.
+		Un operazione comune, utilizzata sia da \ac{DH} che da RSA, è il calcolo di $$R = y^{x} \ mod \ n.$$ In questa operazione, $n$ è pubblico e $y$ può essere trovato tramite una qualche intercettazione di messaggi da parte dell'attaccante. Lo scopo finale dell'attacco sarà quello di trovare $x$, la chiave segreta.
 		
 		Per questo attacco, fissata una $x$, la vittima deve calcolare $y^{x} \ mod \ n$ per diversi valori di $y$ e l'attaccante deve conoscere $y$, $n$ e il tempo necessario al calcolo.
 		Analizzando statisticamente queste misurazioni, si riesce a risalire all'intera chiave segreta.
 		
-		Le informazioni necessarie e le misurazioni temporali posso essere ottenute passivamente tramite qualche forma di intercettazione (ad esempio creando un \emph{man-in-the-middle}) sul protocollo di comunicazione fornito dalla vittima. L'attaccante a questo punto conosce il messaggio ricevuto dalla vittima e misura il tempo che essa impiega per rispondere con il risultato utilizzando i vari $y$.
+		Le informazioni necessarie e le misurazioni temporali posso essere ottenute passivamente tramite qualche forma di intercettazione (ad esempio creando un \emph{man-in-the-middle}) sul protocollo di comunicazione fornito dalla vittima. L'attaccante a questo punto conosce il messaggio ricevuto dalla vittima e misura il tempo che essa impiega per rispondere con il risultato utilizzando vari $y$.
 		
 		Questo attacco può essere adattato ad ogni implementazione di questa operazione all'unica condizione che non si tratti di una delle varianti che lavora in tempo costante.
 		
@@ -39,7 +41,7 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 		
 		Il \ac{DSS} calcola $s = (k^{-1}(H(m) + x \cdot r)) \ mod \ q$ dove $r$ e $q$ sono noti all'attaccante, $k^{-1}$ è precalcolato, $H(m)$ è l'hash del messaggio e $x$ è la chiave privata.
 		
-		Se l'operazione di riduzione modulo $q$ non è stata implementata per funzionare a tempo costante, il tempo totale di computazione è correlato col tempo necessario per calcolare $(x \cdot r \ mod \ q)$. L'attaccante può quindi calcolarlo in maniera similare alle precedenti e scoprire la chiave segreta $x$.
+		Se l'operazione di riduzione modulo $q$ non è stata implementata per funzionare a tempo costante, esiste una correlazione tra il tempo totale di computazione e quello necessario per eseguire $(x \cdot r \ mod \ q)$. L'attaccante può quindi calcolare tale tempo in maniera similare alle precedenti e scoprire la chiave segreta $x$.
 		
 	\section{Generalizzazione}
 	Abbiamo appena illustrato tre casi concreti di timing attacks contro specifici algoritmi crittografici. Partendo da queste basi, abbiamo cercato una generalizzazione applicabile alla maggior parte degli attacchi di questo tipo.
@@ -53,9 +55,14 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 	\end{equation} 
 	dove $\talfa$ è il tempo di esecuzione dovuto a \texttt{B} e $\tbeta$ quello dovuto a \texttt{c} in una completa esecuzione di \texttt{B[c]}.
 	
-	Lo scopo dell'attaccante è quello di scoprire il valore di \texttt{p(h)} attraverso misurazioni del tempo di esecuzione dell'intero programma.
+	Lo scopo dell'attaccante è quello di scoprire il valore di \texttt{p(h)} (che potrebbe rappresentare l'i-esimo bit della chiave) attraverso misurazioni del tempo di esecuzione dell'intero programma.
 	
-	A questo proposito è immediato vedere che $$var(\tcal) > var(\talfa) \Leftrightarrow \text{\texttt{p(h)} = 1}$$ 
+	A questo proposito è immediato vedere che $$var(\tcal)=\left\{\begin{array}{ll}
+	var(\talfa) & \mathrm{s}\mathrm{e}\ \text{\texttt{p(h)}} = 0\\
+	var(\talfa)+var(\tbeta)+2\cdot cov (\talfa,\tbeta) & \mathrm{s}\mathrm{e}\ \text{\texttt{p(h)}} = 1
+	\end{array}\right.$$ 
+	
+	da cui ricaviamo che $$var(\tcal) > var(\talfa) \Leftrightarrow \text{\texttt{p(h)}} = 1$$ 
 	
 	a condizione che 
 	\begin{equation} \label{eq:2}
@@ -70,8 +77,7 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 	e che $$var(\tcal) = var(\talfa) + var(\tbeta) + 2cov(\talfa,\tbeta)$$
 	e quindi per la \ref{eq:2} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
 	In questo caso dimostriamo la contronominale $$\text{\texttt{p(h)}} = 0 \Rightarrow var(\tcal - \tbeta) \geq var(\tcal).$$  
-	Procediamo con la dimostrazione:
-	dalla \ref{eq:1} sappiamo che
+	Dalla \ref{eq:1} sappiamo che
 	\begin{equation} \label{eq:3}
 		\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + 0\cdot \tbeta = \talfa
 	\end{equation}
