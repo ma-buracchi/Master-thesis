@@ -137,7 +137,7 @@ Per ottenere tali risultati le misurazioni dei tempi vengono analizzate con un m
 		
 		L'informazione temporale che l'attaccante potrebbe ottenere è dovuta dalle istruzioni a riga $9-10$ che eseguono una moltiplicazione ed una riduzione modulare solo se l'i-esimo bit dell'esponente è pari a $1$.
 		
-		La prima modifica che può venire in mente per risolvere questo problema è di far eseguire le stesse operazioni per entrambi i rami della branch modificando la funzione come nel \cref{list:square2}. In questo modo, a prescindere dal risultato del controllo, verranno effettuate comunque una moltiplicazione ed una riduzione modulare uniformando il tempo di esecuzione.
+		La prima modifica che può venire in mente per risolvere questo problema è di far eseguire le stesse operazioni ad entrambi i rami della branch modificando la funzione come nel \cref{list:square2}. In questo modo, a prescindere dal risultato del controllo, verranno effettuate comunque una moltiplicazione ed una riduzione modulare uniformando il tempo di esecuzione.
 		
 		\begin{center}
 			\begin{lstlisting}[language={C},caption={RSA, esponenziazione modulare v2},label={list:square2}]

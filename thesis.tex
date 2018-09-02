@@ -12,8 +12,8 @@
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc} 
 \usepackage[square,numbers]{natbib} 
-\usepackage[fleqn]{amsmath}  
-\usepackage{amsthm}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
 \usepackage{ellipsis}
 \usepackage{listings}
 \usepackage{subfig}
@@ -27,7 +27,6 @@ parts,dottedtoc]{classicthesis}
 \usepackage{imakeidx}
 \usepackage{wrapfig}
 \usepackage[italian,noabbrev]{cleveref}
-\usepackage{amssymb}
 %---------------------------------------------------------------
 \newcommand{\myItalianTitle}{Attacchi side-channel ed esecuzione speculativa: analisi ed implementazione.\xspace}
 \newcommand{\myEnglishTitle}{Side-channel attacks and speculative execution: analysis and implementation.\xspace}
@@ -91,9 +90,7 @@ parts,dottedtoc]{classicthesis}
 \crefname{listing}{codice}{codici}
 
 \lstset{ %
-	%backgroundcolor=\color{back},		% choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
-	basicstyle=\scriptsize\ttfamily,  	% the size of the fonts that are used for the code
-	breakatwhitespace=false,        	% sets if automatic breaks should only happen at whitespace
+	basicstyle=\small\ttfamily, 		% the size of the fonts that are used for the code
 	breaklines=true,                	% sets automatic line breaking
 	captionpos=b,                   	% sets the caption-position to bottom
 	commentstyle=\color{violet},   		% comment style
@@ -105,12 +102,8 @@ parts,dottedtoc]{classicthesis}
 	numbers=left,                   	% where to put the line-numbers; possible values are (none, left, right)
 	numbersep=5pt,                  	% how far the line-numbers are from the code
 	numberstyle=\scriptsize\color{black}, % the style that is used for the line-numbers
-	rulecolor=\color{black},        	% if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-	showspaces=false,               	% show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-	showstringspaces=false,         	% underline spaces within strings only
-	showtabs=false,                 	% show tabs within strings adding particular underscores
 	stepnumber=1,                   	% the step between two line-numbers. If it's 1, each line will be numbered
-	stringstyle=\color{red},  			% string literal style
+	stringstyle=\color{Brown},  		% string literal style
 	tabsize=2                   		% sets default tabsize to 2 spaces
 }
 
