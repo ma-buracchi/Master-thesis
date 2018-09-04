@@ -34,15 +34,15 @@
 		
 			Nella \cref{fig:cachei5} si può vedere l'architettura del processore quadcore Intel Core i$5$-$3470$. La gerarchia delle cache è organizzata in una memoria L$1$ di $64$\kilobyte \ (divisa in $32$\kilobyte \ per le istruzioni e $32$\kilobyte \ per i dati), una memoria L$2$ da $256$\kilobyte \ ed una memoria L$3$ da $6$\megabyte.
 			
-			\begin{figure}
+			Andiamo ad analizzare più nel dettaglio le caratteristiche di una singola cache\cite{ge2016survey,yarom2014flush+}.
+			
+			\begin{figure}[h]
 				\begin{center}
 					\includegraphics[scale=0.6]{cachei5}
 					\caption{architettura del processore Intel Core i$5$-$3470$}
 					\label{fig:cachei5}
 				\end{center}
 			\end{figure}
-			
-			Andiamo ad analizzare più nel dettaglio le caratteristiche di una singola cache\cite{ge2016survey,yarom2014flush+}.
 			
 			\subsubsection{Cache lines}
 				\index{Cache lines}Per sfruttare anche la località spaziale le caches sono divise in lines. Una cache line contiene un blocco di byte adiacenti (generalmente di dimensione congrua ad una potenza di due) caricati dalla memoria. Se uno qualunque dei byte deve essere rimosso (si parla di \emph{evicting}\index{Evict}) per far spazio ad un altro dato, viene rimossa l'intera line.

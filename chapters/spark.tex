@@ -111,7 +111,9 @@
 					\item \texttt{ERROR} - se il segreto non ricade nel range calcolato.
 					\item \texttt{NO-HIT} - se non si è rilevata alcuna hit.
 				\end{itemize}
-			
+				
+				Come ultima cosa viene visualizzato sullo schermo un resoconto dei risultati ottenuti. Nella \cref{fig:schermata} si può vedere la schermata del programma.
+				
 				\begin{figure}
 					\begin{center}
 						\includegraphics[width=.6\textwidth]{risultati}
@@ -119,35 +121,64 @@
 						\label{fig:schermata}
 					\end{center}
 				\end{figure}
-				
-				Come ultima cosa viene visualizzato sullo schermo un resoconto dei risultati ottenuti. Nella \cref{fig:schermata} si può vedere la schermata del programma.
 			
 			\subsection{Prove sperimentali}
-				Abbiamo testato il programma su un notebook SAMSUNG-R$580$ che monta un processore INTEL CORE i$3$-$330$M la cui cache è divisa in:
-				\begin{itemize}
-					\item [L$1$ -] $2$ x $64$ KB divise in 
-					\begin{itemize}
-						\item  $2$ x $32$ KB $4$-way associative cache per i dati
-						\item  $2$ x $32$ KB $8$-way associative cache per le istruzioni
-					\end{itemize}
-					\item[L$2$ -] $2$ x $256$ KB $8$-way associative cache
-					\item[L$3$ -] $3$ MB $12$-way associative cache condivisa dai due core
-				\end{itemize}
-			
-				\begin{figure}
-					\begin{center}
-						\includegraphics[width=\textwidth]{risultatiTab}
-						\caption[Risultati SPARK]{risultati ottenuti dal programma.}
-						\label{fig:risultati}
-					\end{center}
-				\end{figure}
-			
-				Abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati}), ognuna composta da tremila test suddivisi in:
-				\begin{itemize}
-					\item mille in cui vengono eseguiti venti run ogni test
-					\item mille in cui vengono eseguiti cinquanta run ogni test
-					\item mille in cui vengono eseguiti cento run ogni test.
-				\end{itemize}
+				Abbiamo testato il programma su un notebook SAMSUNG-R$580$ che monta un processore INTEL CORE i$3-330$M e su un computer desktop equipaggiato con un processore i$xxxx$. Di seguito i risultati ottenuti con ognuno dei due.
 				
-				Come è normale aspettarsi, maggiore è il numero di round effettuato per ogni test, maggiore è la precisione che si ottiene. Nei nostri esperimenti si passa infatti da una media di successi ottenuti del $79.8\%$ con venti round a $98.2\%$ con cento round. Ovviamente, aumentando il numero di round, aumenta il tempo di esecuzione che nei due casi precedenti passa, per ogni test, da meno di un secondo a circa cinque secondi.
+				\subsubsection*{INTEL CORE i$3-330$M} 
+				
+					Questo processore dispone di tre livelli di cache così suddivisi: 
+					
+					\begin{itemize}
+						\item [L$1$ -] $2$ x $64$ \kilobyte \ divise in 
+						\begin{itemize}
+							\item  $2$ x $32$ \kilobyte \ $4$-way associative cache per i dati
+							\item  $2$ x $32$ \kilobyte \ $8$-way associative cache per le istruzioni
+						\end{itemize}
+						\item[L$2$ -] $2$ x $256$ \kilobyte \ $8$-way associative cache
+						\item[L$3$ -] $3$ \megabyte \ $12$-way associative cache condivisa dai due core
+					\end{itemize}
+				
+					\begin{figure}
+						\begin{center}
+							\includegraphics[width=\textwidth]{risultatiTab}
+							\caption{risultati ottenuti sul processore i$3-330$M.}
+							\label{fig:risultati}
+						\end{center}
+					\end{figure}
+				
+					Abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati}), ognuna composta da tremila test suddivisi in:
+					\begin{itemize}
+						\item mille in cui vengono eseguiti venti run ogni test
+						\item mille in cui vengono eseguiti cinquanta run ogni test
+						\item mille in cui vengono eseguiti cento run ogni test.
+					\end{itemize}
+					
+					Come è normale aspettarsi, maggiore è il numero di round effettuato per ogni test, maggiore è la precisione che si ottiene. Nei nostri esperimenti si passa infatti da una media di successi ottenuti del $79.8\%$ con venti round a $98.2\%$ con cento round. Ovviamente, aumentando il numero di round, aumenta il tempo di esecuzione che nei due casi precedenti passa, per ogni test, da meno di un secondo a circa cinque secondi.
+					
+				\subsubsection*{INTEL CORE i$xxxx$} 
+				
+					Questo processore dispone di tre livelli di cache così suddivisi: 
+					
+					\begin{itemize}
+						\item [L$1$ -] $2$ x $64$ \kilobyte \ divise in 
+						\begin{itemize}
+							\item  $2$ x $32$ \kilobyte \ $4$-way associative cache per i dati
+							\item  $2$ x $32$ \kilobyte \ $8$-way associative cache per le istruzioni
+						\end{itemize}
+						\item[L$2$ -] $2$ x $256$ \kilobyte \ $8$-way associative cache
+						\item[L$3$ -] $3$ \megabyte \ $12$-way associative cache condivisa dai due core
+					\end{itemize}
+					
+					\begin{figure}
+						\begin{center}
+							\includegraphics[width=\textwidth]{risultatiTab}
+							\caption{risultati ottenuti sul processore i$xxxx$.}
+							\label{fig:risultati2}
+						\end{center}
+					\end{figure}
+					
+					Anche in questo caso abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati2}), esattamente identiche alle precedenti.
+					
+					Le indicazioni ottenute sono in linea con i test eseguiti sull'altro processore con una precisione che aumenta all'aumentare del numero di round. In questo caso si parte infatti con una media di successi ottenuti del $xx.x\%$ con venti round fino ad arrivare al $xx.x\%$ con cento round. Utilizzando un processore con prestazioni migliori però, i tempi di esecuzione sono sensibilmente più bassi: si passa da circa n test al secondo con venti round fino a n secondi a test con cento round.
 					
