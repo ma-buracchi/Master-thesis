@@ -123,11 +123,11 @@
 				\end{figure}
 			
 			\subsection{Prove sperimentali}
-				Abbiamo testato il programma su un notebook SAMSUNG-R$580$ che monta un processore INTEL CORE i$3-330$M e su un computer desktop equipaggiato con un processore i$xxxx$. Di seguito i risultati ottenuti con ognuno dei due.
+				Abbiamo testato il programma su un notebook SAMSUNG-R$580$ che monta un processore INTEL CORE i$3$-$330$M a $2.13$\gigahertz e su un computer desktop equipaggiato con un processore i$7$-$4700$MQ a $2.40$\gigahertz. Di seguito i risultati ottenuti con ognuno dei due.
 				
-				\subsubsection*{INTEL CORE i$3-330$M} 
+				\subsubsection*{INTEL CORE i$3$-$330$M} 
 				
-					Questo processore dispone di tre livelli di cache così suddivisi: 
+					Questo processore dispone di tre livelli di cache così suddivisi:
 					
 					\begin{itemize}
 						\item [L$1$ -] $2$ x $64$ \kilobyte \ divise in 
@@ -148,6 +148,7 @@
 					\end{figure}
 				
 					Abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati}), ognuna composta da tremila test suddivisi in:
+					
 					\begin{itemize}
 						\item mille in cui vengono eseguiti venti run ogni test
 						\item mille in cui vengono eseguiti cinquanta run ogni test
@@ -156,29 +157,29 @@
 					
 					Come è normale aspettarsi, maggiore è il numero di round effettuato per ogni test, maggiore è la precisione che si ottiene. Nei nostri esperimenti si passa infatti da una media di successi ottenuti del $79.8\%$ con venti round a $98.2\%$ con cento round. Ovviamente, aumentando il numero di round, aumenta il tempo di esecuzione che nei due casi precedenti passa, per ogni test, da meno di un secondo a circa cinque secondi.
 					
-				\subsubsection*{INTEL CORE i$xxxx$} 
+				\subsubsection*{INTEL CORE i$7$-$4700$MQ} 
 				
-					Questo processore dispone di tre livelli di cache così suddivisi: 
+					Anche questo processore dispone di tre livelli di cache così suddivisi: 
 					
 					\begin{itemize}
-						\item [L$1$ -] $2$ x $64$ \kilobyte \ divise in 
+						\item [L$1$ -] $4$ x $64$ \kilobyte \ divise in 
 						\begin{itemize}
-							\item  $2$ x $32$ \kilobyte \ $4$-way associative cache per i dati
-							\item  $2$ x $32$ \kilobyte \ $8$-way associative cache per le istruzioni
+							\item  $4$ x $32$ \kilobyte \ $8$-way associative cache per i dati
+							\item  $4$ x $32$ \kilobyte \ $8$-way associative cache per le istruzioni
 						\end{itemize}
-						\item[L$2$ -] $2$ x $256$ \kilobyte \ $8$-way associative cache
-						\item[L$3$ -] $3$ \megabyte \ $12$-way associative cache condivisa dai due core
+						\item[L$2$ -] $4$ x $256$ \kilobyte \ $8$-way associative cache
+						\item[L$3$ -] $6$ \megabyte \ $12$-way associative cache condivisa dai quattro core
 					\end{itemize}
 					
 					\begin{figure}
 						\begin{center}
 							\includegraphics[width=\textwidth]{risultatiTab}
-							\caption{risultati ottenuti sul processore i$xxxx$.}
+							\caption{risultati ottenuti sul processore i$7-4700$MQ.}
 							\label{fig:risultati2}
 						\end{center}
 					\end{figure}
 					
 					Anche in questo caso abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati2}), esattamente identiche alle precedenti.
 					
-					Le indicazioni ottenute sono in linea con i test eseguiti sull'altro processore con una precisione che aumenta all'aumentare del numero di round. In questo caso si parte infatti con una media di successi ottenuti del $xx.x\%$ con venti round fino ad arrivare al $xx.x\%$ con cento round. Utilizzando un processore con prestazioni migliori però, i tempi di esecuzione sono sensibilmente più bassi: si passa da circa n test al secondo con venti round fino a n secondi a test con cento round.
+					Le indicazioni ottenute sono in linea con i test eseguiti sull'altro processore con una precisione che aumenta all'aumentare del numero di round. In questo caso si parte infatti con una media di successi ottenuti del $xx.x\%$ con venti round fino ad arrivare al $xx.x\%$ con cento round. Utilizzando un processore con prestazioni migliori però, i tempi di esecuzione sono sensibilmente più bassi: si passa da circa $0.x$ secondi a n secondi a test rispettivamente con venti o con cento round.
 					
