@@ -7,7 +7,7 @@
 		L'utente \emph{x} che vorrà consultare i propri dati dovrà autenticarsi inserendo il proprio \texttt{userID} ed una password (salvata insieme alle password degli altri utenti nell'array \texttt{passwordDigest}). In caso di esito positivo del controllo, si utilizzerà il valore contenuto in \arr{secret}{userID} come indice di \texttt{array2} per andare a recuperare il dato sensibile riguardante x. In caso di esito negativo verrà ovviamente negato l'accesso ai dati.
 		
 		Tale funzione potrebbe essere implementata dal \cref{list:spark}:
-		\codice{28}{32}{funzione attaccata da SPARK}{list:spark}
+		\codice{26}{30}{funzione attaccata da SPARK}{list:spark}
 		
 		Supponiamo adesso che l'attaccante abbia accesso ad \texttt{array2} (come supposto anche dall'attacco SPECTRE), ma che non abbia accesso all'array \texttt{secret} ed ovviamente neanche all'array delle password. L'obiettivo del nostro attacco è quello di ricavare, per un utente casuale \emph{x}, il relativo \arr{secret}{userID}, per poter successivamente avere accesso all'informazione riservata, il tutto senza conoscere la password.
 		
