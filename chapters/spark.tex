@@ -99,7 +99,7 @@
 				\begin{figure}[b]
 					\begin{center}
 						\includegraphics[width=\textwidth]{range}
-						\caption[Schermata di SPARK]{calcolo del range.}
+						\caption{calcolo del range}
 						\label{fig:range}
 					\end{center}
 				\end{figure}
@@ -117,7 +117,7 @@
 				\begin{figure}
 					\begin{center}
 						\includegraphics[width=.6\textwidth]{risultati}
-						\caption[schermata di SPARK]{schermata del programma lanciato con i parametri $50,100,38,0$.}
+						\caption[schermata di SPARK]{schermata del programma lanciato con i parametri $50,100,38,0$}
 						\label{fig:schermata}
 					\end{center}
 				\end{figure}
@@ -142,7 +142,7 @@
 					\begin{figure}
 						\begin{center}
 							\includegraphics[width=\textwidth]{risultatiTab}
-							\caption{risultati ottenuti sul processore i$3-330$M.}
+							\caption{risultati ottenuti sul processore i$3$-$330$M}
 							\label{fig:risultati}
 						\end{center}
 					\end{figure}
@@ -173,13 +173,17 @@
 					
 					\begin{figure}
 						\begin{center}
-							\includegraphics[width=\textwidth]{risultatiTab}
-							\caption{risultati ottenuti sul processore i$7-4700$MQ.}
+							\includegraphics[width=\textwidth]{risultatiTab2}
+							\caption{risultati ottenuti sul processore i$7$-$4700$MQ}
 							\label{fig:risultati2}
 						\end{center}
 					\end{figure}
 					
 					Anche in questo caso abbiamo effettuato dieci sessioni di esperimenti (i cui risultati sono visibili in \cref{fig:risultati2}), esattamente identiche alle precedenti.
 					
-					Le indicazioni ottenute sono in linea con i test eseguiti sull'altro processore con una precisione che aumenta all'aumentare del numero di round. In questo caso si parte infatti con una media di successi ottenuti del $xx.x\%$ con venti round fino ad arrivare al $xx.x\%$ con cento round. Utilizzando un processore con prestazioni migliori però, i tempi di esecuzione sono sensibilmente più bassi: si passa da circa $0.x$ secondi a n secondi a test rispettivamente con venti o con cento round.
+					Le indicazioni ottenute sono in linea con i test eseguiti sull'altro processore con una precisione che aumenta all'aumentare del numero di round. In questo caso si parte infatti da una media di successi ottenuti del $95.3\%$ con venti round fino ad arrivare al $99.2\%$ con cento round. Utilizzando un processore con prestazioni migliori, i tempi di esecuzione si sono sensibilmente abbassati: si passa da circa $0.4$ secondi a test se effettuati con venti round a $2$ secondi a test se effettuati con cento round (circa il doppio più veloce del precedente).
+					
+					Anche il maggior numero di errori è molto probabilmente dovuto alle migliori prestazioni del processore. Trattandosi di un computer general purpose, equipaggiato con Windows $10$ come sistema operativo, nel tempo di esecuzione del programma altri processi possono interagire con la cache creando così delle false hit. 
+					
+					Sarebbe interessante eseguire questi esperimenti su macchine dedicate esclusivamente all'esecuzione di questo programma per capire quanto l'influenza di processi esterni possa interferire con l'esecuzione di SPARK. 
 					
