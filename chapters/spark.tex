@@ -81,7 +81,7 @@
 				All'inizio di ogni test viene scelto casualmente lo \texttt{userUnderAttack} e vengono inizializzati casualmente i tre array principali \texttt{passwordDigest}, \texttt{array2} e \texttt{secret}. Successivamente si sceglie una password sicuramente sbagliata ed infine si prepara l'array \texttt{results} al conteggio delle hit settandolo a zero.
 				
 				\subsubsection{Main - l'attacco}
-				\codspark{52}{70}{main - l'attacco}
+				\codspark{52}{71}{main - l'attacco}
 				
 				Come descritto nello scenario, l'attacco si divide in quattro parti. Nella prima parte viene addestrato il \ac{BP} ad eseguire speculativamente il ramo then della funzione vittima, richiamandola per tre volte con \texttt{userID} e password corretta.
 				
@@ -94,7 +94,7 @@
 				Con un'altra \texttt{\_mm\_lfence} ci assicuriamo che il tempo venga effettivamente salvato in \texttt{time2} ed effettuiamo il controllo. Se il risultato del calcolo del tempo di accesso è minore della soglia che abbiamo impostato, aumentiamo di uno nell'array \texttt{results} il valore  contenuto all'indice che stiamo analizzando.
 				
 				\subsubsection{Main - i risultati}
-				\codspark{71}{105}{main - i risultati}
+				\codspark{72}{105}{main - i risultati}
 				
 				\begin{figure}[b]
 					\begin{center}
