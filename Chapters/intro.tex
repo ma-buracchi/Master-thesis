@@ -9,12 +9,19 @@
 	
 	\begin{figure}
 		\begin{center}
-			\includegraphics[scale=.45]{blackbox}
+			\includegraphics[width=\textwidth]{blackbox}
 			\caption{black-box encryption}
 			\label{fig:blackbox}
 		\end{center}
 	\end{figure}
 	
-	Al giorno d'oggi si è consapevoli del fatto che un \disps ha spesso altri input oltre al plaintext e altri output oltre al ciphertext. Gli input differenti dal plaintext possono essere interazioni col mondo esterno come modifiche al voltaggio della corrente, condizioni atmosferiche particolari o sollecitazioni fisiche. Il nostro interesse sarà però focalizzato sulle informazioni (facilmente misurabili) che vengono lasciate trapelare dai dispositivi stessi oltre al ciphertext come ad esempio il tempo di esecuzione di un programma, le radiazioni emesse, suoni, luci e quant'altro chiamate \emph{side-channel informations}\index{Side-channel informations}.
+	Al giorno d'oggi si è consapevoli del fatto che un \disps ha spesso altri input oltre al plaintext e altri output oltre al ciphertext. Gli input differenti dal plaintext possono essere le interazioni col mondo esterno come modifiche al voltaggio della corrente, condizioni atmosferiche particolari o sollecitazioni fisiche. Il nostro interesse sarà però focalizzato sulle informazioni (facilmente misurabili) che vengono lasciate trapelare dai dispositivi stessi oltre al ciphertext come ad esempio il tempo di esecuzione di un programma, le radiazioni emesse, suoni, luci e quant'altro chiamate \emph{side-channel informations}\index{Side-channel informations}.
 	 
-	 Il resto della tesi è organizzata nel seguente modo: nel capitolo $1$ verrà definita una classificazione dei side-channel attacks e verrà presentata una panoramica dello stato dell'arte; il capitolo $2$ approfondirà i \emph{cache attacks} e in particolar modo quelli basati sul tempo; nel capitolo $3$ verrà presentato approfonditamente il progetto \emph{SPECTRE}, una famiglia di attacchi che hanno afflitto tutti i recenti processori AMD, ARM e Intel; nel capitolo $4$ verrà infine presentato \ac{SPARK}, un attacco basato sui concetti del progetto SPECTRE in grado di ottenere dati protetti da password.
+	 Il resto della tesi è organizzata nel seguente modo:
+	 \begin{itemize}
+	 	\item nel capitolo $1$, data l'eterogeneità della letteratura su questo argomento, abbiamo definito una classificazione dei side-channel attacks e abbiamo presentato una panoramica dello stato dell'arte.
+	 	\item nel capitolo $2$ abbiamo focalizzato la nostra attenzione sulla categoria dei \emph{timing attacks}, una particolare tipologia di side-channel attack basato sull'osservazione del tempo di esecuzione di un programma. Partendo da alcuni timing attack reali eseguiti su particolari funzioni crittografiche, abbiamo ottenuto una generalizzazione applicabile a qualunque attacco di questo tipo.
+	 	\item nel capitolo $3$ presentiamo i cache attacks, attacchi side-channel (prevalentemente di tipo timing) che colpiscono la memoria cache dei processori.
+	 	\item nel capitolo $4$ abbiamo presentato approfonditamente il progetto \emph{SPECTRE}, la principale famiglia di timing attacks sulle cache, che affligge tutti i recenti processori AMD, ARM e Intel.
+	 	\item nel capitolo $5$ descriviamo infine \ac{SPARK}, l'attacco da noi creato. Questo attacco, basato sui concetti del progetto SPECTRE, è in grado di ottenere dati protetti da password senza la conoscenza di quest'ultima.
+	 \end{itemize}    
