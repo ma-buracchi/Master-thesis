@@ -109,20 +109,21 @@ parts,dottedtoc]{classicthesis}
 }
 
 \makeindex[intoc]
-%--------------------------------------------------------------
+
+%---------------------PARAMETERS-------------------------------
 \begin{document}
 \frenchspacing
 \raggedbottom
 \pagenumbering{roman}
 \pagestyle{plain}
-%--------------------------------------------------------------
-% Frontmatter
-%--------------------------------------------------------------
+
+%---------------------FRONTMATTER------------------------------
+
 \include{titlePage}
 \pagestyle{scrheadings}
-%--------------------------------------------------------------
-% Mainmatter
-%--------------------------------------------------------------
+
+%---------------------MAINMATTER-------------------------------
+
 \pagenumbering{arabic}
 \tableofcontents
 \listoffigures
@@ -148,7 +149,9 @@ parts,dottedtoc]{classicthesis}
 \emph{"Da campo a campo, nel tetro grembo della notte,\\s’avverte appena il brusio di entrambe le armate,\\sicché le sentinelle appostate quasi possono udire\\i mormorii furtivi delle sentinelle nemiche" \break --- Enrico V, William Shakespear} \vspace{\stretch{2}}\null
 \end{flushright}
 \cleardoublepage
-%----------------CAPITOLI--------------------------------------
+
+%-----------------CAPITOLI-------------------------------------
+
 \include{chapters/intro}
 \include{chapters/sideChannels}
 \include{chapters/timing}
@@ -156,12 +159,20 @@ parts,dottedtoc]{classicthesis}
 \include{chapters/spectre}
 \include{chapters/spark}
 \include{chapters/conclusioni}
+
+%-----------------APPENDICI------------------------------------
+
+\appendix
 \include{chapters/appendiceA}
+\include{chapters/appendiceB}
+
 %-----------------BIBLIOGRAFIA---------------------------------
-	\bibliography{bib/bibliografia}
-	\bibliographystyle{unsrt}
-%--------------------------------------------------------------
+
+\bibliography{bib/bibliografia}
+\bibliographystyle{unsrt}
+
+%-----------------INDICI---------------------------------------
+
 \include{chapters/acro}
 \printindex
 \end{document}
-%--------------------------------------------------------------
