@@ -71,26 +71,64 @@ Per ottenere tali risultati, le misurazioni dei tempi vengono analizzate con un 
 		
 	Questa formulazione però non è sufficiente per l'attaccante visto che, sebbene possa stimare facilmente $var(\tcal)$, non ha modo di stimare $var(\talfa)$ a meno che non sia in grado di eseguire \texttt{B} in isolamento (ipotesi troppo forte e poco realistica). Abbiamo pensato che l'attaccante potrebbe però simulare \texttt{c}, calcolare $\tbeta$ e confrontare $var(\tcal - \tbeta)$ con $var(\tcal)$. 
 	
-	Il risultato che abbiamo ottenuto è stato dimostrare che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}.$$ Questi sono tutti valori calcolabili (o perlomeno stimabili).\\ \\Dimostrazione $\Leftarrow$:\\
-	Se $\text{\texttt{p(h)}} = 1$, allora dalla \ref{eq:1} $$\tcal = \talfa + \tbeta \Rightarrow \tcal - \tbeta = \talfa$$
-	da ciò si deduce che $$var(\tcal - \tbeta) = var(\talfa)$$ 
-	e che $$var(\tcal) = var(\talfa) + var(\tbeta) + 2cov(\talfa,\tbeta)$$
-	e quindi per la \ref{eq:2} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
-	In questo caso dimostriamo la contronominale $$\text{\texttt{p(h)}} = 0 \Rightarrow var(\tcal - \tbeta) \geq var(\tcal).$$  
-	Dalla \ref{eq:1} sappiamo che
-	\begin{equation} \label{eq:3}
-		\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + 0\cdot \tbeta = \talfa
-	\end{equation}
-	da cui si deduce che $$var(\tcal) = var(\talfa).$$
-	Dalla \ref{eq:3} troviamo che
-	$$\tcal = \talfa \Rightarrow \tcal - \tbeta = \talfa - \tbeta$$
-	e quindi
-	$$var(\tcal - \tbeta) = var(\talfa) + var(\tbeta) - 2\cdot cov (\talfa,\tbeta)$$
-	da cui per la \ref{eq:2}
-	$$var(\tcal - \tbeta) > var(\talfa) = var(\tcal).$$
-	\begin{flushright}
-		$\square$
-	\end{flushright}
+	Il risultato che abbiamo ottenuto è stato dimostrare che $$var(\tcal - \tbeta) < var(\tcal) \Leftrightarrow \text{\texttt{p(h)} = 1}.$$ Questi sono tutti valori calcolabili (o perlomeno stimabili).\\
+	
+	\subsection{Dimostrazione} 
+		Dimostrazione $\Leftarrow$:\\
+		Se $\text{\texttt{p(h)}} = 1$, allora dall'\cref{eq:1} $$\tcal = \talfa + \tbeta \Rightarrow \tcal - \tbeta = \talfa$$
+		da ciò si deduce che $$var(\tcal - \tbeta) = var(\talfa)$$ 
+		e che $$var(\tcal) = var(\talfa) + var(\tbeta) + 2cov(\talfa,\tbeta)$$
+		e quindi per l'\cref{eq:2} $$var(\tcal - \tbeta) < var(\tcal).$$\\Dimostrazione $\Rightarrow$:\\
+		In questo caso dimostriamo la contronominale $$\text{\texttt{p(h)}} = 0 \Rightarrow var(\tcal - \tbeta) \geq var(\tcal).$$  
+		Dall'\cref{eq:1} sappiamo che
+		\begin{equation} \label{eq:3}
+			\text{\texttt{p(h)}} = 0 \Rightarrow \tcal = \talfa + 0\cdot \tbeta = \talfa
+		\end{equation}
+		da cui si deduce che $$var(\tcal) = var(\talfa).$$
+		Dall'\cref{eq:3} troviamo che
+		$$\tcal = \talfa \Rightarrow \tcal - \tbeta = \talfa - \tbeta$$
+		e quindi
+		$$var(\tcal - \tbeta) = var(\talfa) + var(\tbeta) - 2\cdot cov (\talfa,\tbeta)$$
+		da cui per l'\cref{eq:2}
+		$$var(\tcal - \tbeta) > var(\talfa) = var(\tcal).$$
+		\begin{flushright}
+			$\square$
+		\end{flushright}
+
+	\subsection{Validazione sperimentale}
+		La generalizzazione precedente, a causa della condizione richiesta nell'\cref{eq:2}, potrebbe apparire come un semplice esercizio di stile teorico con poche applicazioni pratiche. Per questo motivo abbiamo cercato di dimostrare sperimentalmente che tale condizione si verifica normalmente anche nella realtà.
+		
+		Abbiamo creato una implementazione dell'algoritmo di esponenziazione modulare (appendice A), una delle funzioni crittografiche maggiormente interessate dai timing attacks. Questo algoritmo calcola $$y = x^k \ mod \ n,$$ dove $x$ e $n$ sono interi positivi e $k$ è la chiave segreta, nel seguente modo: 
+		
+		\begin{center}
+			\begin{lstlisting}[caption={algoritmo di esponenziazione modulare},label={list:espMod}]
+			y = 1;
+			per ogni bit i di k
+				se k[i] == 1
+					y = y * y
+					y = y * x
+					y = y mod n
+				altrimenti
+					y = y * y
+					y = y mod n
+			\end{lstlisting}
+		\end{center}
+	
+		L'istruzione presa di mira dall'attacco è il controllo sull'i-esimo bit della chiave. Abbiamo instrumentato il codice in maniera tale da ottenere $\talfa \text{ e } \tbeta$ per poterne poi calcolare varianze e covarianze. Il programma esegue $1000$ volte l'intero algoritmo scegliendo casualmente $x\text{,}k\text{ e }n$. Per ogni esecuzione, il campionamento di $\talfa$ viene eseguito ad ogni iterazione, mentre quello di $\tbeta$ viene eseguito solamente nell'iterazione nella quale compare il primo '1' della chiave. In questo modo emuliamo il comportamento dell'attaccante che può simulare \texttt{c} in isolamento. Con questi $1000$ campioni si calcolano $var(\tbeta)$ e $covar(\talfa,\tbeta)$ e si effettua il controllo richiesto dall'\cref{eq:2}.
+		
+		Questa procedura viene ripetuta $100$ volte per ogni esperimento e, alla fine, viene restituito il numero di volte in cui l'equazione risulta soddisfatta.
+		
+		Per avere risultati più significativi, il tutto viene ripetuto per $10$ volte e viene restituita la media.
+		
+		\begin{figure}
+			\begin{center}
+				\includegraphics[width=.9\textwidth]{resPython}
+				\caption{esecuzione del test di validazione}
+				\label{fig:resPython}
+			\end{center}
+		\end{figure}
+	
+		Come si vede in \cref{fig:resPython}, in media, in più del $98\%$ delle esecuzioni l'equazione è effettivamente verificata.	Possiamo quindi affermare che la condizione imposta sia assolutamente plausibile. 	 		
 
 	\section{Contromisure ai timing attacks}
 	Illustriamo adesso alcune precauzioni che possono essere prese per difendersi dai timing attacks.
